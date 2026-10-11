@@ -50,7 +50,7 @@ A high S² means the model places episodes close together when they call for sim
 
 ## S² Relates to Robot Task Success Rate
 
-Action is a harder test case for PRH[^prh] than vision or language: it is a physical trajectory, not another passive observation. We test the premise directly: a model's S² should positively relate to its downstream robot task success. S² cannot replace closed-loop evaluation, but if this holds, it can cheaply indicate offline which representations support successful control.
+Action is a harder test case for PRH[^prh] than vision or language: it is a physical trajectory, not another passive observation. We test the premise directly: a model's S² should positively relate to its downstream robot task success. If it does, S² can serve as a low-cost offline proxy for identifying which models are likely to achieve higher task success before closed-loop evaluation.
 
 Below, we show this relation across three model families and real-robot policies, compare S² with VQA and video-quality metrics, and check that it is robust to evaluation choices.
 

@@ -46,7 +46,12 @@ alignment</a></li><li><a href="#s²-relates-to-robot-task-success-rate">S² Rela
 Success Rate</a><ul><li><a href="#s²-relates-to-task-success-across-model-families">S² Relates to
 Task Success Across Model Families</a></li><li><a href="#s²-relates-to-task-success-more-closely-than-alternative-metrics">S²
 Relates to Task Success More Closely Than Alternative Metrics</a></li><li><a href="#s²-is-robust-to-evaluation-choices">S² Is Robust to Evaluation
-Choices</a></li></ul></li><li><a href="#citation">Citation</a></li></ul></nav>
+Choices</a></li></ul></li><li><a href="#representation-level-explanations-with-s²">Representation-Level
+Explanations with S²</a><ul><li><a href="#what-carries-the-correlation-vision-text-or-both">What Carries
+the Correlation: Vision, Text, or Both?</a></li><li><a href="#freezing-vision-encoders-limits-s²-gain">Freezing Vision
+Encoders Limits S² Gain</a></li><li><a href="#early-denoising-features-already-carry-strong-sensorimotor-alignment">Early-Denoising
+Features Already Carry Strong Sensorimotor Alignment</a></li><li><a href="#mid-depth-blocks-carry-the-strongest-sensorimotor-alignment">Mid-Depth
+Blocks Carry the Strongest Sensorimotor Alignment</a></li></ul></li><li><a href="#citation">Citation</a></li></ul></nav>
       <article class="content" id="article"><section aria-label="Introduction" id="introduction">
 
 
@@ -321,6 +326,174 @@ particular horizon choice.</p>
 the correlation between S² and success remains robust (r &gt; 0.5)
 across nearly all evaluated horizons (h) on BridgeDataV2 and
 DROID.</span></figcaption></figure>
+
+</section><section aria-labelledby="representation-level-explanations-with-s²-heading" id="representation-level-explanations-with-s²"><h2 id="representation-level-explanations-with-s²-heading">Representation-Level
+Explanations with S²</h2>
+<p>Prior work reports several phenomena in VLAs and WAMs based only on
+closed-loop results. Because S² relates to task success, as shown above,
+we use it to provide a representation-level explanation for each of
+these phenomena, as summarized below:</p>
+<ul>
+<li><strong><a href="#what-carries-the-correlation-vision-text-or-both">Modality
+dominance</a></strong>: prior work observes that VLAs often struggle
+with instruction grounding<label aria-label="Note 20" class="sidenote-number" for="sn-20"></label><input class="margin-toggle" id="sn-20" type="checkbox"/><span class="sidenote"><a href="https://arxiv.org/abs/2510.13626">LIBERO-Plus:
+In-depth Robustness Analysis of Vision-Language-Action Models</a> (Fei
+et al, 2025)</span><label aria-label="Note 21" class="sidenote-number" for="sn-21"></label><input class="margin-toggle" id="sn-21" type="checkbox"/><span class="sidenote"><a href="https://arxiv.org/abs/2602.17659">When Vision
+Overrides Language: Evaluating and Mitigating Counterfactual Failures in
+VLAs</a> (Fang et al, 2026)</span><label aria-label="Note 22" class="sidenote-number" for="sn-22"></label><input class="margin-toggle" id="sn-22" type="checkbox"/><span class="sidenote"><a href="https://arxiv.org/abs/2603.06001">Restoring
+Linguistic Grounding in VLA Models via Train-Free Attention
+Recalibration</a> (Zhang et al, 2026)</span>. We explain that after VLA
+fine-tuning, task success is associated with vision-feature S² but not
+text-feature S², indicating that fine-tuned VLAs rely mainly on visual
+rather than language representations for control.</li>
+<li><strong><a href="#freezing-vision-encoders-limits-s²-gain">Frozen
+encoders</a></strong>: prior work observes that freezing the vision
+encoder during VLA fine-tuning degrades downstream task performance<label aria-label="Note 23" class="sidenote-number" for="sn-23"></label><input class="margin-toggle" id="sn-23" type="checkbox"/><span class="sidenote"><a href="https://arxiv.org/abs/2601.03309">VLM4VLA:
+Revisiting Vision-Language-Models in Vision-Language-Action Models</a>
+(Zhang et al, 2026)</span>. We explain that freezing also
+prevents the S² gain from end-to-end fine-tuning, indicating that
+fine-tuning improves control by aligning the visual representation more
+closely with motor structure.</li>
+<li><strong><a href="#early-denoising-features-already-carry-strong-sensorimotor-alignment">Iterative
+denoising</a></strong>: prior work observes that WAMs can skip test-time
+video generation with little loss in task success<label aria-label="Note 24" class="sidenote-number" for="sn-24"></label><input class="margin-toggle" id="sn-24" type="checkbox"/><span class="sidenote"><a href="https://arxiv.org/abs/2603.16666">Fast-WAM: Do
+World Action Models Need Test-time Future Imagination?</a> (Yuan et al,
+2026)</span>.
+We explain that S² is already high at the earliest denoising step and
+changes little afterwards, indicating that the sensorimotor structure
+needed for control is present before denoising finishes.</li>
+<li><strong><a href="#mid-depth-blocks-carry-the-strongest-sensorimotor-alignment">Mid-depth
+blocks</a></strong>: prior work observes that mid-depth blocks of video
+diffusion transformers are especially important for semantic reasoning<label aria-label="Note 25" class="sidenote-number" for="sn-25"></label><input class="margin-toggle" id="sn-25" type="checkbox"/><span class="sidenote"><a href="https://arxiv.org/abs/2603.16870">Demystifying
+Video Reasoning</a> (Wang et al, 2026)</span>. We explain that the same mid-depth
+blocks carry the strongest S², indicating that the layers that reason
+about video semantics are also the layers most aligned with robot
+actions.</li>
+</ul>
+<h3 id="what-carries-the-correlation-vision-text-or-both">What Carries
+the Correlation: Vision, Text, or Both?</h3>
+<p>Prior work observes that VLAs often struggle with instruction
+grounding, acting on what the scene suggests rather than on what the
+instruction asks<label aria-label="Note 26" class="sidenote-number" for="sn-26"></label><input class="margin-toggle" id="sn-26" type="checkbox"/><span class="sidenote"><a href="https://arxiv.org/abs/2510.13626">LIBERO-Plus:
+In-depth Robustness Analysis of Vision-Language-Action Models</a> (Fei
+et al, 2025)</span><label aria-label="Note 27" class="sidenote-number" for="sn-27"></label><input class="margin-toggle" id="sn-27" type="checkbox"/><span class="sidenote"><a href="https://arxiv.org/abs/2602.17659">When Vision
+Overrides Language: Evaluating and Mitigating Counterfactual Failures in
+VLAs</a> (Fang et al, 2026)</span><label aria-label="Note 28" class="sidenote-number" for="sn-28"></label><input class="margin-toggle" id="sn-28" type="checkbox"/><span class="sidenote"><a href="https://arxiv.org/abs/2603.06001">Restoring
+Linguistic Grounding in VLA Models via Train-Free Attention
+Recalibration</a> (Zhang et al, 2026)</span>.
+We ask which modality carries the correlation with task success: vision,
+text, or both. In the figure below, we compute S² separately for each
+modality. We take the VLM output tokens read by the action head and form
+<em>vision features</em> from the image tokens, <em>text features</em>
+from the instruction tokens, and <em>joint vision-text features</em>
+from all tokens. The full per-model S² values across all feature
+positions are reported in Appendix D.1 of our paper.</p>
+<figure data-figure="7"><button aria-label="Expand figure 7" class="figure-button" type="button"><img alt="A two-by-three grid of scatter plots relating Sensorimotor Alignment to SimplerEnv success. Top row, twelve fine-tuned VLAs: vision-only 0.694, text-only 0.237, vision plus text 0.699. Bottom row, eight raw VLMs: vision-only 0.425, text-only 0.501, vision plus text 0.681." decoding="async" height="2470" loading="lazy" src="assets/s2-what-carries.png" width="4378"/></button><figcaption><span class="figure-number">Figure 7:</span> <span class="caption-text">Fine-tuned VLAs rely mainly on visual rather than language
+representations for control. We correlate S² computed from vision
+features, text features, and joint vision-text features with SimplerEnv
+success. <strong>Top:</strong> For fine-tuned VLAs, S² from vision
+features and from joint features yields similarly strong correlations,
+while S² from text features is weak, indicating that fine-tuned VLAs
+rely mainly on visual rather than language representations for control.
+<strong>Bottom:</strong> For raw VLMs before any robot fine-tuning,
+neither vision-only nor text-only S² reaches significance, but the joint
+vision-text representation still predicts downstream success.</span></figcaption></figure>
+
+<p><strong>Fine-tuned VLAs rely mainly on visual rather than language
+representations for control.</strong> At horizon <em>h</em> = 3, we find
+that S² from vision features correlates with the SimplerEnv success of
+the 12 fine-tuned VLAs nearly as strongly as S² from joint vision-text
+features (r = +0.694 and r = +0.699), while S² from text features shows
+no significant relation (r = +0.237). Before fine-tuning, the pattern
+differs: in raw VLMs, S² from text features (r = +0.501) correlates more
+strongly than S² from vision features (r = +0.425), and S² from joint
+vision-text features correlates most strongly (r = +0.681).</p>
+<p>We therefore infer that fine-tuned VLAs rely mainly on visual rather
+than language representations for control, which explains their weak
+instruction grounding at the representation level.</p>
+<h3 id="freezing-vision-encoders-limits-s²-gain">Freezing Vision
+Encoders Limits S² Gain</h3>
+<p>VLM4VLA<label aria-label="Note 29" class="sidenote-number" for="sn-29"></label><input class="margin-toggle" id="sn-29" type="checkbox"/><span class="sidenote"><a href="https://arxiv.org/abs/2601.03309">VLM4VLA:
+Revisiting Vision-Language-Models in Vision-Language-Action Models</a>
+(Zhang et al, 2026)</span> reports that freezing the vision
+encoder during VLA fine-tuning severely degrades downstream robotics
+performance. We use S² to test whether end-to-end fine-tuning improves
+control by increasing sensorimotor alignment in the action-head
+input.</p>
+<p>In the figure below, we compare 2 VLAs differing only in whether the
+vision encoder is frozen during fine-tuning. Both attach an FCDecoder
+action head to Qwen2.5-VL-3B<label aria-label="Note 30" class="sidenote-number" for="sn-30"></label><input class="margin-toggle" id="sn-30" type="checkbox"/><span class="sidenote"><a href="https://arxiv.org/abs/2502.13923">Qwen2.5-VL
+Technical Report</a> (Bai et al, 2025)</span> and are fine-tuned on
+BridgeDataV2 with the same recipe, following VLM4VLA<label aria-label="Note 31" class="sidenote-number" for="sn-31"></label><input class="margin-toggle" id="sn-31" type="checkbox"/><span class="sidenote"><a href="https://arxiv.org/abs/2601.03309">VLM4VLA:
+Revisiting Vision-Language-Models in Vision-Language-Action Models</a>
+(Zhang et al, 2026)</span>.
+For each, we compute S² from the joint vision-text features read by the
+action head and measure SimplerEnv success. Freezing the encoder reduces
+S² by 41% and downstream success by 40%. The S² drop holds at all 10
+motion horizons, ranging from 38% to 49% (Appendix D.2 of our
+paper).</p>
+<figure data-figure="8"><button aria-label="Expand figure 8" class="figure-button" type="button"><img alt="Bar charts comparing unfrozen and frozen vision-encoder fine-tuning. Sensorimotor Alignment drops from 0.0245 to 0.0144, and SimplerEnv success drops from 50.00 percent to 30.21 percent." decoding="async" height="700" loading="lazy" src="assets/s2-freeze-vs-unfreeze.png" width="1523"/></button><figcaption><span class="figure-number">Figure 8:</span> <span class="caption-text">Freezing the vision encoder ViT reduces both S² and downstream
+success. For a Qwen2.5-VL-3B VLA fine-tuned on BridgeData v2, we compare
+end-to-end training with a frozen vision encoder. Freezing lowers both
+S² from joint vision-text features (top) and SimplerEnv success
+(bottom), suggesting that S² captures a representation-level bottleneck
+linked to policy performance. Motion horizon h = 7.</span></figcaption></figure>
+
+<p>We infer that end-to-end fine-tuning improves control by aligning
+visual representations with motor structure, which explains why freezing
+the vision encoder lowers task success.</p>
+<h3 id="early-denoising-features-already-carry-strong-sensorimotor-alignment">Early-Denoising
+Features Already Carry Strong Sensorimotor Alignment</h3>
+<p>WAMs typically decode actions from video latents obtained through
+iterative denoising. Fast-WAM<label aria-label="Note 32" class="sidenote-number" for="sn-32"></label><input class="margin-toggle" id="sn-32" type="checkbox"/><span class="sidenote"><a href="https://arxiv.org/abs/2603.16666">Fast-WAM: Do
+World Action Models Need Test-time Future Imagination?</a> (Yuan et al,
+2026)</span> shows that this
+process can be skipped at inference with little loss in task success. We
+use S² to test whether sensorimotor alignment is already present at
+early denoising steps.</p>
+<p>In the figure below, we track S² along the denoising schedule of 3
+WAMs<label aria-label="Note 33" class="sidenote-number" for="sn-33"></label><input class="margin-toggle" id="sn-33" type="checkbox"/><span class="sidenote"><a href="https://arxiv.org/abs/2512.13030">Motus: A
+Unified Latent Action World Model</a> (Bi et al, 2025)</span><label aria-label="Note 34" class="sidenote-number" for="sn-34"></label><input class="margin-toggle" id="sn-34" type="checkbox"/><span class="sidenote"><a href="https://arxiv.org/abs/2601.21998">Causal World
+Modeling for Robot Control</a> (Li et al, 2026)</span><label aria-label="Note 35" class="sidenote-number" for="sn-35"></label><input class="margin-toggle" id="sn-35" type="checkbox"/><span class="sidenote"><a href="https://arxiv.org/abs/2507.12898">Vidar:
+Embodied Video Diffusion Model for Generalist Manipulation</a> (Feng et
+al, 2025)</span>
+on RoboTwin<label aria-label="Note 36" class="sidenote-number" for="sn-36"></label><input class="margin-toggle" id="sn-36" type="checkbox"/><span class="sidenote"><a href="https://arxiv.org/abs/2504.13059">RoboTwin:
+Dual-Arm Robot Benchmark with Generative Digital Twins</a> (Mu et al,
+2025)</span>. For each model, we extract latent
+features and compute S² at 5 points in its native schedule, from 0% to
+100%. S² is already high at the earliest point and remains nearly flat,
+varying by at most 6% from its initial value across all 3 models. We
+therefore infer that the sensorimotor structure needed for control is
+present before denoising finishes. Because S² correlates with WAM
+success, as shown above, this explains why skipping iterative video
+denoising costs little success.</p>
+<figure data-figure="9"><button aria-label="Expand figure 9" class="figure-button" type="button"><img alt="Line plot of Sensorimotor Alignment for three WAMs at five points of the denoising schedule, from 0 to 100 percent. All three lines stay nearly flat." decoding="async" height="1076" loading="lazy" src="assets/s2-denoising.png" width="1771"/></button><figcaption><span class="figure-number">Figure 9:</span> <span class="caption-text">S² is nearly flat across the schedule. S² remains nearly flat
+across the denoising schedule, suggesting that the sensorimotor
+structure needed for action decoding is present early.</span></figcaption></figure>
+
+<h3 id="mid-depth-blocks-carry-the-strongest-sensorimotor-alignment">Mid-Depth
+Blocks Carry the Strongest Sensorimotor Alignment</h3>
+<p>Prior analysis of Chain-of-Steps<label aria-label="Note 37" class="sidenote-number" for="sn-37"></label><input class="margin-toggle" id="sn-37" type="checkbox"/><span class="sidenote"><a href="https://arxiv.org/abs/2603.16870">Demystifying
+Video Reasoning</a> (Wang et al, 2026)</span> shows that mid-depth
+layers in Video Diffusion Transformers are especially important for
+semantic reasoning over objects and interactions. We test whether the
+strongest sensorimotor signal for embodied control also lies within this
+semantic window.</p>
+<p>In the figure below, we compute S² at different depths of 3 WAMs<label aria-label="Note 38" class="sidenote-number" for="sn-38"></label><input class="margin-toggle" id="sn-38" type="checkbox"/><span class="sidenote"><a href="https://arxiv.org/abs/2512.13030">Motus: A
+Unified Latent Action World Model</a> (Bi et al, 2025)</span><label aria-label="Note 39" class="sidenote-number" for="sn-39"></label><input class="margin-toggle" id="sn-39" type="checkbox"/><span class="sidenote"><a href="https://arxiv.org/abs/2601.21998">Causal World
+Modeling for Robot Control</a> (Li et al, 2026)</span><label aria-label="Note 40" class="sidenote-number" for="sn-40"></label><input class="margin-toggle" id="sn-40" type="checkbox"/><span class="sidenote"><a href="https://arxiv.org/abs/2507.12898">Vidar:
+Embodied Video Diffusion Model for Generalist Manipulation</a> (Feng et
+al, 2025)</span>
+on RoboTwin. All 3 share a 30-block video backbone, and we extract
+features from Blocks 0, 7, 14, 21, and 29. Block 14 consistently yields
+the highest S² across all 3 models. We find that this peak falls within
+the mid-depth semantic window identified by Chain-of-Steps<label aria-label="Note 41" class="sidenote-number" for="sn-41"></label><input class="margin-toggle" id="sn-41" type="checkbox"/><span class="sidenote"><a href="https://arxiv.org/abs/2603.16870">Demystifying
+Video Reasoning</a> (Wang et al, 2026)</span>, and infer that the layers that
+reason about video semantics are also the layers most aligned with robot
+actions. Appendix D.3 of our paper gives the full analysis.</p>
+<figure data-figure="10"><button aria-label="Expand figure 10" class="figure-button" type="button"><img alt="Line plot of Sensorimotor Alignment at backbone Blocks 0, 7, 14, 21, and 29 for three WAMs. Each line peaks at Block 14." decoding="async" height="1065" loading="lazy" src="assets/s2-layerwise.png" width="1797"/></button><figcaption><span class="figure-number">Figure 10:</span> <span class="caption-text">Block 14 has the strongest S² in all 3 WAMs. S² consistently
+peaks at Block 14, indicating that mid-depth layers carry the strongest
+sensorimotor signal.</span></figcaption></figure>
 
 </section><section aria-labelledby="citation-heading" id="citation"><h2 id="citation-heading">Citation</h2>
 <p>Please cite this work as:</p>

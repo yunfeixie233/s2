@@ -1,28 +1,30 @@
 (() => {
   'use strict';
-  const progress = document.querySelector('.reading-progress');
-  const sections = [...document.querySelectorAll('article > section[id]')];
-  const tocLinks = [...document.querySelectorAll('.contents a, .mobile-contents a')];
+  const tocLinks = [...document.querySelectorAll('.left-toc a')];
+  const targets = tocLinks.map(link => document.getElementById(link.hash.slice(1))).filter(Boolean);
   let ticking = false;
-  function updateProgress() {
-    const max = document.documentElement.scrollHeight - window.innerHeight;
-    const fraction = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
-    progress.style.transform = `scaleX(${fraction})`;
-    let current = sections[0];
-    for (const section of sections) {
-      if (section.getBoundingClientRect().top <= Math.max(150, window.innerHeight * 0.25)) current = section;
+  function markSection(id) {
+    tocLinks.forEach(link => {
+      if (link.hash === '#' + id) link.setAttribute('aria-current', 'location');
+      else link.removeAttribute('aria-current');
+    });
+  }
+  function updateToc() {
+    let current = targets[0];
+    for (const target of targets) {
+      if (target.getBoundingClientRect().top <= Math.max(140, window.innerHeight * 0.25)) current = target;
     }
     if (current) markSection(current.id);
     ticking = false;
   }
   addEventListener('scroll', () => {
-    if (!ticking) { requestAnimationFrame(updateProgress); ticking = true; }
+    if (!ticking) { requestAnimationFrame(updateToc); ticking = true; }
   }, { passive: true });
-  addEventListener('resize', updateProgress);
-  updateProgress();
+  addEventListener('resize', updateToc);
+  updateToc();
+  tocLinks.forEach(link => link.addEventListener('click', () => markSection(link.hash.slice(1))));
 
   const technicalNotes = [...document.querySelectorAll('.technical-note')];
-  technicalNotes.forEach(note => note.addEventListener('toggle', updateProgress));
   let notesOpenBeforePrint;
   addEventListener('beforeprint', () => {
     notesOpenBeforePrint = technicalNotes.map(note => note.open);
@@ -32,18 +34,6 @@
     if (notesOpenBeforePrint) technicalNotes.forEach((note, i) => { note.open = notesOpenBeforePrint[i]; });
     notesOpenBeforePrint = undefined;
   });
-
-  function markSection(id) {
-    tocLinks.forEach(link => {
-      if (link.hash === '#' + id) link.setAttribute('aria-current', 'location');
-      else link.removeAttribute('aria-current');
-    });
-  }
-  tocLinks.forEach(link => link.addEventListener('click', () => {
-    markSection(link.hash.slice(1));
-    const details = link.closest('details');
-    if (details) details.open = false;
-  }));
 
   const overlapButton = document.querySelector('.overlap-button');
   const explainer = document.querySelector('.explainer');
@@ -91,22 +81,5 @@
     const actual = imageWrap.classList.toggle('actual-size');
     zoomButton.textContent = actual ? 'Fit to window' : 'Actual size';
     zoomButton.setAttribute('aria-pressed', String(actual));
-  });
-
-  const toast = document.querySelector('.toast');
-  let toastTimer;
-  function showToast(message) {
-    toast.textContent = message;
-    toast.classList.add('visible');
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => toast.classList.remove('visible'), 2600);
-  }
-  document.querySelector('.share-button').addEventListener('click', async () => {
-    try {
-      await navigator.clipboard.writeText(location.href.split('#')[0]);
-      showToast('Article link copied');
-    } catch {
-      showToast('Copy the article address from your browser');
-    }
   });
 })();

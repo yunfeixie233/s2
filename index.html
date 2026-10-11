@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Subtitle.">
-  <meta name="theme-color" content="#faf9f6">
+  <meta name="theme-color" content="#ffffff">
   <meta property="og:title" content="Title">
   <meta property="og:description" content="Subtitle.">
   <meta property="og:type" content="article">
@@ -19,54 +19,42 @@
 </head>
 <body id="top">
   <a class="skip-link" href="#article">Skip to article</a>
-  <div class="reading-progress" aria-hidden="true"></div>
-  <header class="masthead">
-    <div class="masthead-inner">
-      <a class="brand" href="#top" aria-label="Sensorimotor Alignment, back to top"><span class="brand-symbol" aria-hidden="true">S<sup>2</sup></span><span class="brand-name">Sensorimotor<br>Alignment</span></a>
-      <nav class="masthead-nav" aria-label="Main navigation"><a href="#introduction">The hypothesis</a><a href="#do-more-capable-policies-align-more-closely">The evidence</a><a href="#about">About the work ↗</a></nav>
+  <header class="site-header">
+    <div class="site-header-inner">
+      <a class="brand" href="#top" aria-label="Sensorimotor Alignment, back to top">S<sup>2</sup><span class="brand-name">Sensorimotor Alignment</span></a>
     </div>
   </header>
-  <main>
-    <div class="hero">
-      <p class="eyebrow">A research note on robot learning</p>
-      <h1>Title</h1>
-      <p class="dek">Subtitle.</p>
-      <p class="authors"><span class="author">Yunfei Xie</span><span class="dot" aria-hidden="true">·</span><span class="author">Howard H. Qian</span><span class="dot" aria-hidden="true">·</span><span class="author">Shiyi Lan</span><span class="dot" aria-hidden="true">·</span><span class="author">Kaiyu Hang</span><span class="dot" aria-hidden="true">·</span><span class="author">Chen Wei</span></p>
-      <p class="affiliations">Rice University &nbsp; / &nbsp; NVIDIA</p>
-      <div class="hero-meta"><span>3 minute read</span><span class="divider" aria-hidden="true"></span><button class="share-button" type="button" aria-label="Copy article link"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5" stroke="currentColor"/><path d="M10.5 3V2.5h-8v8H3" stroke="currentColor"/></svg>Copy link</button></div>
+  <main class="post">
+    <div class="post-heading">
+      <h1 class="post-title">Title</h1>
+      <p class="post-subtitle">Subtitle.</p>
+      <div class="publish-metadata">
+        <span class="author">Yunfei Xie, Howard H. Qian, Shiyi Lan, Kaiyu Hang, and Chen Wei</span>
+        <span>Rice University · NVIDIA</span>
+      </div>
     </div>
-    <div class="opening-figure prose"><figure data-figure="1" id="figure-1"><button aria-label="Expand figure 1" class="figure-button" type="button"><img alt="Figure 1: a robot reaching for a mug connects physical reality to sensory observations and motion execution. A scatter plot relates Sensorimotor Alignment to success across twelve VLAs." decoding="async" fetchpriority="high" height="929" loading="eager" src="assets/platonic-robotics.png" width="2600"/></button><figcaption><span class="figure-number">Figure 1</span><span class="caption-text">Left: a robot reaching for a mug gives us two views of one
+    <div class="post-cover"><figure data-figure="1" id="figure-1"><button aria-label="Expand figure 1" class="figure-button" type="button"><img alt="Figure 1: a robot reaching for a mug connects physical reality to sensory observations and motion execution. A scatter plot relates Sensorimotor Alignment to success across twelve VLAs." decoding="async" fetchpriority="high" height="929" loading="eager" src="assets/platonic-robotics.png" width="2600"/></button><figcaption><span class="figure-number">Figure 1:</span> <span class="caption-text">Left: a robot reaching for a mug gives us two views of one
 physical interaction, a sensory observation and an executed motion.
 Sensorimotor Alignment, S², measures whether similar observations in a
 model's representation correspond to similar demonstrated motions.
 Right: each point is one VLA. Higher alignment accompanies higher task
 success in SimplerEnv, a robot simulation benchmark. The correlation
 across these twelve models is 0.717.</span></figcaption></figure></div>
-    <div class="article-layout">
-      <aside class="contents" aria-label="Article contents"><p class="contents-label">In this article</p><nav><a href="#introduction"><span>00</span>Introduction</a>
-<a href="#measuring-sensorimotor-alignment"><span>01</span>Measuring sensorimotor
-alignment</a></nav><p class="contents-footer">Vision · Language · Action<br>Views of a physical world.</p></aside>
-      <div class="article-main">
-        <details class="mobile-contents"><summary>In this article</summary><nav aria-label="Article contents on mobile"><a href="#introduction"><span>00</span>Introduction</a>
-<a href="#measuring-sensorimotor-alignment"><span>01</span>Measuring sensorimotor
-alignment</a></nav></details>
-        <article class="prose" id="article"><section aria-label="Introduction" id="introduction"><!--
-Conventions build.py relies on:
-- The first paragraph after the H1 becomes the subtitle (dek).
-- An image paragraph followed by an italic paragraph becomes a numbered figure with that caption; Figure 1 is pulled out as the opening figure.
-- <details class="technical-note"> blocks are collapsible asides and are excluded from the read-time estimate.
-- A table followed by an italic paragraph gets that paragraph as its caption.
-- The last paragraph becomes the paper note.
--->
+    <div class="post-content-shell">
+      <nav class="left-toc" aria-label="Article contents"><ul><li><a href="#introduction">Introduction</a></li><li><a href="#measuring-sensorimotor-alignment">Measuring sensorimotor
+alignment</a></li><li><a href="#citation">Citation</a></li></ul></nav>
+      <article class="content" id="article"><section aria-label="Introduction" id="introduction">
 
 
 
 
-<p>The Platonic Representation Hypothesis (PRH) argues that as vision
-and language models scale, their representation spaces converge toward a
-shared statistical model of reality. The reason is that images and text
-are both projections of the same underlying world, so better models of
-either one should end up organizing that world in similar ways.</p>
+<p>The Platonic Representation Hypothesis (PRH)<label aria-label="Note 1" class="sidenote-number" for="sn-1"></label><input class="margin-toggle" id="sn-1" type="checkbox"/><span class="sidenote"><a href="https://arxiv.org/abs/2405.07987">The Platonic
+Representation Hypothesis</a> (Huh et al, 2024)</span>
+argues that as vision and language models scale, their representation
+spaces converge toward a shared statistical model of reality. The reason
+is that images and text are both projections of the same underlying
+world, so better models of either one should end up organizing that
+world in similar ways.</p>
 <p>In this work, we bring PRH to robotics and ask: can physical actions
 be viewed as another projection of that world, such that more capable
 embodied models better align their vision and language representations
@@ -93,41 +81,59 @@ features.</p>
 identifying which models are likely to achieve higher task success
 before closed-loop evaluation. For instance, it can identify promising
 VLM backbones even before costly VLA fine-tuning.</p>
-</section><section aria-labelledby="measuring-sensorimotor-alignment-heading" id="measuring-sensorimotor-alignment"><h2 data-number="01" id="measuring-sensorimotor-alignment-heading">Measuring sensorimotor
+</section><section aria-labelledby="measuring-sensorimotor-alignment-heading" id="measuring-sensorimotor-alignment"><h2 id="measuring-sensorimotor-alignment-heading">Measuring sensorimotor
 alignment</h2>
 <p>Camera features and robot trajectories live in different spaces, so
-we cannot compare them directly. Following PRH, we instead compare their
-<em>similarity structures</em>: does each representation judge the same
-pairs of episodes to be alike? Each side gives us a kernel <span class="math inline"><em>K</em></span>, a matrix of pairwise similarities
-over the same episodes, and S² scores how well the two kernels
-agree.</p>
-<p>We compute S² on a fixed offline dataset <span class="math inline">𝒟 = {<em>e</em><sub><em>i</em></sub>}<sub><em>i</em> = 1</sub><sup><em>N</em></sup></span>,
-such as DROID. Each episode <span class="math inline"><em>e</em><sub><em>i</em></sub> = (<strong>x</strong><sub><em>i</em></sub>, <strong>τ</strong><sub><em>i</em></sub>)</span>
-pairs a sensory input <span class="math inline"><strong>x</strong><sub><em>i</em></sub></span>, a
-camera image and a language instruction, with the trajectory <span class="math inline"><strong>τ</strong><sub><em>i</em></sub></span> that
-a human teleoperator then executed. Every model is scored against the
-same recorded motions, so no closed-loop rollouts are needed.</p>
+we cannot compare them directly. Following PRH,<label aria-label="Note 2" class="sidenote-number" for="sn-2"></label><input class="margin-toggle" id="sn-2" type="checkbox"/><span class="sidenote"><a href="https://arxiv.org/abs/2405.07987">The Platonic
+Representation Hypothesis</a> (Huh et al, 2024)</span> we
+instead compare their <em>similarity structures</em>: does each
+representation judge the same pairs of episodes to be alike? Each side
+gives us a kernel
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>K</mi><annotation encoding="application/x-tex">K</annotation></semantics></math>,
+a matrix of pairwise similarities over the same episodes, and S² scores
+how well the two kernels agree.</p>
+<p>We compute S² on a fixed offline dataset
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝒟</mi><mo>=</mo><mo form="prefix" stretchy="false">{</mo><msub><mi>e</mi><mi>i</mi></msub><msubsup><mo form="postfix" stretchy="false">}</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>N</mi></msubsup></mrow><annotation encoding="application/x-tex">\mathcal{D} = \{e_i\}_{i=1}^N</annotation></semantics></math>,
+such as DROID.<label aria-label="Note 3" class="sidenote-number" for="sn-3"></label><input class="margin-toggle" id="sn-3" type="checkbox"/><span class="sidenote"><a href="https://arxiv.org/abs/2403.12945">DROID: A
+Large-Scale In-the-Wild Robot Manipulation Dataset</a> (Khazatsky et al,
+2024)</span> Each episode
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>e</mi><mi>i</mi></msub><mo>=</mo><mo form="prefix" stretchy="false">(</mo><msub><mi>𝐱</mi><mi>i</mi></msub><mo>,</mo><msub><mi>𝛕</mi><mi>i</mi></msub><mo form="postfix" stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">e_i = (\mathbf{x}_i, \boldsymbol{\tau}_i)</annotation></semantics></math>
+pairs a sensory input
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝐱</mi><mi>i</mi></msub><annotation encoding="application/x-tex">\mathbf{x}_i</annotation></semantics></math>,
+a camera image and a language instruction, with the trajectory
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝛕</mi><mi>i</mi></msub><annotation encoding="application/x-tex">\boldsymbol{\tau}_i</annotation></semantics></math>
+that a human teleoperator then executed. Every model is scored against
+the same recorded motions, so no closed-loop rollouts are needed.</p>
 <p>The <strong>sensory kernel</strong> comes from the model. We feed
-<span class="math inline"><strong>x</strong><sub><em>i</em></sub></span>
-to the model, extract a feature vector <span class="math inline"><strong>z</strong><sub><em>i</em></sub></span>, and
-compare episodes by cosine similarity, <span class="math inline"><em>K</em><sub><em>i</em><em>j</em></sub><sup>sensory</sup> = cos (<strong>z</strong><sub><em>i</em></sub>, <strong>z</strong><sub><em>j</em></sub>)</span>.
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝐱</mi><mi>i</mi></msub><annotation encoding="application/x-tex">\mathbf{x}_i</annotation></semantics></math>
+to the model, extract a feature vector
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝐳</mi><mi>i</mi></msub><annotation encoding="application/x-tex">\mathbf{z}_i</annotation></semantics></math>,
+and compare episodes by cosine similarity,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>K</mi><mrow><mi>i</mi><mi>j</mi></mrow><mrow><mi mathvariant="normal">s</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">s</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">y</mi></mrow></msubsup><mo>=</mo><mi>cos</mi><mo>⁡</mo><mo form="prefix" stretchy="false">(</mo><msub><mi>𝐳</mi><mi>i</mi></msub><mo>,</mo><msub><mi>𝐳</mi><mi>j</mi></msub><mo form="postfix" stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">K^{\mathrm{sensory}}_{ij} = \cos(\mathbf{z}_i, \mathbf{z}_j)</annotation></semantics></math>.
 Because this works for any architecture and layer, we can compare vision
 features, text features, or features taken at different depths.</p>
 <p>The <strong>motor kernel</strong> comes from the robot. Each
 trajectory records the end-effector position, orientation, and gripper
 state. The same task can be performed faster or slower, so we compare
-trajectories with dynamic time warping (DTW), which aligns their timing
-before measuring distance, <span class="math inline"><em>K</em><sub><em>i</em><em>j</em></sub><sup>motor</sup> = DTW(<strong>τ</strong><sub><em>i</em></sub>, <strong>τ</strong><sub><em>j</em></sub>)</span>.</p>
+trajectories with dynamic time warping (DTW),<label aria-label="Note 4" class="sidenote-number" for="sn-4"></label><input class="margin-toggle" id="sn-4" type="checkbox"/><span class="sidenote"><a href="https://doi.org/10.1109/TASSP.1978.1163055">Dynamic Programming
+Algorithm Optimization for Spoken Word Recognition</a> (Sakoe and Chiba,
+1978)</span>
+which aligns their timing before measuring distance,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>K</mi><mrow><mi>i</mi><mi>j</mi></mrow><mrow><mi mathvariant="normal">m</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">r</mi></mrow></msubsup><mo>=</mo><mrow><mi mathvariant="normal">D</mi><mi mathvariant="normal">T</mi><mi mathvariant="normal">W</mi></mrow><mo form="prefix" stretchy="false">(</mo><msub><mi>𝛕</mi><mi>i</mi></msub><mo>,</mo><msub><mi>𝛕</mi><mi>j</mi></msub><mo form="postfix" stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">K^{\mathrm{motor}}_{ij} = \mathrm{DTW}(\boldsymbol{\tau}_i, \boldsymbol{\tau}_j)</annotation></semantics></math>.</p>
 <p>To compare the two kernels, we look at neighborhoods. Take one
-episode as the query and find its <span class="math inline"><em>k</em></span> nearest neighbors under each
-kernel. The illustration below uses <span class="math inline"><em>k</em> = 3</span>; our experiments use <span class="math inline"><em>k</em> = 10</span>. If the model organizes
-episodes by the motion they require, the two neighbor sets should
-largely overlap.</p>
+episode as the query and find its
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>
+nearest neighbors under each kernel. The illustration below uses
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>=</mo><mn>3</mn></mrow><annotation encoding="application/x-tex">k = 3</annotation></semantics></math>;
+our experiments use
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>=</mo><mn>10</mn></mrow><annotation encoding="application/x-tex">k = 10</annotation></semantics></math>.
+If the model organizes episodes by the motion they require, the two
+neighbor sets should largely overlap.</p>
 <div aria-label="Interactive illustration of shared neighbors" class="explainer">
 <div class="explainer-heading"><span class="explainer-kicker">The same episodes, two views</span><span class="toy-label">Illustration</span></div>
 <div class="neighbor-panels">
-<div class="neighbor-panel"><h3>What the model groups together</h3><p class="panel-subtitle">Neighbors in feature space</p><svg aria-label="Query neighbors in sensory space: A, B, C" role="img" viewbox="0 0 275 212"><line class="neighbor-link shared" x1="135" x2="65" y1="108" y2="68"></line><line class="neighbor-link" x1="135" x2="206" y1="108" y2="64"></line><line class="neighbor-link shared" x1="135" x2="107" y1="108" y2="165"></line><circle class="query-node" cx="135" cy="108" r="23"></circle><text class="neighbor-text query-text" x="135" y="108">query</text><circle class="neighbor-node shared near" cx="65" cy="68" r="15"></circle><text class="neighbor-text shared" x="65" y="68">A</text><circle class="neighbor-node near" cx="206" cy="64" r="15"></circle><text class="neighbor-text" x="206" y="64">B</text><circle class="neighbor-node shared near" cx="107" cy="165" r="15"></circle><text class="neighbor-text shared" x="107" y="165">C</text><circle class="neighbor-node" cx="229" cy="173" r="15"></circle><text class="neighbor-text" x="229" y="173">D</text><circle class="neighbor-node" cx="37" cy="153" r="15"></circle><text class="neighbor-text" x="37" y="153">E</text></svg></div>
-<div class="neighbor-panel"><h3>What the robot does similarly</h3><p class="panel-subtitle">Neighbors in motion space</p><svg aria-label="Query neighbors in motor space: A, C, D" role="img" viewbox="0 0 275 212"><line class="neighbor-link shared" x1="132" x2="74" y1="108" y2="62"></line><line class="neighbor-link shared" x1="132" x2="201" y1="108" y2="145"></line><line class="neighbor-link" x1="132" x2="75" y1="108" y2="170"></line><circle class="query-node" cx="132" cy="108" r="23"></circle><text class="neighbor-text query-text" x="132" y="108">query</text><circle class="neighbor-node shared near" cx="74" cy="62" r="15"></circle><text class="neighbor-text shared" x="74" y="62">A</text><circle class="neighbor-node" cx="240" cy="57" r="15"></circle><text class="neighbor-text" x="240" y="57">B</text><circle class="neighbor-node shared near" cx="201" cy="145" r="15"></circle><text class="neighbor-text shared" x="201" y="145">C</text><circle class="neighbor-node near" cx="75" cy="170" r="15"></circle><text class="neighbor-text" x="75" y="170">D</text><circle class="neighbor-node" cx="32" cy="116" r="15"></circle><text class="neighbor-text" x="32" y="116">E</text></svg></div>
+<div class="neighbor-panel"><p class="panel-title">What the model groups together</p><p class="panel-subtitle">Neighbors in feature space</p><svg aria-label="Query neighbors in sensory space: A, B, C" role="img" viewbox="0 0 275 212"><line class="neighbor-link shared" x1="135" x2="65" y1="108" y2="68"></line><line class="neighbor-link" x1="135" x2="206" y1="108" y2="64"></line><line class="neighbor-link shared" x1="135" x2="107" y1="108" y2="165"></line><circle class="query-node" cx="135" cy="108" r="23"></circle><text class="neighbor-text query-text" x="135" y="108">query</text><circle class="neighbor-node shared near" cx="65" cy="68" r="15"></circle><text class="neighbor-text shared" x="65" y="68">A</text><circle class="neighbor-node near" cx="206" cy="64" r="15"></circle><text class="neighbor-text" x="206" y="64">B</text><circle class="neighbor-node shared near" cx="107" cy="165" r="15"></circle><text class="neighbor-text shared" x="107" y="165">C</text><circle class="neighbor-node" cx="229" cy="173" r="15"></circle><text class="neighbor-text" x="229" y="173">D</text><circle class="neighbor-node" cx="37" cy="153" r="15"></circle><text class="neighbor-text" x="37" y="153">E</text></svg></div>
+<div class="neighbor-panel"><p class="panel-title">What the robot does similarly</p><p class="panel-subtitle">Neighbors in motion space</p><svg aria-label="Query neighbors in motor space: A, C, D" role="img" viewbox="0 0 275 212"><line class="neighbor-link shared" x1="132" x2="74" y1="108" y2="62"></line><line class="neighbor-link shared" x1="132" x2="201" y1="108" y2="145"></line><line class="neighbor-link" x1="132" x2="75" y1="108" y2="170"></line><circle class="query-node" cx="132" cy="108" r="23"></circle><text class="neighbor-text query-text" x="132" y="108">query</text><circle class="neighbor-node shared near" cx="74" cy="62" r="15"></circle><text class="neighbor-text shared" x="74" y="62">A</text><circle class="neighbor-node" cx="240" cy="57" r="15"></circle><text class="neighbor-text" x="240" y="57">B</text><circle class="neighbor-node shared near" cx="201" cy="145" r="15"></circle><text class="neighbor-text shared" x="201" y="145">C</text><circle class="neighbor-node near" cx="75" cy="170" r="15"></circle><text class="neighbor-text" x="75" y="170">D</text><circle class="neighbor-node" cx="32" cy="116" r="15"></circle><text class="neighbor-text" x="32" y="116">E</text></svg></div>
 </div>
 <div class="explainer-controls"><button aria-controls="overlap-description" aria-label="Show shared neighbors" aria-pressed="false" class="overlap-button" type="button">Show shared neighbors</button><p aria-live="polite" class="overlap-description" id="overlap-description">Both panels contain the same episodes. Compare the three neighbors of the query in each space.</p></div>
 <p class="explainer-note">This illustrates neighborhood agreement. The full score also uses feature similarities; these points are not experimental data.</p>
@@ -136,7 +142,7 @@ largely overlap.</p>
 Centered Kernel Nearest-Neighbor Alignment (CKNNA) from PRH, which
 measures how strongly the two kernels co-vary within these shared
 neighborhoods:</p>
-<p><span class="math display">S<sup>2</sup> = CKNNA(<em>K</em><sup>sensory</sup>, <em>K</em><sup>motor</sup>)</span></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi mathvariant="normal">S</mi><mn>2</mn></msup><mo>=</mo><mrow><mi mathvariant="normal">C</mi><mi mathvariant="normal">K</mi><mi mathvariant="normal">N</mi><mi mathvariant="normal">N</mi><mi mathvariant="normal">A</mi></mrow><mrow><mo form="prefix" stretchy="true">(</mo><msup><mi>K</mi><mrow><mi mathvariant="normal">s</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">s</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">y</mi></mrow></msup><mo>,</mo><msup><mi>K</mi><mrow><mi mathvariant="normal">m</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">r</mi></mrow></msup><mo form="postfix" stretchy="true">)</mo></mrow></mrow><annotation encoding="application/x-tex">\mathrm{S}^2 = \mathrm{CKNNA}\left(K^{\mathrm{sensory}}, K^{\mathrm{motor}}\right)</annotation></semantics></math></p>
 <p>A high S² means the model places episodes close together when they
 call for similar motions, not merely when they look or sound alike.</p>
 <details class="technical-note">
@@ -147,19 +153,27 @@ in the robot base frame. The DTW local cost uses geodesic distance on
 SO(3) for rotations and native coordinates for positions and gripper
 state.</p>
 </details>
-<p class="paper-note"><em>Based on our research, “Sensorimotor Alignment: A Platonic Proxy
-for Embodied Policy Success,” by Yunfei Xie, Howard H. Qian, Shiyi Lan,
-Kaiyu Hang, and Chen Wei.</em></p>
+</section><section aria-labelledby="citation-heading" id="citation"><h2 id="citation-heading">Citation</h2>
+<p>Please cite this work as:</p>
+<pre><code>Xie, Yunfei, Howard H. Qian, Shiyi Lan, Kaiyu Hang, and Chen Wei. "Sensorimotor Alignment: A Platonic Proxy for Embodied Policy Success." 2026.</code></pre>
+<p>Or use the BibTeX citation:</p>
+<pre><code>@misc{xie2026sensorimotor,
+  title  = {Sensorimotor Alignment: A Platonic Proxy for Embodied Policy Success},
+  author = {Xie, Yunfei and Qian, Howard H. and Lan, Shiyi and Hang, Kaiyu and Wei, Chen},
+  year   = {2026}
+}</code></pre>
+
 </section></article>
-      </div>
     </div>
+    <div class="paginator"><a href="#top">back to top</a></div>
   </main>
-  <footer class="site-footer" id="about"><div class="footer-inner"><div><p class="footer-title">Sensorimotor Alignment</p><p class="footer-note">A Platonic Proxy for Embodied Policy Success<br>Research by Yunfei Xie, Howard H. Qian, Shiyi Lan, Kaiyu Hang, and Chen Wei.</p></div><a class="footer-top" href="#top">Back to top ↑</a></div></footer>
+  <footer class="site-footer">
+    <p>Sensorimotor Alignment · Rice University · NVIDIA</p>
+  </footer>
   <dialog class="figure-dialog" aria-label="Expanded research figure" aria-describedby="expanded-caption">
     <div class="dialog-toolbar"><span class="dialog-title">Research figure</span><div class="dialog-actions"><button class="zoom-button" type="button" aria-pressed="false">Actual size</button><button class="close-dialog" type="button" aria-label="Close expanded figure">Close ×</button></div></div>
     <div class="dialog-image-wrap"><img class="dialog-image" alt=""></div>
     <p class="dialog-caption" id="expanded-caption"></p>
   </dialog>
-  <div class="toast" role="status" aria-live="polite"></div>
 </body>
 </html>

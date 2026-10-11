@@ -2,9 +2,10 @@
 Conventions build.py relies on:
 - The first paragraph after the H1 becomes the subtitle (dek).
 - An image paragraph followed by an italic paragraph becomes a numbered figure with that caption; Figure 1 is pulled out as the opening figure.
-- <details class="technical-note"> blocks are collapsible asides and are excluded from the read-time estimate.
+- Footnotes ([^key]) become margin sidenotes. Write each definition as: [Title](link) (Author et al, Year).
+- <details class="technical-note"> blocks are collapsible asides.
 - A table followed by an italic paragraph gets that paragraph as its caption.
-- The last paragraph becomes the paper note.
+- H2 and H3 headings appear in the contents list on the left.
 -->
 
 # Title
@@ -15,7 +16,7 @@ Conventions build.py relies on:
 
 *Left: a robot reaching for a mug gives us two views of one physical interaction, a sensory observation and an executed motion. Sensorimotor Alignment, S², measures whether similar observations in a model's representation correspond to similar demonstrated motions. Right: each point is one VLA. Higher alignment accompanies higher task success in SimplerEnv, a robot simulation benchmark. The correlation across these twelve models is 0.717.*
 
-The Platonic Representation Hypothesis (PRH) argues that as vision and language models scale, their representation spaces converge toward a shared statistical model of reality. The reason is that images and text are both projections of the same underlying world, so better models of either one should end up organizing that world in similar ways.
+The Platonic Representation Hypothesis (PRH)[^prh] argues that as vision and language models scale, their representation spaces converge toward a shared statistical model of reality. The reason is that images and text are both projections of the same underlying world, so better models of either one should end up organizing that world in similar ways.
 
 In this work, we bring PRH to robotics and ask: can physical actions be viewed as another projection of that world, such that more capable embodied models better align their vision and language representations with the structure of motion trajectories?
 
@@ -29,13 +30,13 @@ More broadly, S² can serve as a low-cost offline proxy for identifying which mo
 
 ## Measuring sensorimotor alignment
 
-Camera features and robot trajectories live in different spaces, so we cannot compare them directly. Following PRH, we instead compare their *similarity structures*: does each representation judge the same pairs of episodes to be alike? Each side gives us a kernel $K$, a matrix of pairwise similarities over the same episodes, and S² scores how well the two kernels agree.
+Camera features and robot trajectories live in different spaces, so we cannot compare them directly. Following PRH,[^prh] we instead compare their *similarity structures*: does each representation judge the same pairs of episodes to be alike? Each side gives us a kernel $K$, a matrix of pairwise similarities over the same episodes, and S² scores how well the two kernels agree.
 
-We compute S² on a fixed offline dataset $\mathcal{D} = \{e_i\}_{i=1}^N$, such as DROID. Each episode $e_i = (\mathbf{x}_i, \boldsymbol{\tau}_i)$ pairs a sensory input $\mathbf{x}_i$, a camera image and a language instruction, with the trajectory $\boldsymbol{\tau}_i$ that a human teleoperator then executed. Every model is scored against the same recorded motions, so no closed-loop rollouts are needed.
+We compute S² on a fixed offline dataset $\mathcal{D} = \{e_i\}_{i=1}^N$, such as DROID.[^droid] Each episode $e_i = (\mathbf{x}_i, \boldsymbol{\tau}_i)$ pairs a sensory input $\mathbf{x}_i$, a camera image and a language instruction, with the trajectory $\boldsymbol{\tau}_i$ that a human teleoperator then executed. Every model is scored against the same recorded motions, so no closed-loop rollouts are needed.
 
 The **sensory kernel** comes from the model. We feed $\mathbf{x}_i$ to the model, extract a feature vector $\mathbf{z}_i$, and compare episodes by cosine similarity, $K^{\mathrm{sensory}}_{ij} = \cos(\mathbf{z}_i, \mathbf{z}_j)$. Because this works for any architecture and layer, we can compare vision features, text features, or features taken at different depths.
 
-The **motor kernel** comes from the robot. Each trajectory records the end-effector position, orientation, and gripper state. The same task can be performed faster or slower, so we compare trajectories with dynamic time warping (DTW), which aligns their timing before measuring distance, $K^{\mathrm{motor}}_{ij} = \mathrm{DTW}(\boldsymbol{\tau}_i, \boldsymbol{\tau}_j)$.
+The **motor kernel** comes from the robot. Each trajectory records the end-effector position, orientation, and gripper state. The same task can be performed faster or slower, so we compare trajectories with dynamic time warping (DTW),[^dtw] which aligns their timing before measuring distance, $K^{\mathrm{motor}}_{ij} = \mathrm{DTW}(\boldsymbol{\tau}_i, \boldsymbol{\tau}_j)$.
 
 To compare the two kernels, we look at neighborhoods. Take one episode as the query and find its $k$ nearest neighbors under each kernel. The illustration below uses $k = 3$; our experiments use $k = 10$. If the model organizes episodes by the motion they require, the two neighbor sets should largely overlap.
 
@@ -54,4 +55,24 @@ For video datasets, the sensory input uses only the first frame of each episode,
 
 </details>
 
-*Based on our research, “Sensorimotor Alignment: A Platonic Proxy for Embodied Policy Success,” by Yunfei Xie, Howard H. Qian, Shiyi Lan, Kaiyu Hang, and Chen Wei.*
+## Citation
+
+Please cite this work as:
+
+```
+Xie, Yunfei, Howard H. Qian, Shiyi Lan, Kaiyu Hang, and Chen Wei. "Sensorimotor Alignment: A Platonic Proxy for Embodied Policy Success." 2026.
+```
+
+Or use the BibTeX citation:
+
+```
+@misc{xie2026sensorimotor,
+  title  = {Sensorimotor Alignment: A Platonic Proxy for Embodied Policy Success},
+  author = {Xie, Yunfei and Qian, Howard H. and Lan, Shiyi and Hang, Kaiyu and Wei, Chen},
+  year   = {2026}
+}
+```
+
+[^prh]: [The Platonic Representation Hypothesis](https://arxiv.org/abs/2405.07987) (Huh et al, 2024)
+[^droid]: [DROID: A Large-Scale In-the-Wild Robot Manipulation Dataset](https://arxiv.org/abs/2403.12945) (Khazatsky et al, 2024)
+[^dtw]: [Dynamic Programming Algorithm Optimization for Spoken Word Recognition](https://doi.org/10.1109/TASSP.1978.1163055) (Sakoe and Chiba, 1978)

@@ -62,7 +62,9 @@
       dialogImage.src = source.src;
       dialogImage.alt = source.alt;
       dialog.querySelector('.dialog-title').textContent = 'Figure ' + figure.dataset.figure;
-      dialog.querySelector('.dialog-caption').textContent = figure.querySelector('.caption-text').textContent;
+      const caption = figure.querySelector('.caption-text').cloneNode(true);
+      caption.querySelectorAll('.sidenote, .sidenote-number, .margin-toggle').forEach(node => node.remove());
+      dialog.querySelector('.dialog-caption').textContent = caption.textContent;
       imageWrap.classList.remove('actual-size');
       zoomButton.textContent = 'Actual size';
       zoomButton.setAttribute('aria-pressed', 'false');

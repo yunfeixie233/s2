@@ -71,7 +71,9 @@ for number, img in enumerate(list(soup.select("p > img")), 1):
     figcaption.append(" ")
     caption_text = soup.new_tag("span", attrs={"class": "caption-text"})
     if caption and caption.find("em"):
-        caption_text.string = caption.get_text(" ", strip=True)
+        # Keep the caption's markup so citations in it stay sidenotes.
+        for child in list(caption.find("em").contents):
+            caption_text.append(child.extract())
         caption.decompose()
     figcaption.append(caption_text)
     figure.append(figcaption)

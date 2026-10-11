@@ -58,10 +58,14 @@ for number, img in enumerate(list(soup.select("p > img")), 1):
     paragraph.replace_with(figure)
 
 figure_count = len(soup.find_all("figure"))
-opening_figure = soup.find("figure").extract()
-opening_figure["id"] = "figure-1"
-opening_figure.img["loading"] = "eager"
-opening_figure.img["fetchpriority"] = "high"
+opening_figure = soup.find("figure")
+og_image = ""
+if opening_figure:
+    opening_figure = opening_figure.extract()
+    opening_figure["id"] = "figure-1"
+    opening_figure.img["loading"] = "eager"
+    opening_figure.img["fetchpriority"] = "high"
+    og_image = f'\n  <meta property="og:image" content="{SITE_URL}{opening_figure.img["src"]}">'
 
 for table in list(soup.find_all("table")):
     caption = table.find_next_sibling("p")
@@ -77,15 +81,7 @@ paper_note = soup.find_all("p")[-1]
 paper_note["class"] = "paper-note"
 
 toc_names = {
-    "introduction": "The Platonic hypothesis",
-    "what-would-this-look-like-in-robotics": "From perception to motion",
-    "turning-the-idea-into-a-score": "Measuring alignment",
-    "do-more-capable-policies-align-more-closely": "Evidence across policies",
-    "a-signal-before-robot-fine-tuning": "Before robot fine-tuning",
-    "the-reference-data-matters": "Choosing reference data",
-    "what-changes-when-we-train-a-vla": "What training changes",
-    "useful-features-can-appear-early": "Inside video models",
-    "what-does-this-tell-us-about-the-hypothesis": "Returning to the hypothesis",
+    "introduction": "Introduction",
 }
 article = soup.new_tag("article", attrs={"class": "prose", "id": "article"})
 section = soup.new_tag("section", attrs={"id": "introduction", "aria-label": "Introduction"})
@@ -136,8 +132,9 @@ explainer = f'''<div class="explainer" aria-label="Interactive illustration of s
   <div class="explainer-controls"><button class="overlap-button" type="button" aria-label="Show shared neighbors" aria-pressed="false" aria-controls="overlap-description">Show shared neighbors</button><p class="overlap-description" id="overlap-description" aria-live="polite">Both panels contain the same episodes. Compare the three neighbors of the query in each space.</p></div>
   <p class="explainer-note">This illustrates neighborhood agreement. The full score also uses feature similarities; these points are not experimental data.</p>
 </div>'''
-anchor = next(p for p in article.find_all("p") if "This gives the Sensorimotor Alignment score" in p.get_text())
-anchor.insert_after(BeautifulSoup(explainer, "html.parser"))
+anchor = next((p for p in article.find_all("p") if "This gives the Sensorimotor Alignment score" in p.get_text()), None)
+if anchor:
+    anchor.insert_after(BeautifulSoup(explainer, "html.parser"))
 
 toc = "\n".join(f'<a href="#{sid}"><span>{i:02d}</span>{html.escape(name)}</a>' for i, (sid, name) in enumerate(sections))
 main_reading = BeautifulSoup(str(article), "html.parser")
@@ -158,8 +155,7 @@ page = f'''<!doctype html>
   <meta property="og:title" content="{html.escape(title, quote=True)}">
   <meta property="og:description" content="{html.escape(subtitle, quote=True)}">
   <meta property="og:type" content="article">
-  <meta property="og:url" content="{SITE_URL}">
-  <meta property="og:image" content="{SITE_URL}assets/platonic-robotics.png">
+  <meta property="og:url" content="{SITE_URL}">{og_image}
   <meta name="twitter:card" content="summary_large_image">
   <link rel="canonical" href="{SITE_URL}">
   <title>{html.escape(title)} — Sensorimotor Alignment</title>
@@ -185,7 +181,7 @@ page = f'''<!doctype html>
       <p class="affiliations">Rice University &nbsp; / &nbsp; NVIDIA</p>
       <div class="hero-meta"><span>{read_minutes} minute read</span><span class="divider" aria-hidden="true"></span><button class="share-button" type="button" aria-label="Copy article link"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5" stroke="currentColor"/><path d="M10.5 3V2.5h-8v8H3" stroke="currentColor"/></svg>Copy link</button></div>
     </div>
-    <div class="opening-figure prose">{opening_figure}</div>
+    {f'<div class="opening-figure prose">{opening_figure}</div>' if opening_figure else ''}
     <div class="article-layout">
       <aside class="contents" aria-label="Article contents"><p class="contents-label">In this article</p><nav>{toc}</nav><p class="contents-footer">Vision · Language · Action<br>Views of a physical world.</p></aside>
       <div class="article-main">

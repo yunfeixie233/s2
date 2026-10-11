@@ -3,16 +3,15 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Images, language, and motion describe the same physical world. Do capable robot models learn representations that reflect that connection?">
+  <meta name="description" content="Subtitle.">
   <meta name="theme-color" content="#faf9f6">
-  <meta property="og:title" content="Does the Platonic Hypothesis Extend to Robotics?">
-  <meta property="og:description" content="Images, language, and motion describe the same physical world. Do capable robot models learn representations that reflect that connection?">
+  <meta property="og:title" content="Title">
+  <meta property="og:description" content="Subtitle.">
   <meta property="og:type" content="article">
   <meta property="og:url" content="https://yunfeixie233.github.io/s2/">
-  <meta property="og:image" content="https://yunfeixie233.github.io/s2/assets/platonic-robotics.png">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="canonical" href="https://yunfeixie233.github.io/s2/">
-  <title>Does the Platonic Hypothesis Extend to Robotics? — Sensorimotor Alignment</title>
+  <title>Title — Sensorimotor Alignment</title>
   <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
   <link rel="stylesheet" href="site.css">
   <script src="site.js" defer></script>
@@ -29,374 +28,62 @@
   <main>
     <div class="hero">
       <p class="eyebrow">A research note on robot learning</p>
-      <h1>Does the Platonic Hypothesis <span>Extend to Robotics?</span></h1>
-      <p class="dek">Images, language, and motion describe the same physical world. Do capable robot models learn representations that reflect that connection?</p>
+      <h1>Title</h1>
+      <p class="dek">Subtitle.</p>
       <p class="authors"><span class="author">Yunfei Xie</span><span class="dot" aria-hidden="true">·</span><span class="author">Howard H. Qian</span><span class="dot" aria-hidden="true">·</span><span class="author">Shiyi Lan</span><span class="dot" aria-hidden="true">·</span><span class="author">Kaiyu Hang</span><span class="dot" aria-hidden="true">·</span><span class="author">Chen Wei</span></p>
       <p class="affiliations">Rice University &nbsp; / &nbsp; NVIDIA</p>
-      <div class="hero-meta"><span>9 minute read</span><span class="divider" aria-hidden="true"></span><button class="share-button" type="button" aria-label="Copy article link"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5" stroke="currentColor"/><path d="M10.5 3V2.5h-8v8H3" stroke="currentColor"/></svg>Copy link</button></div>
+      <div class="hero-meta"><span>1 minute read</span><span class="divider" aria-hidden="true"></span><button class="share-button" type="button" aria-label="Copy article link"><svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5" stroke="currentColor"/><path d="M10.5 3V2.5h-8v8H3" stroke="currentColor"/></svg>Copy link</button></div>
     </div>
-    <div class="opening-figure prose"><figure data-figure="1" id="figure-1"><button aria-label="Expand figure 1" class="figure-button" type="button"><img alt="Figure 1: a robot reaching for a mug connects physical reality to sensory observations and motion execution. A scatter plot relates Sensorimotor Alignment to success across twelve VLAs." decoding="async" fetchpriority="high" height="929" loading="eager" src="assets/platonic-robotics.png" width="2600"/></button><figcaption><span class="figure-number">Figure 1</span><span class="caption-text">Left: a robot reaching for a mug gives us two views of one
-physical interaction, a sensory observation and an executed motion.
-Sensorimotor Alignment, S², measures whether similar observations in a
-model's representation correspond to similar demonstrated motions.
-Right: each point is one VLA. Higher alignment accompanies higher task
-success in SimplerEnv, a robot simulation benchmark. The correlation
-across these twelve models is 0.717.</span><span class="figure-hint">Select the figure to take a closer look.</span></figcaption></figure></div>
+    
     <div class="article-layout">
-      <aside class="contents" aria-label="Article contents"><p class="contents-label">In this article</p><nav><a href="#introduction"><span>00</span>The Platonic hypothesis</a>
-<a href="#what-would-this-look-like-in-robotics"><span>01</span>From perception to motion</a>
-<a href="#turning-the-idea-into-a-score"><span>02</span>Measuring alignment</a>
-<a href="#do-more-capable-policies-align-more-closely"><span>03</span>Evidence across policies</a>
-<a href="#a-signal-before-robot-fine-tuning"><span>04</span>Before robot fine-tuning</a>
-<a href="#the-reference-data-matters"><span>05</span>Choosing reference data</a>
-<a href="#what-changes-when-we-train-a-vla"><span>06</span>What training changes</a>
-<a href="#useful-features-can-appear-early"><span>07</span>Inside video models</a>
-<a href="#what-does-this-tell-us-about-the-hypothesis"><span>08</span>Returning to the hypothesis</a></nav><p class="contents-footer">Vision · Language · Action<br>Views of a physical world.</p></aside>
+      <aside class="contents" aria-label="Article contents"><p class="contents-label">In this article</p><nav><a href="#introduction"><span>00</span>Introduction</a>
+<a href="#section"><span>01</span>Section</a></nav><p class="contents-footer">Vision · Language · Action<br>Views of a physical world.</p></aside>
       <div class="article-main">
-        <details class="mobile-contents"><summary>In this article</summary><nav aria-label="Article contents on mobile"><a href="#introduction"><span>00</span>The Platonic hypothesis</a>
-<a href="#what-would-this-look-like-in-robotics"><span>01</span>From perception to motion</a>
-<a href="#turning-the-idea-into-a-score"><span>02</span>Measuring alignment</a>
-<a href="#do-more-capable-policies-align-more-closely"><span>03</span>Evidence across policies</a>
-<a href="#a-signal-before-robot-fine-tuning"><span>04</span>Before robot fine-tuning</a>
-<a href="#the-reference-data-matters"><span>05</span>Choosing reference data</a>
-<a href="#what-changes-when-we-train-a-vla"><span>06</span>What training changes</a>
-<a href="#useful-features-can-appear-early"><span>07</span>Inside video models</a>
-<a href="#what-does-this-tell-us-about-the-hypothesis"><span>08</span>Returning to the hypothesis</a></nav></details>
-        <article class="prose" id="article"><section aria-label="Introduction" id="introduction">
+        <details class="mobile-contents"><summary>In this article</summary><nav aria-label="Article contents on mobile"><a href="#introduction"><span>00</span>Introduction</a>
+<a href="#section"><span>01</span>Section</a></nav></details>
+        <article class="prose" id="article"><section aria-label="Introduction" id="introduction"><!--
+Conventions build.py relies on:
+- The first paragraph after the H1 becomes the subtitle (dek).
+- An image paragraph followed by an italic paragraph becomes a numbered figure with that caption; Figure 1 is pulled out as the opening figure.
+- <details class="technical-note"> blocks are collapsible asides and are excluded from the read-time estimate.
+- A table followed by an italic paragraph gets that paragraph as its caption.
+- The last paragraph becomes the paper note.
+-->
 
 
-
-<p>A photograph of a mug and a sentence about that mug look nothing
-alike as inputs. Yet both describe the same world. Could models trained
-on images and language learn some of the same relationships?</p>
-<p>The <strong>Platonic Representation Hypothesis</strong>, or PRH,
-proposes that they do. As models learn from more data and solve more
-tasks, their representations tend toward a shared statistical account of
-the world. Different kinds of observations reveal different parts of
-that world, but the structure they share can be learned. Huh and
-colleagues develop this idea on the <a href="https://phillipi.github.io/prh/">PRH project page</a>.</p>
-<p>Here, “shared” means agreement about which examples are similar.
-Imagine a vision model placing pictures of mugs and cups near one
-another, with cabinets farther away. A language model could organize the
-corresponding words similarly. Their feature vectors can differ while
-preserving those relationships.</p>
-<p>The <a href="https://arxiv.org/abs/2405.07987">original study</a>
-reports increasing agreement across vision and language representations
-as models get larger. The broader convergence claim remains a
-hypothesis. For robotics, it raises a further question: <strong>does
-motion reveal shared structure too?</strong></p>
-</section><section aria-labelledby="what-would-this-look-like-in-robotics-heading" id="what-would-this-look-like-in-robotics"><h2 data-number="01" id="what-would-this-look-like-in-robotics-heading">What would this look like
-in robotics?</h2>
-<p>In Figure 1, the robot's image and the instruction “reach for the
-mug” describe the scene and the task. The gripper's path, orientation,
-and opening describe how the robot interacts with that scene. The same
-physical arrangement shapes both what the camera sees and how the robot
-can reach.</p>
-<p>Consider two demonstrations with the mug in the same position
-relative to the robot. The mugs have different colors, but the gripper
-follows a similar path. A representation useful for that reach should
-retain what the two observations have in common. Now move the mug to the
-other side of the workspace. The instruction stays the same, but the
-required motion changes. The representation needs to preserve that
-difference too.</p>
-<p>This gives us a question we can test. <strong>Do more successful
-robot models group observations in a way that better agrees with the
-demonstrated motions?</strong> We call that agreement Sensorimotor
-Alignment.</p>
-<p>The comparison uses a model's sensory features and recorded physical
-trajectories. The trajectories provide a reference for what happened in
-each demonstration. They need no learned motion encoder, and a task can
-still admit other valid ways to move.</p>
-<p>The example below shows how we look for agreement. For one recorded
-episode, we retrieve its nearest neighbors, meaning the other episodes
-judged most similar. The top row uses similarity of future gripper
-trajectories. The bottom row uses similarity of the model's observation
+<p>The Platonic Representation Hypothesis (PRH) argues that as vision
+and language models scale, their representation spaces converge toward a
+shared statistical model of reality. The reason is that images and text
+are both projections of the same underlying world, so better models of
+either one should end up organizing that world in similar ways.</p>
+<p>In this work, we bring PRH to robotics and ask: can physical actions
+be viewed as another projection of that world, such that more capable
+embodied models better align their vision and language representations
+with the structure of motion trajectories?</p>
+<p>Our evidence suggests the answer is yes. To test this, we measure how
+well an embodied model's representation of a sensory input (what it sees
+and what it is told) aligns with the motor trajectory that should
+follow. Put simply, if two situations look alike to the model, they
+should also call for similar motions. We call this measure sensorimotor
+alignment (S²).</p>
+<p>Our first finding is that S² is positively related to downstream
+robot task success. We test a range of Vision-Language-Action models
+(VLAs) and World Action Models (WAMs), both in simulation and on real
+robots. In every setting, models with higher S² achieve higher success
+rates. This suggests that PRH also holds in robotics: a more capable
+embodied model is one whose vision and language representations better
+reflect the structure of physical motion.</p>
+<p>S² also explains, at the representation level, several behaviors that
+prior work has only observed empirically. For example, VLAs often ignore
+the language instruction and act mainly on what they see. We find that
+their success tracks the S² of their vision features, not their text
 features.</p>
-<figure data-figure="2"><button aria-label="Expand figure 2" class="figure-button" type="button"><img alt="A query episode and its neighbors in trajectory space and model feature space. Some feature neighbors share the motion; others share the scene but differ in motion." decoding="async" height="951" loading="lazy" src="assets/neighbor-example.png" width="2441"/></button><figcaption><span class="figure-number">Figure 2</span><span class="caption-text">The blue and red endpoints show the start and end of each
-displayed trajectory. Green checks mark sensory neighbors that also
-belong to the trajectory-neighbor set. These examples illustrate the
-comparison; the score combines measurements over the reference
-collection.</span><span class="figure-hint">Select the figure to take a closer look.</span></figcaption></figure>
-
-<p>Some sensory neighbors share the demonstrated motion. Others share
-the scene or task description while the gripper moves differently. Our
-question is whether models with more agreement also achieve higher
-policy success. Across the models we test, that is generally what we
-find.</p>
-</section><section aria-labelledby="turning-the-idea-into-a-score-heading" id="turning-the-idea-into-a-score"><h2 data-number="02" id="turning-the-idea-into-a-score-heading">Turning the idea into a
-score</h2>
-<p>Start with recorded robot demonstrations. For the VLM and VLA
-measurements, each example contains an image, its task instruction, and
-the gripper trajectory that follows. This collection is the
-<strong>reference dataset</strong>, reused for every candidate
-model.</p>
-<p>The model receives the image and instruction at the selected moment.
-Its feature vector tells us which other observations it places nearby.
-Separately, we compare the demonstrated trajectories using the gripper's
-position, orientation, and opening. These comparisons give us two sets
-of neighbors for the same episodes.</p>
-<p>Agreement between the two sets contributes to a higher score. We
-combine these comparisons using an alignment measure adapted from the
-PRH work. It uses feature similarities as well as neighborhood
-agreement, so counting shared neighbors is an illustration rather than
-the full formula. This gives the Sensorimotor Alignment score,
-<strong>S²</strong>.</p><div aria-label="Interactive illustration of shared neighbors" class="explainer">
-<div class="explainer-heading"><span class="explainer-kicker">The same episodes, two views</span><span class="toy-label">Illustration</span></div>
-<div class="neighbor-panels">
-<div class="neighbor-panel"><h3>What the model groups together</h3><p class="panel-subtitle">Neighbors in feature space</p><svg aria-label="Query neighbors in sensory space: A, B, C" role="img" viewbox="0 0 275 212"><line class="neighbor-link shared" x1="135" x2="65" y1="108" y2="68"></line><line class="neighbor-link" x1="135" x2="206" y1="108" y2="64"></line><line class="neighbor-link shared" x1="135" x2="107" y1="108" y2="165"></line><circle class="query-node" cx="135" cy="108" r="23"></circle><text class="neighbor-text query-text" x="135" y="108">query</text><circle class="neighbor-node shared near" cx="65" cy="68" r="15"></circle><text class="neighbor-text shared" x="65" y="68">A</text><circle class="neighbor-node near" cx="206" cy="64" r="15"></circle><text class="neighbor-text" x="206" y="64">B</text><circle class="neighbor-node shared near" cx="107" cy="165" r="15"></circle><text class="neighbor-text shared" x="107" y="165">C</text><circle class="neighbor-node" cx="229" cy="173" r="15"></circle><text class="neighbor-text" x="229" y="173">D</text><circle class="neighbor-node" cx="37" cy="153" r="15"></circle><text class="neighbor-text" x="37" y="153">E</text></svg></div>
-<div class="neighbor-panel"><h3>What the robot does similarly</h3><p class="panel-subtitle">Neighbors in motion space</p><svg aria-label="Query neighbors in motor space: A, C, D" role="img" viewbox="0 0 275 212"><line class="neighbor-link shared" x1="132" x2="74" y1="108" y2="62"></line><line class="neighbor-link shared" x1="132" x2="201" y1="108" y2="145"></line><line class="neighbor-link" x1="132" x2="75" y1="108" y2="170"></line><circle class="query-node" cx="132" cy="108" r="23"></circle><text class="neighbor-text query-text" x="132" y="108">query</text><circle class="neighbor-node shared near" cx="74" cy="62" r="15"></circle><text class="neighbor-text shared" x="74" y="62">A</text><circle class="neighbor-node" cx="240" cy="57" r="15"></circle><text class="neighbor-text" x="240" y="57">B</text><circle class="neighbor-node shared near" cx="201" cy="145" r="15"></circle><text class="neighbor-text shared" x="201" y="145">C</text><circle class="neighbor-node near" cx="75" cy="170" r="15"></circle><text class="neighbor-text" x="75" y="170">D</text><circle class="neighbor-node" cx="32" cy="116" r="15"></circle><text class="neighbor-text" x="32" y="116">E</text></svg></div>
-</div>
-<div class="explainer-controls"><button aria-controls="overlap-description" aria-label="Show shared neighbors" aria-pressed="false" class="overlap-button" type="button">Show shared neighbors</button><p aria-live="polite" class="overlap-description" id="overlap-description">Both panels contain the same episodes. Compare the three neighbors of the query in each space.</p></div>
-<p class="explainer-note">This illustrates neighborhood agreement. The full score also uses feature similarities; these points are not experimental data.</p>
-</div>
-<p><strong>The future motion is a reference for scoring; the model does
-not receive it as input.</strong> Computing S² requires feature
-extraction on the recorded observations. It requires no new policy
-training or rollouts, and we can score a pretrained VLM even before it
-has an action head.</p>
-<p>A score belongs to a model representation on a particular reference
-dataset. Changing the dataset, feature layer, or length of the
-trajectory can change its scale. S² is useful for comparing candidates
-under the same setup; it is not a success probability.</p>
-<details class="technical-note">
-<summary>How we compare features and trajectories</summary>
-<p>We use cosine similarity for the observation features and poses
-relative to the robot's base for the trajectories. Dynamic time warping
-aligns corresponding parts of two paths, allowing similar movements
-performed at different speeds to match. Orientation distance uses the
-angle between rotations.</p>
-<p>The alignment measure is Centered Kernel Nearest-Neighbor Alignment,
-or CKNNA. It combines feature similarities, centering, normalization,
-and local neighborhoods, with ten neighbors per episode by default. The
-trajectory horizon is the number of recorded steps included after the
-selected observation. Once the trajectory neighbors have been computed,
-they can be reused across candidate models.</p>
-</details>
-</section><section aria-labelledby="do-more-capable-policies-align-more-closely-heading" id="do-more-capable-policies-align-more-closely"><h2 data-number="03" id="do-more-capable-policies-align-more-closely-heading">Do more capable
-policies align more closely?</h2>
-<p>To test whether S² is useful, we need an independent measure of
-capability. We compare each model's offline alignment score with its
-task success rate from closed-loop evaluation, where the policy controls
-the robot through a complete attempt. The rollouts establish whether the
-score tracks useful behavior; they are not an input to the score.</p>
-<p>For twelve trained VLAs, we measure alignment on DROID, a collection
-of real robot demonstrations. We compare it with success in SimplerEnv.
-Each dot in the left panel below is one policy, with its alignment on
-the horizontal axis and success rate on the vertical axis.</p>
-<p><strong>More successful VLAs tend to have higher alignment</strong>,
-with a Pearson correlation of <strong>0.717</strong>. This is consistent
-with the proposed connection between sensory representations and
-physical behavior. The scatter shows that alignment leaves part of the
-variation in success unexplained.</p>
-<figure data-figure="3"><button aria-label="Expand figure 3" class="figure-button" type="button"><img alt="Sensorimotor Alignment versus success across twelve VLAs, eight raw VLM backbones, and three world-action models." decoding="async" height="895" loading="lazy" src="assets/model-families.png" width="2934"/></button><figcaption><span class="figure-number">Figure 3</span><span class="caption-text">Left: twelve trained VLAs. Middle: eight pretrained VLMs, scored
-before robot fine-tuning and compared with their later policy success.
-Right: three video-based world-action models. Each panel is a separate
-comparison. The VLA and VLM panels use DROID trajectories of seven and
-three recorded steps, respectively, and SimplerEnv success. The
-world-action models use fifteen-step ALOHA trajectories, Block 7
-features, and RoboTwin success. Compare alignment values within each
-panel. The displayed p-values are one-tailed.</span><span class="figure-hint">Select the figure to take a closer look.</span></figcaption></figure>
-
-<p>The right panel extends the test to LingBot-VA, Motus, and Vidar.
-These world-action models decode actions from a video-generation
-backbone. We score them using ALOHA demonstrations of two-arm
-manipulation and compare their scores with success on RoboTwin, a
-simulation benchmark for bimanual tasks.</p>
-<p>Alignment recovers the success ordering of these three policies. The
-video-quality measures we examined, SSIM, PSNR, and FID, do not recover
-that ordering. Features that agree with demonstrated motion appear more
-informative here than the visual quality of the predicted video. With
-only three models, this result is an encouraging example rather than a
-reliable estimate of how well the score will rank a larger
-collection.</p>
-<p>The middle panel asks a different question. Can this relationship
-help us choose a backbone before we train a robot policy?</p>
-</section><section aria-labelledby="a-signal-before-robot-fine-tuning-heading" id="a-signal-before-robot-fine-tuning"><h2 data-number="04" id="a-signal-before-robot-fine-tuning-heading">A signal before robot
-fine-tuning</h2>
-<p>We use eight pretrained VLMs from the <a href="https://arxiv.org/abs/2601.03309">VLM4VLA study</a>, which turned
-them into robot policies under a standardized fine-tuning recipe. We
-measure alignment on the backbones before that robot fine-tuning, using
-a fixed set of 6,000 DROID demonstrations.</p>
-<p>The plot compares two ways to assess those backbones. The left uses
-alignment; the right uses an aggregate visual question answering score,
-or VQA score. Both panels show the same eventual policy success
-rates.</p>
-<figure data-figure="4"><button aria-label="Expand figure 4" class="figure-button" type="button"><img alt="Across eight raw VLMs, Sensorimotor Alignment has a positive relationship with later SimplerEnv success, while the VQA aggregate has little relationship." decoding="async" height="932" loading="lazy" src="assets/backbone-selection.png" width="2395"/></button><figcaption><span class="figure-number">Figure 4</span><span class="caption-text">Alignment uses the pretrained VLM's joint image-and-text output
-features and the next three recorded steps of each trajectory. The VQA
-aggregate is the one used in the VLM4VLA comparison, adjusted for
-differences in benchmark coverage across models. The displayed p-values
-are one-tailed.</span><span class="figure-hint">Select the figure to take a closer look.</span></figcaption></figure>
-
-<p>Alignment correlates with downstream success at
-<strong>0.681</strong>. The VQA aggregate has a correlation of
-<strong>−0.154</strong>. In this comparison, the motion-based
-measurement provides information about later control performance that
-the general perception score misses.</p>
-<p>This is the practical value of the idea. Before spending compute on
-robot fine-tuning, we can check whether a backbone already groups
-observations in a way that follows demonstrated motion.</p>
-<p>It helps prioritize candidates, with room for mistakes. Qwen3-VL-2B
-has relatively high alignment but lower policy success than several
-nearby models. An action head and its training still have to turn the
-features into reliable behavior. And although the reference contains
-thousands of demonstrations, the comparison contains <strong>eight
-models</strong>.</p>
-</section><section aria-labelledby="the-reference-data-matters-heading" id="the-reference-data-matters"><h2 data-number="05" id="the-reference-data-matters-heading">The reference data matters</h2>
-<p>If observations and motions reveal a common physical structure, which
-recorded motions should we use as the reference?</p>
-<p>For the twelve VLAs, the positive relationship with success appears
-with both DROID and BridgeDataV2, another collection of robot
-demonstrations. They use different single-arm robots, a Franka Panda and
-a WidowX. We compute alignment separately within each collection, so
-this result requires no matching of individual trajectories across the
-two robots.</p>
-<p>The two-arm policies expose a limit. ALOHA demonstrations recover
-their success ordering on RoboTwin, while single-arm DROID
-demonstrations lose the relationship. A reference that omits coordinated
-two-arm behavior misses something relevant to those policies.</p>
-<p><strong>Choose reference data that covers the physical behavior you
-want to assess.</strong> These experiments support that choice; they do
-not establish that all datasets with the same number of arms are
-interchangeable.</p>
-<details class="technical-note">
-<summary>How sensitive is the result to measurement settings?</summary>
-<p>On DROID, the VLA correlation stays positive across trajectory
-horizons from one to 220 steps, ranging from about 0.61 to 0.72 for
-joint output features. A separate neighborhood-size sweep at the
-seven-step horizon also retains a positive correlation.</p>
-<p>The horizon sweep keeps the episodes and observation times fixed.
-Only the trajectory length changes, avoiding a shift in which tasks or
-stages of an episode enter the measurement. Allowing trajectories to
-align in time changes the absolute scores, especially for longer
-windows, but barely changes their correlation with success.</p>
-</details>
-</section><section aria-labelledby="what-changes-when-we-train-a-vla-heading" id="what-changes-when-we-train-a-vla"><h2 data-number="06" id="what-changes-when-we-train-a-vla-heading">What changes when we train a
-VLA?</h2>
-<p>The comparisons so far ask whether alignment tracks differences
-across models. We can also ask whether it helps explain a particular
-training decision.</p>
-<p>Consider freezing the vision encoder. This reduces training cost, but
-also limits how the visual features can adapt to robot control. We
-compare two Qwen2.5-VL-3B policies trained under matched settings on
-BridgeDataV2. One updates the vision encoder; the other freezes it.</p>
-<figure data-figure="5"><button aria-label="Expand figure 5" class="figure-button" type="button"><img alt="Freezing the vision encoder lowers alignment from 0.0245 to 0.0144 and SimplerEnv success from 50.00 percent to 30.21 percent." decoding="async" height="487" loading="lazy" src="assets/frozen-encoder.png" width="1054"/></button><figcaption><span class="figure-number">Figure 5</span><span class="caption-text">Both runs use an FCDecoder action head and share the training
-setup apart from whether the vision encoder is updated. Alignment is
-measured on DROID at a seven-step horizon. Success is measured in
-SimplerEnv.</span><span class="figure-hint">Select the figure to take a closer look.</span></figcaption></figure>
-
-<p>Freezing lowers alignment by about <strong>41%</strong> and success
-from <strong>50.00% to 30.21%</strong>, a decrease of about twenty
-percentage points. The alignment decrease persists across all ten tested
-trajectory lengths.</p>
-<p>Allowing the vision encoder to adapt improves how the representation
-groups observations relative to demonstrated motion, alongside improving
-control. This makes alignment useful for investigating what training
-changes. It does not isolate alignment as the cause of the success gain,
-since unfreezing changes many properties of the model at once.</p>
-<details class="technical-note">
-<summary>Does the signal come from vision or language?</summary>
-<p>At a three-step horizon, the raw VLMs' joint image-and-text score has
-a stronger relationship with later success than either modality-specific
-score. For trained VLAs, the vision-only and joint scores have almost
-the same correlation, about 0.69 and 0.70. The text-only correlation is
-about 0.24 and is not statistically significant under the reported
-test.</p>
-<p>This locates much of the predictive signal in the evaluated VLAs'
-visual representations. It does not establish that language is
-unnecessary. Testing instruction following requires changing the
-instruction while holding the scene fixed and measuring the resulting
-behavior.</p>
-</details>
-</section><section aria-labelledby="useful-features-can-appear-early-heading" id="useful-features-can-appear-early"><h2 data-number="07" id="useful-features-can-appear-early-heading">Useful features can appear
-early</h2>
-<p>Once we can measure agreement with physical motion, we can look for
-where it appears inside a model. Video-based policies make this
-especially interesting because their backbones repeatedly refine a noisy
-video prediction. Does the representation become more useful for control
-as that prediction becomes clearer?</p>
-<p>In the three world-action models we test, alignment is already
-substantial at the earliest measured denoising point and changes
-relatively little afterward. Across network depth, an intermediate block
-has the highest alignment averaged over the sampled denoising points.
-Useful motion-related structure can therefore appear before the model
-finishes refining its video prediction.</p>
-<p>That motivates examining earlier features when designing an action
-decoder. These measurements identify a possible source of useful
-features; deciding whether an earlier readout improves a policy still
-requires training and evaluating it.</p>
-<details class="technical-note">
-<summary>Layer and denoising results</summary>
-<p>Network depth and denoising time are different. A later block
-processes features further within one forward pass; a later denoising
-point follows more repeated passes. We sample Blocks 0, 7, 14, 21, and
-29 of the models' thirty-block backbones. Averaged over five denoising
-points, Block 14 has the highest alignment in all three models. It is
-the best of the sampled blocks under this measurement.</p>
-<p>For final-layer-normalized features, the earliest and final denoising
-measurements are:</p>
-<div aria-label="Alignment across the denoising schedule" class="table-wrap" role="region" tabindex="0"><table>
-<thead>
-<tr>
-<th>Model</th>
-<th style="text-align: right;">Earliest measured point</th>
-<th style="text-align: right;">End of schedule</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Motus</td>
-<td style="text-align: right;">0.425</td>
-<td style="text-align: right;">0.402</td>
-</tr>
-<tr>
-<td>LingBot-VA</td>
-<td style="text-align: right;">0.425</td>
-<td style="text-align: right;">0.451</td>
-</tr>
-<tr>
-<td>Vidar</td>
-<td style="text-align: right;">0.487</td>
-<td style="text-align: right;">0.476</td>
-</tr>
-</tbody>
-</table></div>
-<p class="table-caption"><em>These alignment scores use 50 RoboTwin tasks with ten episodes
-per task. This is a different reference set and feature position from
-the ALOHA comparison in Figure 3. Intermediate denoising points follow
-the same broad pattern.</em></p>
-<p>Even at an early denoising point, the features have been computed by
-a model conditioned on the observation. They can carry motion-related
-structure while the video prediction is still noisy. This is consistent
-with prior work such as <a href="https://arxiv.org/abs/2603.16666">Fast-WAM</a>, which finds that
-much of video denoising can be skipped during action inference.</p>
-</details>
-</section><section aria-labelledby="what-does-this-tell-us-about-the-hypothesis-heading" id="what-does-this-tell-us-about-the-hypothesis"><h2 data-number="08" id="what-does-this-tell-us-about-the-hypothesis-heading">What does this tell
-us about the hypothesis?</h2>
-<p>We find a robotics counterpart to the pattern that motivates the
-Platonic hypothesis. Across the tested VLAs and pretrained VLM
-backbones, <strong>greater agreement between sensory representations and
-demonstrated motion accompanies better control</strong>. A smaller
-comparison of video-based policies points in the same direction.</p>
-<p>This supports a connection between capability and shared physical
-structure. It does not establish that robot models converge to one
-representation as they scale, or that increasing alignment by itself
-causes better behavior.</p>
-<p>The connection is useful today as an offline measurement. To compare
-candidates, choose demonstrations that cover the relevant motions and
-keep the observations, feature readout, trajectory length, and
-neighborhood size fixed. Use the scores to prioritize training runs or
-investigate changes inside a model, then evaluate the resulting policies
-in closed loop.</p>
-<p>The demonstrations provide one set of valid motions, while a capable
-robot may use others. The score also leaves out recovery from mistakes
-during execution. Our main success comparisons use simulation
-benchmarks, so broader claims about real-world performance need further
-testing.</p>
-<p>The next question is whether we can use the connection to help a
-robot learn. If we deliberately train sensory representations to agree
-more closely with physical motion, will control improve? That would turn
-the relationship we measure here into a test of how shared
-representations contribute to capability.</p>
+<p>More broadly, S² can serve as a low-cost offline proxy for
+identifying which models are likely to achieve higher task success
+before closed-loop evaluation. For instance, it can identify promising
+VLM backbones even before costly VLA fine-tuning.</p>
+</section><section aria-labelledby="section-heading" id="section"><h2 data-number="01" id="section-heading">Section</h2>
+<p>Text.</p>
 <p class="paper-note"><em>Based on our research, “Sensorimotor Alignment: A Platonic Proxy
 for Embodied Policy Success,” by Yunfei Xie, Howard H. Qian, Shiyi Lan,
 Kaiyu Hang, and Chen Wei.</em></p>

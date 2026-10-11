@@ -48,7 +48,7 @@
   const overlapButton = document.querySelector('.overlap-button');
   const explainer = document.querySelector('.explainer');
   const overlapDescription = document.querySelector('.overlap-description');
-  overlapButton.addEventListener('click', () => {
+  overlapButton?.addEventListener('click', () => {
     const active = overlapButton.getAttribute('aria-pressed') !== 'true';
     overlapButton.setAttribute('aria-pressed', String(active));
     overlapButton.textContent = active ? 'Shared neighbors shown' : 'Show shared neighbors';

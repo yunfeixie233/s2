@@ -129,9 +129,9 @@ explainer = f'''<div class="explainer" aria-label="Interactive illustration of s
   <div class="explainer-controls"><button class="overlap-button" type="button" aria-label="Show shared neighbors" aria-pressed="false" aria-controls="overlap-description">Show shared neighbors</button><p class="overlap-description" id="overlap-description" aria-live="polite">Both panels contain the same episodes. Compare the three neighbors of the query in each space.</p></div>
   <p class="explainer-note">This illustrates neighborhood agreement. The full score also uses feature similarities; these points are not experimental data.</p>
 </div>'''
-anchor = next((p for p in article.find_all("p") if "This gives the Sensorimotor Alignment score" in p.get_text()), None)
-if anchor:
-    anchor.insert_after(BeautifulSoup(explainer, "html.parser"))
+slot = article.select_one(".explainer-slot")
+if slot:
+    slot.replace_with(BeautifulSoup(explainer, "html.parser"))
 
 toc = "\n".join(f'<a href="#{sid}"><span>{i:02d}</span>{html.escape(name)}</a>' for i, (sid, name) in enumerate(sections))
 main_reading = BeautifulSoup(str(article), "html.parser")

@@ -27,8 +27,31 @@ S² also explains, at the representation level, several behaviors that prior wor
 
 More broadly, S² can serve as a low-cost offline proxy for identifying which models are likely to achieve higher task success before closed-loop evaluation. For instance, it can identify promising VLM backbones even before costly VLA fine-tuning.
 
-## Section
+## Measuring sensorimotor alignment
 
-Text.
+Camera features and robot trajectories live in different spaces, so we cannot compare them directly. Following PRH, we instead compare their *similarity structures*: does each representation judge the same pairs of episodes to be alike? Each side gives us a kernel $K$, a matrix of pairwise similarities over the same episodes, and S² scores how well the two kernels agree.
+
+We compute S² on a fixed offline dataset $\mathcal{D} = \{e_i\}_{i=1}^N$, such as DROID. Each episode $e_i = (\mathbf{x}_i, \boldsymbol{\tau}_i)$ pairs a sensory input $\mathbf{x}_i$, a camera image and a language instruction, with the trajectory $\boldsymbol{\tau}_i$ that a human teleoperator then executed. Every model is scored against the same recorded motions, so no closed-loop rollouts are needed.
+
+The **sensory kernel** comes from the model. We feed $\mathbf{x}_i$ to the model, extract a feature vector $\mathbf{z}_i$, and compare episodes by cosine similarity, $K^{\mathrm{sensory}}_{ij} = \cos(\mathbf{z}_i, \mathbf{z}_j)$. Because this works for any architecture and layer, we can compare vision features, text features, or features taken at different depths.
+
+The **motor kernel** comes from the robot. Each trajectory records the end-effector position, orientation, and gripper state. The same task can be performed faster or slower, so we compare trajectories with dynamic time warping (DTW), which aligns their timing before measuring distance, $K^{\mathrm{motor}}_{ij} = \mathrm{DTW}(\boldsymbol{\tau}_i, \boldsymbol{\tau}_j)$.
+
+To compare the two kernels, we look at neighborhoods. Take one episode as the query and find its $k$ nearest neighbors under each kernel. The illustration below uses $k = 3$; our experiments use $k = 10$. If the model organizes episodes by the motion they require, the two neighbor sets should largely overlap.
+
+<div class="explainer-slot"></div>
+
+S² aggregates this agreement over every query episode. We use Centered Kernel Nearest-Neighbor Alignment (CKNNA) from PRH, which measures how strongly the two kernels co-vary within these shared neighborhoods:
+
+$$\mathrm{S}^2 = \mathrm{CKNNA}\left(K^{\mathrm{sensory}}, K^{\mathrm{motor}}\right)$$
+
+A high S² means the model places episodes close together when they call for similar motions, not merely when they look or sound alike.
+
+<details class="technical-note">
+<summary>Implementation details</summary>
+
+For video datasets, the sensory input uses only the first frame of each episode, matching standard VLA inputs. Trajectories are expressed in the robot base frame. The DTW local cost uses geodesic distance on SO(3) for rotations and native coordinates for positions and gripper state.
+
+</details>
 
 *Based on our research, “Sensorimotor Alignment: A Platonic Proxy for Embodied Policy Success,” by Yunfei Xie, Howard H. Qian, Shiyi Lan, Kaiyu Hang, and Chen Wei.*

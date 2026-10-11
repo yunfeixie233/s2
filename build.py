@@ -51,9 +51,6 @@ for number, img in enumerate(list(soup.select("p > img")), 1):
         caption_text.string = caption.get_text(" ", strip=True)
         caption.decompose()
     figcaption.append(caption_text)
-    hint = soup.new_tag("span", attrs={"class": "figure-hint"})
-    hint.string = "Select the figure to take a closer look."
-    figcaption.append(hint)
     figure.append(figcaption)
     paragraph.replace_with(figure)
 

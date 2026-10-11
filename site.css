@@ -71,7 +71,6 @@ article { min-width: 0; }
 .figure-button:hover::after, .figure-button:focus-visible::after { opacity: 1; }
 .prose figcaption { margin-top: 13px; font: 12px/1.7 var(--sans); color: var(--muted); }
 .figure-number { color: var(--green); font: 10px var(--mono); text-transform: uppercase; letter-spacing: .8px; margin-right: 7px; }
-.figure-hint { color: #8a9285; font-size: 10px; display: block; margin-top: 5px; }
 .opening-figure { max-width: 1120px; margin: 0 auto; padding: 0 35px 38px; }
 .opening-figure figure { margin: 0; }
 .opening-figure figcaption { max-width: 980px; margin: 15px auto 0; }
@@ -210,5 +209,4 @@ article { min-width: 0; }
   .prose h2 { font-size: 17pt; break-after: avoid; }
   .technical-note { background: white; font-size: inherit; }
   figure, .explainer, table { break-inside: avoid; }
-  .figure-hint { display: none; }
 }

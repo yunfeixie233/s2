@@ -86,10 +86,10 @@ prior work has only observed empirically. For example, VLAs often ignore
 the language instruction and act mainly on what they see. We find that
 their success tracks the S² of their vision features, not their text
 features.</p>
-<p>More broadly, S² can serve as a low-cost offline proxy for
-identifying which models are likely to achieve higher task success
-before closed-loop evaluation. For instance, it can identify promising
-VLM backbones even before costly VLA fine-tuning.</p>
+<p>In practice, S² can serve as a low-cost offline proxy for identifying
+which models are likely to achieve higher task success before
+closed-loop evaluation. For instance, it can identify promising VLM
+backbones even before costly VLA fine-tuning.</p>
 </section><section aria-labelledby="measuring-sensorimotor-alignment-heading" id="measuring-sensorimotor-alignment"><h2 id="measuring-sensorimotor-alignment-heading">Measuring sensorimotor
 alignment</h2>
 <p>Camera features and robot trajectories live in different spaces, so
@@ -204,10 +204,11 @@ compare it with the SimplerEnv<label aria-label="Note 10" class="sidenote-number
 Real-World Robot Manipulation Policies in Simulation</a> (Li et al,
 2024)</span> success of the VLAs
 that VLM4VLA fine-tunes from them. We find a strong correlation with
-downstream VLA success: r = +0.681. This demonstrates the practical
-utility of S²: models with stronger sensorimotor alignment before
-fine-tuning tend to achieve higher downstream task success, so S² can
-identify promising VLM backbones even before costly VLA fine-tuning.</p>
+downstream VLA success: r = +0.681. This result demonstrates the
+practical utility of S²: models with stronger sensorimotor alignment
+before fine-tuning tend to achieve higher downstream task success, so S²
+can identify promising VLM backbones even before costly VLA
+fine-tuning.</p>
 <p><strong>World action models (WAMs).</strong> Finally, we ask whether
 the relation extends to WAMs, which build on video generators rather
 than VLMs. We compute S² for 6 WAMs on the bimanual ALOHA dataset<label aria-label="Note 11" class="sidenote-number" for="sn-11"></label><input class="margin-toggle" id="sn-11" type="checkbox"/><span class="sidenote"><a href="https://arxiv.org/abs/2304.13705">Learning

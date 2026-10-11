@@ -253,9 +253,9 @@ than any VQA or video-quality metric we evaluate.</p>
 not.</strong> We compare S² with aggregate VQA scores as offline proxies
 of downstream VLA success, using the same 8 raw VLM backbones and
 evaluation setting as in the VLM comparison above. We find that VQA
-scores show virtually no correlation with VLA success (r = −0.154;
-figure below, right), whereas S² correlates strongly (r = +0.681; figure
-below, left). S² thus tracks VLA success where VQA benchmarks do
+scores show virtually no correlation with VLA success at r = −0.154
+(figure below, right), whereas S² correlates strongly at r = +0.681
+(figure below, left). S² thus tracks VLA success where VQA benchmarks do
 not.</p>
 <figure data-figure="3"><button aria-label="Expand figure 3" class="figure-button" type="button"><img alt="Two scatter plots for eight raw VLMs. Left: Sensorimotor Alignment against SimplerEnv success, with correlation 0.681. Right: average VQA score against the same success rates, with correlation −0.154." decoding="async" height="1034" loading="lazy" src="assets/s2-vs-vqa.png" width="2662"/></button><figcaption><span class="figure-number">Figure 3:</span> <span class="caption-text">Raw VLM S² correlates with downstream VLA success. Across 8
 models,<label aria-label="Note 16" class="sidenote-number" for="sn-16"></label><input class="margin-toggle" id="sn-16" type="checkbox"/><span class="sidenote"><a href="https://arxiv.org/abs/2601.03309">VLM4VLA:
@@ -280,7 +280,7 @@ only r = +0.468 (figure below). FID even correlates in the wrong
 direction. Because lower FID indicates higher video quality, a useful
 FID proxy would correlate negatively with success; instead, we find
 r = +0.680. In contrast, S² computed on ALOHA episodes correlates far
-more strongly (r = +0.999) and is the only metric that correctly
+more strongly at r = +0.999 and is the only metric that correctly
 recovers the success-rate ordering. Pixel-level forecasting fidelity
 thus shows little relation to the control success that S² captures.</p>
 <figure data-figure="4"><button aria-label="Expand figure 4" class="figure-button" type="button"><img alt="Four scatter plots of RoboTwin success for three WAMs against Sensorimotor Alignment, SSIM, PSNR, and FID. Only Sensorimotor Alignment orders the three models by success." decoding="async" height="1020" loading="lazy" src="assets/s2-vs-video-quality.png" width="4078"/></button><figcaption><span class="figure-number">Figure 4:</span> <span class="caption-text">S² correlates with WAM success where perceptual metrics do not.
@@ -323,9 +323,8 @@ horizons through <em>h</em> = 220 (figure below), confirming that S²
 reflects a persistent structural property rather than an artifact of a
 particular horizon choice.</p>
 <figure data-figure="6"><button aria-label="Expand figure 6" class="figure-button" type="button"><img alt="Line plot of the correlation between Sensorimotor Alignment and success across trajectory horizons, for BridgeDataV2 and DROID. Both lines stay above 0.5 across nearly all horizons." decoding="async" height="1079" loading="lazy" src="assets/s2-across-horizons.png" width="1776"/></button><figcaption><span class="figure-number">Figure 6:</span> <span class="caption-text">S² correlation is stable across trajectory horizons. For 12 VLAs,
-the correlation between S² and success remains robust (r &gt; 0.5)
-across nearly all evaluated horizons (h) on BridgeDataV2 and
-DROID.</span></figcaption></figure>
+the correlation between S² and success stays above r = 0.5 across nearly
+all evaluated horizons (h) on BridgeDataV2 and DROID.</span></figcaption></figure>
 
 </section><section aria-labelledby="representation-level-explanations-with-s²-heading" id="representation-level-explanations-with-s²"><h2 id="representation-level-explanations-with-s²-heading">Representation-Level
 Explanations with S²</h2>
@@ -402,12 +401,12 @@ vision-text representation still predicts downstream success.</span></figcaption
 <p><strong>Fine-tuned VLAs rely mainly on visual rather than language
 representations for control.</strong> At horizon <em>h</em> = 3, we find
 that S² from vision features correlates with the SimplerEnv success of
-the 12 fine-tuned VLAs nearly as strongly as S² from joint vision-text
-features (r = +0.694 and r = +0.699), while S² from text features shows
-no significant relation (r = +0.237). Before fine-tuning, the pattern
-differs: in raw VLMs, S² from text features (r = +0.501) correlates more
-strongly than S² from vision features (r = +0.425), and S² from joint
-vision-text features correlates most strongly (r = +0.681).</p>
+the 12 fine-tuned VLAs at r = +0.694, nearly matching joint vision-text
+features at r = +0.699, while S² from text features shows no significant
+relation at r = +0.237. Before fine-tuning, the pattern differs: in raw
+VLMs, S² from text features correlates at r = +0.501, more strongly than
+vision features at r = +0.425, and joint vision-text features correlate
+most strongly at r = +0.681.</p>
 <p>We therefore infer that fine-tuned VLAs rely mainly on visual rather
 than language representations for control, which explains their weak
 instruction grounding at the representation level.</p>

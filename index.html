@@ -375,8 +375,8 @@ blocks</a></strong>: prior work observes that mid-depth blocks of video
 diffusion transformers are especially important for semantic reasoning<label aria-label="Note 29" class="sidenote-number" for="sn-29"></label><input class="margin-toggle" id="sn-29" type="checkbox"/><span class="sidenote"><a href="https://arxiv.org/abs/2603.16870">Demystifying
 Video Reasoning</a> (Wang et al, 2026)</span>. We explain that the same mid-depth
 blocks carry the strongest S², indicating that the layers that reason
-about video semantics are also the layers most aligned with robot
-actions.</li>
+about video semantics are also the layers most aligned with motor
+structure.</li>
 </ul>
 <h3 id="what-carries-the-correlation-vision-text-or-both">What Carries
 the Correlation: Vision, Text, or Both?</h3>
@@ -497,8 +497,8 @@ features from Blocks 0, 7, 14, 21, and 29. Block 14 consistently yields
 the highest S² across all 3 models. We find that this peak falls within
 the mid-depth semantic window identified by Chain-of-Steps<label aria-label="Note 45" class="sidenote-number" for="sn-45"></label><input class="margin-toggle" id="sn-45" type="checkbox"/><span class="sidenote"><a href="https://arxiv.org/abs/2603.16870">Demystifying
 Video Reasoning</a> (Wang et al, 2026)</span>, and infer that the layers that
-reason about video semantics are also the layers most aligned with robot
-actions. Appendix D.3 of our paper gives the full analysis.</p>
+reason about video semantics are also the layers most aligned with motor
+structure. Appendix D.3 of our paper gives the full analysis.</p>
 <figure data-figure="10"><button aria-label="Expand figure 10" class="figure-button" type="button"><img alt="Line plot of Sensorimotor Alignment at backbone Blocks 0, 7, 14, 21, and 29 for three WAMs. Each line peaks at Block 14." decoding="async" height="1065" loading="lazy" src="assets/s2-layerwise.png" width="1797"/></button><figcaption><span class="figure-number">Figure 10:</span> <span class="caption-text">S² peaks at Block 14 in all 3 WAMs, indicating that mid-depth
 layers carry the strongest sensorimotor signal.</span></figcaption></figure>
 

@@ -161,6 +161,7 @@ toc = "<ul>" + "".join(toc_item(*entry) for entry in toc_entries) + "</ul>"
 authors = ['Yunfei Xie', 'Howard H. Qian', 'Shiyi Lan', 'Kaiyu Hang', 'Chen Wei']
 authors_html = ", ".join(authors[:-1]) + ", and " + authors[-1]
 
+page_title = title if title.startswith("Sensorimotor Alignment") else f"{title} — Sensorimotor Alignment"
 page = f'''<!doctype html>
 <html lang="en">
 <head>
@@ -174,7 +175,7 @@ page = f'''<!doctype html>
   <meta property="og:url" content="{SITE_URL}">{og_image}
   <meta name="twitter:card" content="summary_large_image">
   <link rel="canonical" href="{SITE_URL}">
-  <title>{html.escape(title)} — Sensorimotor Alignment</title>
+  <title>{html.escape(page_title)}</title>
   <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
   <link rel="stylesheet" href="site.css">
   <script src="site.js" defer></script>

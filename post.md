@@ -112,7 +112,7 @@ Prior work reports several phenomena in VLAs and WAMs based only on closed-loop 
 - **[Modality dominance](#what-carries-the-correlation-vision-text-or-both)**: prior work observes that VLAs often struggle with instruction grounding[^liberoplus][^liberocf][^igar]. We explain that after VLA fine-tuning, task success is associated with vision-feature S² but not text-feature S², indicating that fine-tuned VLAs rely mainly on visual rather than language representations for control.
 - **[Frozen encoders](#freezing-vision-encoders-limits-s²-gain)**: prior work observes that freezing the vision encoder during VLA fine-tuning degrades downstream task performance[^vlm4vla]. We explain that freezing also prevents the S² gain from end-to-end fine-tuning, indicating that fine-tuning improves control by aligning the visual representation more closely with motor structure.
 - **[Iterative denoising](#early-denoising-features-already-carry-strong-sensorimotor-alignment)**: prior work observes that WAMs can skip test-time video generation with little loss in task success[^fastwam]. We explain that S² is already high at the earliest denoising step and changes little afterwards, indicating that the sensorimotor structure needed for control is present before denoising finishes.
-- **[Mid-depth blocks](#mid-depth-blocks-carry-the-strongest-sensorimotor-alignment)**: prior work observes that mid-depth blocks of video diffusion transformers are especially important for semantic reasoning[^demystifying]. We explain that the same mid-depth blocks carry the strongest S², indicating that the layers that reason about video semantics are also the layers most aligned with motor structure.
+- **[Mid-depth blocks](#mid-depth-blocks-carry-the-strongest-sensorimotor-alignment)**: prior work observes that mid-depth blocks of video diffusion transformers are especially important for semantic reasoning[^demystifying]. We explain that the same mid-depth blocks carry the strongest S², indicating that the layers that reason about video semantics are also the layers most aligned with robot actions.
 
 ### What Carries the Correlation: Vision, Text, or Both?
 
@@ -136,7 +136,7 @@ In the figure below, we compare 2 VLAs differing only in whether the vision enco
 
 *Freezing the ViT vision encoder reduces both S² and downstream success. For a Qwen2.5-VL-3B VLA fine-tuned on BridgeData v2, we compare end-to-end training with a frozen vision encoder. Freezing lowers both S² from joint vision-text features (top) and SimplerEnv success (bottom), suggesting that S² captures a representation-level bottleneck linked to policy performance. Motion horizon h = 7.*
 
-We infer that end-to-end fine-tuning improves control by aligning visual representations with motor structure, which explains why freezing the vision encoder lowers task success.
+We infer that end-to-end fine-tuning improves control by aligning visual representations more closely with robot trajectories, which explains why freezing the vision encoder lowers task success.
 
 ### Early-Denoising Features Already Carry Strong Sensorimotor Alignment
 
@@ -152,7 +152,7 @@ In the figure below, we track S² along the denoising schedule of 3 WAMs[^motus]
 
 Prior analysis of Chain-of-Steps[^demystifying] shows that mid-depth layers in Video Diffusion Transformers are especially important for semantic reasoning over objects and interactions. We test whether the strongest sensorimotor signal for embodied control also lies within this semantic window.
 
-In the figure below, we compute S² at different depths of 3 WAMs[^motus][^lingbot][^vidar] on RoboTwin. All 3 share a 30-block video backbone, and we extract features from Blocks 0, 7, 14, 21, and 29. Block 14 consistently yields the highest S² across all 3 models. We find that this peak falls within the mid-depth semantic window identified by Chain-of-Steps[^demystifying], and infer that the layers that reason about video semantics are also the layers most aligned with motor structure. Appendix D.3 of our paper gives the full analysis.
+In the figure below, we compute S² at different depths of 3 WAMs[^motus][^lingbot][^vidar] on RoboTwin. All 3 share a 30-block video backbone, and we extract features from Blocks 0, 7, 14, 21, and 29. Block 14 consistently yields the highest S² across all 3 models. We find that this peak falls within the mid-depth semantic window identified by Chain-of-Steps[^demystifying], and infer that the layers that reason about video semantics are also the layers most aligned with robot actions. Appendix D.3 of our paper gives the full analysis.
 
 ![Line plot of Sensorimotor Alignment at backbone Blocks 0, 7, 14, 21, and 29 for three WAMs. Each line peaks at Block 14.](assets/s2-layerwise.png)
 

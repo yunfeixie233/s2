@@ -141,8 +141,8 @@ def neighbor_svg(kind):
 explainer = f'''<div class="explainer" aria-label="Interactive illustration of shared neighbors">
   <div class="explainer-heading"><span class="explainer-kicker">The same episodes, two views</span><span class="toy-label">Illustration</span></div>
   <div class="neighbor-panels">
-    <div class="neighbor-panel"><p class="panel-title">What the model groups together</p><p class="panel-subtitle">Neighbors in feature space</p>{neighbor_svg("sensory")}</div>
-    <div class="neighbor-panel"><p class="panel-title">What the robot does similarly</p><p class="panel-subtitle">Neighbors in motion space</p>{neighbor_svg("motor")}</div>
+    <div class="neighbor-panel"><p class="panel-title">What the model groups together</p><p class="panel-subtitle">Neighbors in sensory representation space</p>{neighbor_svg("sensory")}</div>
+    <div class="neighbor-panel"><p class="panel-title">What the robot does similarly</p><p class="panel-subtitle">Neighbors in motor representation space</p>{neighbor_svg("motor")}</div>
   </div>
   <div class="explainer-controls"><button class="overlap-button" type="button" aria-label="Show shared neighbors" aria-pressed="false" aria-controls="overlap-description">Show shared neighbors</button><p class="overlap-description" id="overlap-description" aria-live="polite">Both panels contain the same episodes. Compare the three neighbors of the query in each space.</p></div>
   <p class="explainer-note">This illustrates neighborhood agreement. The full score also uses feature similarities; these points are not experimental data.</p>

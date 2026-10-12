@@ -109,19 +109,21 @@ Large-Scale In-the-Wild Robot Manipulation Dataset</a> (Khazatsky et al,
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>e</mi><mi>i</mi></msub><mo>=</mo><mo form="prefix" stretchy="false">(</mo><msub><mi>𝐱</mi><mi>i</mi></msub><mo>,</mo><msub><mi>𝛕</mi><mi>i</mi></msub><mo form="postfix" stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">e_i = (\mathbf{x}_i, \boldsymbol{\tau}_i)</annotation></semantics></math>
 pairs a sensory input
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝐱</mi><mi>i</mi></msub><annotation encoding="application/x-tex">\mathbf{x}_i</annotation></semantics></math>,
-a camera image and a language instruction, with the trajectory
+made up of a camera image and a language instruction, with the
+trajectory
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝛕</mi><mi>i</mi></msub><annotation encoding="application/x-tex">\boldsymbol{\tau}_i</annotation></semantics></math>
 that a human teleoperator then executed. Every model is scored against
 the same recorded motions, so no closed-loop rollouts are needed.</p>
 <p>The <strong>sensory kernel</strong> comes from the model. We feed
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝐱</mi><mi>i</mi></msub><annotation encoding="application/x-tex">\mathbf{x}_i</annotation></semantics></math>
-to the model, using only the first frame of each episode for video
-datasets to match standard VLA inputs, extract a feature vector
+to the model, extract a feature vector
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝐳</mi><mi>i</mi></msub><annotation encoding="application/x-tex">\mathbf{z}_i</annotation></semantics></math>,
 and compare episodes by cosine similarity,
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>K</mi><mrow><mi>i</mi><mi>j</mi></mrow><mrow><mi mathvariant="normal">s</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">s</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">y</mi></mrow></msubsup><mo>=</mo><mi>cos</mi><mo>⁡</mo><mo form="prefix" stretchy="false">(</mo><msub><mi>𝐳</mi><mi>i</mi></msub><mo>,</mo><msub><mi>𝐳</mi><mi>j</mi></msub><mo form="postfix" stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">K^{\mathrm{sensory}}_{ij} = \cos(\mathbf{z}_i, \mathbf{z}_j)</annotation></semantics></math>.
-Because this works for any architecture and layer, we can compare vision
-features, text features, or features taken at different depths.</p>
+For video datasets, we use only the first frame of each episode,
+matching standard VLA inputs. Because this works for any architecture
+and layer, we can compare vision features, text features, or features
+taken at different depths.</p>
 <p>The <strong>motor kernel</strong> comes from the robot. Each
 trajectory records the end-effector position, orientation, and gripper
 state, expressed in the robot base frame. The same task can be performed
@@ -163,7 +165,7 @@ Success Rate</h2>
 <p>Action is a harder test case for PRH<label aria-label="Note 6" class="sidenote-number" for="sn-6"></label><input class="margin-toggle" id="sn-6" type="checkbox"/><span class="sidenote"><a href="https://arxiv.org/abs/2405.07987">The Platonic
 Representation Hypothesis</a> (Huh et al, 2024)</span>
 than vision or language: it is a physical trajectory, not another
-passive observation. We test the premise directly: a model's S² should
+passive observation. We test a concrete prediction: a model's S² should
 positively relate to its downstream robot task success. If it does, S²
 can serve as a low-cost offline proxy for identifying which models are
 likely to achieve higher task success before closed-loop evaluation.</p>
@@ -221,9 +223,9 @@ representation is the video-generator latent used for action decoding,
 and all 6 models share the same ALOHA trajectories and S² settings.
 Across these 6 models, S² shows a strong correlation with success,
 r = +0.718.</p>
-<p><strong>Real-robot policies.</strong> We test whether the relation in
-simulation between S² and task success extends to real robots. Because
-real-world success depends on the task set, robot, cameras, and
+<p><strong>Real-robot policies.</strong> We test whether the relation
+between S² and task success in simulation extends to real robots.
+Because real-world success depends on the task set, robot, cameras, and
 protocol, we use the physical-robot success rates that MolmoB0T<label aria-label="Note 13" class="sidenote-number" for="sn-13"></label><input class="margin-toggle" id="sn-13" type="checkbox"/><span class="sidenote"><a href="https://arxiv.org/abs/2603.16861">MolmoB0T:
 Large-Scale Simulation Enables Zero-Shot Manipulation</a> (Deshpande et
 al, 2026)</span> reports for 5 policies on the same
@@ -438,7 +440,7 @@ action head and measure SimplerEnv success. Freezing the encoder reduces
 S² by 41% and downstream success by 40%. The S² drop holds at all 10
 motion horizons, ranging from 38% to 49% (Appendix D.2 of our
 paper).</p>
-<figure data-figure="8"><button aria-label="Expand figure 8" class="figure-button" type="button"><img alt="Bar charts comparing unfrozen and frozen vision-encoder fine-tuning. Sensorimotor Alignment drops from 0.0245 to 0.0144, and SimplerEnv success drops from 50.00 percent to 30.21 percent." decoding="async" height="700" loading="lazy" src="assets/s2-freeze-vs-unfreeze.png" width="1523"/></button><figcaption><span class="figure-number">Figure 8:</span> <span class="caption-text">Freezing the vision encoder ViT reduces both S² and downstream
+<figure data-figure="8"><button aria-label="Expand figure 8" class="figure-button" type="button"><img alt="Bar charts comparing unfrozen and frozen vision-encoder fine-tuning. Sensorimotor Alignment drops from 0.0245 to 0.0144, and SimplerEnv success drops from 50.00 percent to 30.21 percent." decoding="async" height="700" loading="lazy" src="assets/s2-freeze-vs-unfreeze.png" width="1523"/></button><figcaption><span class="figure-number">Figure 8:</span> <span class="caption-text">Freezing the ViT vision encoder reduces both S² and downstream
 success. For a Qwen2.5-VL-3B VLA fine-tuned on BridgeData v2, we compare
 end-to-end training with a frozen vision encoder. Freezing lowers both
 S² from joint vision-text features (top) and SimplerEnv success
@@ -472,10 +474,10 @@ varying by at most 6% from its initial value across all 3 models. We
 therefore infer that the sensorimotor structure needed for control is
 present before denoising finishes. Because S² correlates with WAM
 success, as shown above, this explains why skipping iterative video
-denoising costs little success.</p>
-<figure data-figure="9"><button aria-label="Expand figure 9" class="figure-button" type="button"><img alt="Line plot of Sensorimotor Alignment for three WAMs at five points of the denoising schedule, from 0 to 100 percent. All three lines stay nearly flat." decoding="async" height="1076" loading="lazy" src="assets/s2-denoising.png" width="1771"/></button><figcaption><span class="figure-number">Figure 9:</span> <span class="caption-text">S² is nearly flat across the schedule. S² remains nearly flat
-across the denoising schedule, suggesting that the sensorimotor
-structure needed for action decoding is present early.</span></figcaption></figure>
+denoising barely lowers task success.</p>
+<figure data-figure="9"><button aria-label="Expand figure 9" class="figure-button" type="button"><img alt="Line plot of Sensorimotor Alignment for three WAMs at five points of the denoising schedule, from 0 to 100 percent. All three lines stay nearly flat." decoding="async" height="1076" loading="lazy" src="assets/s2-denoising.png" width="1771"/></button><figcaption><span class="figure-number">Figure 9:</span> <span class="caption-text">S² is nearly flat across the denoising schedule, suggesting that
+the sensorimotor structure needed for action decoding is present
+early.</span></figcaption></figure>
 
 <h3 id="mid-depth-blocks-carry-the-strongest-sensorimotor-alignment">Mid-Depth
 Blocks Carry the Strongest Sensorimotor Alignment</h3>
@@ -497,9 +499,8 @@ the mid-depth semantic window identified by Chain-of-Steps<label aria-label="Not
 Video Reasoning</a> (Wang et al, 2026)</span>, and infer that the layers that
 reason about video semantics are also the layers most aligned with robot
 actions. Appendix D.3 of our paper gives the full analysis.</p>
-<figure data-figure="10"><button aria-label="Expand figure 10" class="figure-button" type="button"><img alt="Line plot of Sensorimotor Alignment at backbone Blocks 0, 7, 14, 21, and 29 for three WAMs. Each line peaks at Block 14." decoding="async" height="1065" loading="lazy" src="assets/s2-layerwise.png" width="1797"/></button><figcaption><span class="figure-number">Figure 10:</span> <span class="caption-text">Block 14 has the strongest S² in all 3 WAMs. S² consistently
-peaks at Block 14, indicating that mid-depth layers carry the strongest
-sensorimotor signal.</span></figcaption></figure>
+<figure data-figure="10"><button aria-label="Expand figure 10" class="figure-button" type="button"><img alt="Line plot of Sensorimotor Alignment at backbone Blocks 0, 7, 14, 21, and 29 for three WAMs. Each line peaks at Block 14." decoding="async" height="1065" loading="lazy" src="assets/s2-layerwise.png" width="1797"/></button><figcaption><span class="figure-number">Figure 10:</span> <span class="caption-text">S² peaks at Block 14 in all 3 WAMs, indicating that mid-depth
+layers carry the strongest sensorimotor signal.</span></figcaption></figure>
 
 </section><section aria-labelledby="citation-heading" id="citation"><h2 id="citation-heading">Citation</h2>
 <p>Please cite this work as:</p>

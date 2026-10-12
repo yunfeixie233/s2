@@ -31,9 +31,9 @@ In practice, S² can serve as a low-cost offline proxy for identifying which mod
 
 Camera features and robot trajectories live in different spaces, so we cannot compare them directly. Following PRH,[^prh] we instead compare their *similarity structures*: does each representation judge the same pairs of episodes to be alike? Each side gives us a kernel $K$, a matrix of pairwise similarities over the same episodes, and S² scores how well the two kernels agree.
 
-We compute S² on a fixed offline dataset $\mathcal{D} = \{e_i\}_{i=1}^N$, such as DROID.[^droid] Each episode $e_i = (\mathbf{x}_i, \boldsymbol{\tau}_i)$ pairs a sensory input $\mathbf{x}_i$, a camera image and a language instruction, with the trajectory $\boldsymbol{\tau}_i$ that a human teleoperator then executed. Every model is scored against the same recorded motions, so no closed-loop rollouts are needed.
+We compute S² on a fixed offline dataset $\mathcal{D} = \{e_i\}_{i=1}^N$, such as DROID.[^droid] Each episode $e_i = (\mathbf{x}_i, \boldsymbol{\tau}_i)$ pairs a sensory input $\mathbf{x}_i$, made up of a camera image and a language instruction, with the trajectory $\boldsymbol{\tau}_i$ that a human teleoperator then executed. Every model is scored against the same recorded motions, so no closed-loop rollouts are needed.
 
-The **sensory kernel** comes from the model. We feed $\mathbf{x}_i$ to the model, using only the first frame of each episode for video datasets to match standard VLA inputs, extract a feature vector $\mathbf{z}_i$, and compare episodes by cosine similarity, $K^{\mathrm{sensory}}_{ij} = \cos(\mathbf{z}_i, \mathbf{z}_j)$. Because this works for any architecture and layer, we can compare vision features, text features, or features taken at different depths.
+The **sensory kernel** comes from the model. We feed $\mathbf{x}_i$ to the model, extract a feature vector $\mathbf{z}_i$, and compare episodes by cosine similarity, $K^{\mathrm{sensory}}_{ij} = \cos(\mathbf{z}_i, \mathbf{z}_j)$. For video datasets, we use only the first frame of each episode, matching standard VLA inputs. Because this works for any architecture and layer, we can compare vision features, text features, or features taken at different depths.
 
 The **motor kernel** comes from the robot. Each trajectory records the end-effector position, orientation, and gripper state, expressed in the robot base frame. The same task can be performed faster or slower, so we compare trajectories with dynamic time warping (DTW),[^dtw] which aligns their timing before measuring distance, $K^{\mathrm{motor}}_{ij} = \mathrm{DTW}(\boldsymbol{\tau}_i, \boldsymbol{\tau}_j)$. The local DTW cost uses geodesic distance on SO(3) for rotations and native coordinates for positions and gripper state.
 
@@ -50,7 +50,7 @@ A high S² means the model places episodes close together when they call for sim
 
 ## S² Relates to Robot Task Success Rate
 
-Action is a harder test case for PRH[^prh] than vision or language: it is a physical trajectory, not another passive observation. We test the premise directly: a model's S² should positively relate to its downstream robot task success. If it does, S² can serve as a low-cost offline proxy for identifying which models are likely to achieve higher task success before closed-loop evaluation.
+Action is a harder test case for PRH[^prh] than vision or language: it is a physical trajectory, not another passive observation. We test a concrete prediction: a model's S² should positively relate to its downstream robot task success. If it does, S² can serve as a low-cost offline proxy for identifying which models are likely to achieve higher task success before closed-loop evaluation.
 
 Below, we show this relation across three model families and real-robot policies, compare S² with VQA and video-quality metrics, and check that it is robust to evaluation choices.
 
@@ -68,7 +68,7 @@ We ask whether stronger alignment between sensory and motor similarity structure
 
 **World action models (WAMs).** Finally, we ask whether the relation extends to WAMs, which build on video generators rather than VLMs. We compute S² for 6 WAMs on the bimanual ALOHA dataset[^aloha] and compare it with their success on RoboTwin 2.0[^robotwin]. For WAMs, the sensory representation is the video-generator latent used for action decoding, and all 6 models share the same ALOHA trajectories and S² settings. Across these 6 models, S² shows a strong correlation with success, r = +0.718.
 
-**Real-robot policies.** We test whether the relation in simulation between S² and task success extends to real robots. Because real-world success depends on the task set, robot, cameras, and protocol, we use the physical-robot success rates that MolmoB0T[^molmobot] reports for 5 policies on the same 40 tasks, and compute S² for their public checkpoints on the same 6,000-episode DROID subset. Across these 5 policies, S² shows a strong correlation with real-robot task success, r = +0.831.
+**Real-robot policies.** We test whether the relation between S² and task success in simulation extends to real robots. Because real-world success depends on the task set, robot, cameras, and protocol, we use the physical-robot success rates that MolmoB0T[^molmobot] reports for 5 policies on the same 40 tasks, and compute S² for their public checkpoints on the same 6,000-episode DROID subset. Across these 5 policies, S² shows a strong correlation with real-robot task success, r = +0.831.
 
 We further validate that S² is related to downstream task success for frozen vision backbones under low-data behavior cloning and visual-reward learning (Appendix B.1 of our paper).
 
@@ -134,7 +134,7 @@ In the figure below, we compare 2 VLAs differing only in whether the vision enco
 
 ![Bar charts comparing unfrozen and frozen vision-encoder fine-tuning. Sensorimotor Alignment drops from 0.0245 to 0.0144, and SimplerEnv success drops from 50.00 percent to 30.21 percent.](assets/s2-freeze-vs-unfreeze.png)
 
-*Freezing the vision encoder ViT reduces both S² and downstream success. For a Qwen2.5-VL-3B VLA fine-tuned on BridgeData v2, we compare end-to-end training with a frozen vision encoder. Freezing lowers both S² from joint vision-text features (top) and SimplerEnv success (bottom), suggesting that S² captures a representation-level bottleneck linked to policy performance. Motion horizon h = 7.*
+*Freezing the ViT vision encoder reduces both S² and downstream success. For a Qwen2.5-VL-3B VLA fine-tuned on BridgeData v2, we compare end-to-end training with a frozen vision encoder. Freezing lowers both S² from joint vision-text features (top) and SimplerEnv success (bottom), suggesting that S² captures a representation-level bottleneck linked to policy performance. Motion horizon h = 7.*
 
 We infer that end-to-end fine-tuning improves control by aligning visual representations with motor structure, which explains why freezing the vision encoder lowers task success.
 
@@ -142,11 +142,11 @@ We infer that end-to-end fine-tuning improves control by aligning visual represe
 
 WAMs typically decode actions from video latents obtained through iterative denoising. Fast-WAM[^fastwam] shows that this process can be skipped at inference with little loss in task success. We use S² to test whether sensorimotor alignment is already present at early denoising steps.
 
-In the figure below, we track S² along the denoising schedule of 3 WAMs[^motus][^lingbot][^vidar] on RoboTwin[^robotwin]. For each model, we extract latent features and compute S² at 5 points in its native schedule, from 0% to 100%. S² is already high at the earliest point and remains nearly flat, varying by at most 6% from its initial value across all 3 models. We therefore infer that the sensorimotor structure needed for control is present before denoising finishes. Because S² correlates with WAM success, as shown above, this explains why skipping iterative video denoising costs little success.
+In the figure below, we track S² along the denoising schedule of 3 WAMs[^motus][^lingbot][^vidar] on RoboTwin[^robotwin]. For each model, we extract latent features and compute S² at 5 points in its native schedule, from 0% to 100%. S² is already high at the earliest point and remains nearly flat, varying by at most 6% from its initial value across all 3 models. We therefore infer that the sensorimotor structure needed for control is present before denoising finishes. Because S² correlates with WAM success, as shown above, this explains why skipping iterative video denoising barely lowers task success.
 
 ![Line plot of Sensorimotor Alignment for three WAMs at five points of the denoising schedule, from 0 to 100 percent. All three lines stay nearly flat.](assets/s2-denoising.png)
 
-*S² is nearly flat across the schedule. S² remains nearly flat across the denoising schedule, suggesting that the sensorimotor structure needed for action decoding is present early.*
+*S² is nearly flat across the denoising schedule, suggesting that the sensorimotor structure needed for action decoding is present early.*
 
 ### Mid-Depth Blocks Carry the Strongest Sensorimotor Alignment
 
@@ -156,7 +156,7 @@ In the figure below, we compute S² at different depths of 3 WAMs[^motus][^lingb
 
 ![Line plot of Sensorimotor Alignment at backbone Blocks 0, 7, 14, 21, and 29 for three WAMs. Each line peaks at Block 14.](assets/s2-layerwise.png)
 
-*Block 14 has the strongest S² in all 3 WAMs. S² consistently peaks at Block 14, indicating that mid-depth layers carry the strongest sensorimotor signal.*
+*S² peaks at Block 14 in all 3 WAMs, indicating that mid-depth layers carry the strongest sensorimotor signal.*
 
 ## Citation
 

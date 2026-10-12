@@ -77,9 +77,9 @@ this measure sensorimotor alignment (S²).</p>
 robot task success. We test a range of Vision-Language-Action models
 (VLAs) and World Action Models (WAMs), both in simulation and on real
 robots. In every setting, models with higher S² achieve higher task
-success rates. This suggests that PRH also holds in robotics: a more
-capable embodied model is one whose vision and language representations
-better reflect the structure of physical motion.</p>
+success rates. This pattern suggests that PRH also holds in robotics: a
+more capable embodied model is one whose vision and language
+representations better reflect the structure of physical motion.</p>
 <p>S² also explains, at the representation level, several behaviors that
 prior work has only observed empirically. For example, VLAs often ignore
 the language instruction and act mainly on what they see. We find that
@@ -191,8 +191,8 @@ These correlations support S² as a paradigm-agnostic metric.</span></figcaption
 VLAs against their SimplerEnv<label aria-label="Note 7" class="sidenote-number" for="sn-7"></label><input class="margin-toggle" id="sn-7" type="checkbox"/><span class="sidenote"><a href="https://arxiv.org/abs/2405.05941">Evaluating
 Real-World Robot Manipulation Policies in Simulation</a> (Li et al,
 2024)</span> success rates. The
-correlation r = +0.717 is strong. This supports our premise that S²
-measures how well a representation supports control.</p>
+correlation r = +0.717 is strong. This correlation supports our premise
+that S² measures how well a representation supports control.</p>
 <p><strong>Vision-language models (VLMs).</strong> We ask whether S²
 computed on a raw VLM, before any robot fine-tuning, relates to the task
 success of the VLA built from it. We compute S² for 8 raw VLM backbones
@@ -246,11 +246,11 @@ video models, Tian et al.<label aria-label="Note 15" class="sidenote-number" for
 Control-Centric Benchmark for Video Prediction</a> (Tian et al, 2023)</span> compare the quality of
 WAM-generated video with downstream control performance and find that
 the agreement is inconsistent across tasks. A common limitation is that
-these metrics measure language understanding or pixel-level fidelity,
-neither of which is grounded in the physical actions the robot must
-execute. S² addresses this gap by directly linking perception to action.
-As we show below, S² correlates more strongly with task success rate
-than any VQA or video-quality metric we evaluate.</p>
+these metrics measure language understanding or pixel-level video
+quality, neither of which is grounded in the physical actions the robot
+must execute. S² addresses this gap by directly linking perception to
+action. As we show below, S² correlates more strongly with task success
+rate than any VQA or video-quality metric we evaluate.</p>
 <p><strong>S² correlates with VLA success rate where VQA scores do
 not.</strong> We compare S² with aggregate VQA scores as offline proxies
 of downstream VLA success rate, using the same 8 raw VLM backbones and

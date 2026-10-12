@@ -62,7 +62,7 @@ We ask whether stronger alignment between sensory and motor similarity structure
 
 *S² correlates with task success across diverse model families and both simulated and real-world task evaluations. From left to right, each panel plots offline S² (x-axis) against downstream success (y-axis) for finetuned VLAs, raw VLMs, WAMs, and real-robot policies. These correlations support S² as a paradigm-agnostic metric.*
 
-**Vision-language-action models (VLAs).** We test 12 VLAs against their SimplerEnv[^simplerenv] success rates. The correlation r = +0.717 is strong. This supports our premise that S² captures a control-relevant representation.
+**Vision-language-action models (VLAs).** We test 12 VLAs against their SimplerEnv[^simplerenv] success rates. The correlation r = +0.717 is strong. This supports our premise that S² measures how well a representation supports control.
 
 **Vision-language models (VLMs).** We ask whether S² computed on a raw VLM, before any robot fine-tuning, relates to the success of the VLA built from it. We compute S² for 8 raw VLM backbones from VLM4VLA[^vlm4vla] on the DROID dataset[^droid] and compare it with the SimplerEnv[^simplerenv] success of the VLAs that VLM4VLA fine-tunes from them. We find a strong correlation with downstream VLA success: r = +0.681. This result demonstrates the practical utility of S²: models with stronger sensorimotor alignment before fine-tuning tend to achieve higher downstream task success, so S² can identify promising VLM backbones even before costly VLA fine-tuning.
 
@@ -92,13 +92,13 @@ Prior work asks whether offline evaluation scores predict downstream control per
 
 A useful offline metric should satisfy two complementary properties: stability to nuisance choices in how it is computed and sensitivity to physically meaningful mismatches between the reference data and the downstream task. We vary 9 factors in evaluating S² and find that the correlation with success stays positive under all 8 nuisance choices and collapses only when the reference data have the wrong arm configuration. We present 2 nuisance factors below. In our paper, Appendix C.1 tests the other six, Appendix C.3 details the arm-configuration collapse, and Appendix E reports per-model S² values.
 
-**The correlation transfers across reference datasets.** We validate that S² is not tied to a particular reference dataset. We compute S² on both DROID (Franka Panda) and BridgeDataV2[^bridgedata] (WidowX), two datasets with different arm kinematics. Both yield strong correlations near r = +0.7 with downstream success for the 12 VLAs on SimplerEnv (figure below), confirming that S² captures a transferable property of the representation rather than a dataset-specific artifact.
+**The correlation transfers across reference datasets.** We validate that S² is not tied to a particular reference dataset. We compute S² on both DROID (Franka Panda) and BridgeDataV2[^bridgedata] (WidowX), two datasets with different arm kinematics. Both yield strong correlations near r = +0.7 with downstream success for the 12 VLAs on SimplerEnv (figure below), confirming that S² captures a property of the representation that transfers across datasets rather than a dataset-specific artifact.
 
 ![Two scatter plots for twelve VLAs, relating Sensorimotor Alignment computed on DROID (left) and on BridgeDataV2 (right) to SimplerEnv success. Both show a strong positive correlation.](assets/s2-across-datasets.png)
 
-*Cross-dataset generalization. For 12 VLAs, S² on DROID (left) and BridgeDataV2 (right) correlates strongly with SimplerEnv-WidowX success, reflecting capability rather than dataset artifacts.*
+*Cross-dataset generalization. For 12 VLAs, S² on DROID (left) and BridgeDataV2 (right) correlates strongly with SimplerEnv-WidowX success, reflecting a property of the representation rather than dataset artifacts.*
 
-**The correlation is stable across trajectory horizons.** We validate that S² is not sensitive to the trajectory horizon *h* used during evaluation. Across both reference datasets, the correlation remains above r = 0.5 from short horizons through *h* = 220 (figure below), confirming that S² reflects a persistent structural property rather than an artifact of a particular horizon choice.
+**The correlation is stable across trajectory horizons.** We validate that S² is not sensitive to the trajectory horizon *h* used during evaluation. Across both reference datasets, the correlation remains above r = 0.5 from short horizons through *h* = 220 (figure below), confirming that S² reflects a property of the representation that holds across horizons rather than an artifact of a particular horizon choice.
 
 ![Line plot of the correlation between Sensorimotor Alignment and success across trajectory horizons, for BridgeDataV2 and DROID. Both lines stay above 0.5 across nearly all horizons.](assets/s2-across-horizons.png)
 
@@ -111,7 +111,7 @@ Prior work reports several phenomena in VLAs and WAMs based only on closed-loop 
 
 - **[Modality dominance](#what-carries-the-correlation-vision-text-or-both)**: prior work observes that VLAs often struggle with instruction grounding[^liberoplus][^liberocf][^igar]. We explain that after VLA fine-tuning, task success is associated with vision-feature S² but not text-feature S², indicating that fine-tuned VLAs rely mainly on visual rather than language representations for control.
 - **[Frozen encoders](#freezing-vision-encoders-limits-s²-gain)**: prior work observes that freezing the vision encoder during VLA fine-tuning degrades downstream task performance[^vlm4vla]. We explain that freezing also prevents the S² gain from end-to-end fine-tuning, indicating that fine-tuning improves control by aligning the visual representation more closely with motor structure.
-- **[Iterative denoising](#early-denoising-features-already-carry-strong-sensorimotor-alignment)**: prior work observes that WAMs can skip test-time video generation with little loss in task success[^fastwam]. We explain that S² is already high at the earliest denoising step and changes little afterwards, indicating that the sensorimotor structure needed for control is present before denoising finishes.
+- **[Iterative denoising](#early-denoising-features-already-carry-strong-sensorimotor-alignment)**: prior work observes that WAMs can skip test-time video generation with little loss in task success[^fastwam]. We explain that S² is already high at the earliest denoising step and changes little afterwards, indicating that the alignment with robot trajectories needed for control is present before denoising finishes.
 - **[Mid-depth blocks](#mid-depth-blocks-carry-the-strongest-sensorimotor-alignment)**: prior work observes that mid-depth blocks of video diffusion transformers are especially important for semantic reasoning[^demystifying]. We explain that the same mid-depth blocks carry the strongest S², indicating that the layers that reason about video semantics are also the layers most aligned with robot actions.
 
 ### What Carries the Correlation: Vision, Text, or Both?
@@ -134,7 +134,7 @@ In the figure below, we compare 2 VLAs differing only in whether the vision enco
 
 ![Bar charts comparing unfrozen and frozen vision-encoder fine-tuning. Sensorimotor Alignment drops from 0.0245 to 0.0144, and SimplerEnv success drops from 50.00 percent to 30.21 percent.](assets/s2-freeze-vs-unfreeze.png)
 
-*Freezing the ViT vision encoder reduces both S² and downstream success. For a Qwen2.5-VL-3B VLA fine-tuned on BridgeData v2, we compare end-to-end training with a frozen vision encoder. Freezing lowers both S² from joint vision-text features (top) and SimplerEnv success (bottom), suggesting that S² captures a representation-level bottleneck linked to policy performance. Motion horizon h = 7.*
+*Freezing the ViT vision encoder reduces both S² and downstream success. For a Qwen2.5-VL-3B VLA fine-tuned on BridgeData v2, we compare end-to-end training with a frozen vision encoder. Freezing lowers both S² from joint vision-text features (top) and SimplerEnv success (bottom), suggesting that freezing limits policy performance through the representation itself, which S² detects. Motion horizon h = 7.*
 
 We infer that end-to-end fine-tuning improves control by aligning visual representations more closely with robot trajectories, which explains why freezing the vision encoder lowers task success.
 
@@ -142,21 +142,21 @@ We infer that end-to-end fine-tuning improves control by aligning visual represe
 
 WAMs typically decode actions from video latents obtained through iterative denoising. Fast-WAM[^fastwam] shows that this process can be skipped at inference with little loss in task success. We use S² to test whether sensorimotor alignment is already present at early denoising steps.
 
-In the figure below, we track S² along the denoising schedule of 3 WAMs[^motus][^lingbot][^vidar] on RoboTwin[^robotwin]. For each model, we extract latent features and compute S² at 5 points in its native schedule, from 0% to 100%. S² is already high at the earliest point and remains nearly flat, varying by at most 6% from its initial value across all 3 models. We therefore infer that the sensorimotor structure needed for control is present before denoising finishes. Because S² correlates with WAM success, as shown above, this explains why skipping iterative video denoising barely lowers task success.
+In the figure below, we track S² along the denoising schedule of 3 WAMs[^motus][^lingbot][^vidar] on RoboTwin[^robotwin]. For each model, we extract latent features and compute S² at 5 points in its native schedule, from 0% to 100%. S² is already high at the earliest point and remains nearly flat, varying by at most 6% from its initial value across all 3 models. We therefore infer that the sensorimotor alignment needed for control is already present before denoising finishes. Because S² correlates with WAM success, as shown above, this explains why skipping iterative video denoising barely lowers task success.
 
 ![Line plot of Sensorimotor Alignment for three WAMs at five points of the denoising schedule, from 0 to 100 percent. All three lines stay nearly flat.](assets/s2-denoising.png)
 
-*S² is nearly flat across the denoising schedule, suggesting that the sensorimotor structure needed for action decoding is present early.*
+*S² is nearly flat across the denoising schedule, suggesting that the alignment with robot trajectories needed for action decoding is present early.*
 
 ### Mid-Depth Blocks Carry the Strongest Sensorimotor Alignment
 
-Prior analysis of Chain-of-Steps[^demystifying] shows that mid-depth layers in Video Diffusion Transformers are especially important for semantic reasoning over objects and interactions. We test whether the strongest sensorimotor signal for embodied control also lies within this semantic window.
+Prior analysis of Chain-of-Steps[^demystifying] shows that mid-depth layers in Video Diffusion Transformers are especially important for semantic reasoning over objects and interactions. We test whether the layers with the highest S² also lie within this semantic window.
 
 In the figure below, we compute S² at different depths of 3 WAMs[^motus][^lingbot][^vidar] on RoboTwin. All 3 share a 30-block video backbone, and we extract features from Blocks 0, 7, 14, 21, and 29. Block 14 consistently yields the highest S² across all 3 models. We find that this peak falls within the mid-depth semantic window identified by Chain-of-Steps[^demystifying], and infer that the layers that reason about video semantics are also the layers most aligned with robot actions. Appendix D.3 of our paper gives the full analysis.
 
 ![Line plot of Sensorimotor Alignment at backbone Blocks 0, 7, 14, 21, and 29 for three WAMs. Each line peaks at Block 14.](assets/s2-layerwise.png)
 
-*S² peaks at Block 14 in all 3 WAMs, indicating that mid-depth layers carry the strongest sensorimotor signal.*
+*S² peaks at Block 14 in all 3 WAMs, indicating that mid-depth layers carry the strongest sensorimotor alignment.*
 
 ## Citation
 

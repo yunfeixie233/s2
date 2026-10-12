@@ -7,7 +7,7 @@ Conventions build.py relies on:
 - H2 and H3 headings appear in the contents list on the left.
 -->
 
-# Does the Platonic Representation Hypothesis Extend to Robotics?
+# Sensorimotor Alignment: A Platonic Proxy for Embodied Policy Success
 
 *Images and text are different projections of the same world. We ask whether robot actions are another one, and find that models whose sensory representations better align with robot motions achieve higher task success.*
 

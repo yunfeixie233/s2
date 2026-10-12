@@ -1,6 +1,6 @@
 <!--
 Conventions build.py relies on:
-- The first paragraph after the H1 becomes the subtitle (dek).
+- An optional italic paragraph right after the H1 becomes the subtitle (dek).
 - An image paragraph followed by an italic paragraph becomes a numbered figure with that caption; Figure 1 is pulled out as the opening figure.
 - Footnotes ([^key]) become margin sidenotes. Write each definition as: [Title](link) (Author et al, Year).
 - A table followed by an italic paragraph gets that paragraph as its caption.
@@ -8,8 +8,6 @@ Conventions build.py relies on:
 -->
 
 # Sensorimotor Alignment: A Platonic Proxy for Embodied Policy Success
-
-*Images and text are different projections of the same world. We ask whether robot actions are another one, and find that models whose sensory representations better align with robot motions achieve higher task success.*
 
 ![Figure 1: a robot reaching for a mug connects physical reality to sensory observations and motion execution. A scatter plot relates Sensorimotor Alignment to success rate across twelve VLAs.](assets/platonic-robotics.png)
 

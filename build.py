@@ -23,8 +23,18 @@ for comment in soup.find_all(string=lambda s: isinstance(s, Comment)):
     comment.extract()
 title = " ".join(soup.h1.get_text(" ", strip=True).split())
 soup.h1.decompose()
-subtitle = " ".join(soup.find("p").get_text(" ", strip=True).split())
-soup.find("p").decompose()
+first = soup.find("p")
+is_subtitle = first is not None and first.find("img") is None and len(first.contents) == 1 and getattr(first.contents[0], "name", None) == "em"
+subtitle = " ".join(first.get_text(" ", strip=True).split()) if is_subtitle else ""
+if is_subtitle:
+    first.decompose()
+def plain(p):
+    p = BeautifulSoup(str(p), "html.parser")
+    for ref in p.select("a.footnote-ref, sup"):
+        ref.decompose()
+    return " ".join(p.get_text(" ", strip=True).split()).replace(" ,", ",").replace(" .", ".")
+description = subtitle or next((plain(p) for p in soup.find_all("p") if p.find("img") is None and p.find("em") is None and len(p.get_text(strip=True)) > 80), title)
+description = description if len(description) <= 200 else description[:197].rsplit(" ", 1)[0] + "…"
 
 # Footnotes become margin sidenotes. Below the wide breakpoint, the number
 # toggles the note inline through the checkbox, so no script is needed.
@@ -162,15 +172,16 @@ authors = ['Yunfei Xie', 'Howard H. Qian', 'Shiyi Lan', 'Kaiyu Hang', 'Chen Wei'
 authors_html = ", ".join(authors[:-1]) + ", and " + authors[-1]
 
 page_title = title if title.startswith("Sensorimotor Alignment") else f"{title} — Sensorimotor Alignment"
+subtitle_html = f'      <p class="post-subtitle">{html.escape(subtitle)}</p>\n' if subtitle else ""
 page = f'''<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="{html.escape(subtitle, quote=True)}">
+  <meta name="description" content="{html.escape(description, quote=True)}">
   <meta name="theme-color" content="#ffffff">
   <meta property="og:title" content="{html.escape(title, quote=True)}">
-  <meta property="og:description" content="{html.escape(subtitle, quote=True)}">
+  <meta property="og:description" content="{html.escape(description, quote=True)}">
   <meta property="og:type" content="article">
   <meta property="og:url" content="{SITE_URL}">{og_image}
   <meta name="twitter:card" content="summary_large_image">
@@ -190,8 +201,7 @@ page = f'''<!doctype html>
   <main class="post">
     <div class="post-heading">
       <h1 class="post-title">{html.escape(title)}</h1>
-      <p class="post-subtitle">{html.escape(subtitle)}</p>
-      <div class="publish-metadata">
+{subtitle_html}      <div class="publish-metadata">
         <span class="author">{authors_html}</span>
         <span>Rice University · NVIDIA</span>
       </div>

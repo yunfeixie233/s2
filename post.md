@@ -7,15 +7,15 @@ Conventions build.py relies on:
 - H2 and H3 headings appear in the contents list on the left.
 -->
 
-# Title
+# Does the Platonic Representation Hypothesis Extend to Robotics?
 
-*Subtitle.*
+*Images and text are different projections of the same world. We ask whether robot actions are another one, and find that models whose sensory representations better align with robot motions achieve higher task success.*
 
 ![Figure 1: a robot reaching for a mug connects physical reality to sensory observations and motion execution. A scatter plot relates Sensorimotor Alignment to success rate across twelve VLAs.](assets/platonic-robotics.png)
 
 *Left: a robot reaching for a mug gives us two views of one physical interaction, a sensory observation and an executed motion. Sensorimotor Alignment, S², measures whether similar observations in a model's representation correspond to similar demonstrated motions. Right: each point is one VLA. Higher alignment accompanies higher task success in SimplerEnv, a robot simulation benchmark. The correlation across these twelve models is 0.717.*
 
-The Platonic Representation Hypothesis (PRH)[^prh] argues that as vision and language models scale, their representation spaces converge toward a shared statistical model of reality. The reason is that images and text are both projections of the same underlying world, so better models of either one should end up organizing that world in similar ways.
+The Platonic Representation Hypothesis (PRH)[^prh] argues that as vision and language models scale, their representation spaces converge toward a shared statistical model of reality. The idea is that images and text are different projections of the same underlying world, so as models get better at recovering that world, they come to measure similarity between inputs in the same way, whether the inputs are pictures or words.
 
 In this work, we bring PRH to robotics and ask: can physical actions be viewed as another projection of that world, such that more capable embodied models better align their vision and language representations with the structure of motion trajectories?
 

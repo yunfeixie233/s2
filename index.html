@@ -364,14 +364,15 @@ prevents the S² gain from end-to-end fine-tuning, indicating that
 fine-tuning improves control by aligning the visual representation more
 closely with motor structure.</li>
 <li><strong><a href="#early-denoising-features-already-carry-strong-sensorimotor-alignment">Iterative
-denoising</a></strong>: prior work observes that WAMs can skip test-time
-video generation with little loss in task success<label aria-label="Note 28" class="sidenote-number" for="sn-28"></label><input class="margin-toggle" id="sn-28" type="checkbox"/><span class="sidenote"><a href="https://arxiv.org/abs/2603.16666">Fast-WAM: Do
+denoising</a></strong>: prior work observes that WAMs can skip iterative
+video denoising at test time, decoding actions without generating future
+video, with little loss in task success<label aria-label="Note 28" class="sidenote-number" for="sn-28"></label><input class="margin-toggle" id="sn-28" type="checkbox"/><span class="sidenote"><a href="https://arxiv.org/abs/2603.16666">Fast-WAM: Do
 World Action Models Need Test-time Future Imagination?</a> (Yuan et al,
 2026)</span>.
-We explain that S² is already high at the earliest denoising step and
-changes little afterwards, indicating that the alignment with robot
-trajectories needed for control is present before denoising
-finishes.</li>
+We explain that the S² of WAM features is already high at the earliest
+denoising step and changes little during denoising, so the features at
+early denoising steps are already sufficiently aligned with robot
+trajectories for generating actions.</li>
 <li><strong><a href="#mid-depth-blocks-carry-the-strongest-sensorimotor-alignment">Mid-depth
 blocks</a></strong>: prior work observes that mid-depth blocks of video
 diffusion transformers are especially important for semantic reasoning<label aria-label="Note 29" class="sidenote-number" for="sn-29"></label><input class="margin-toggle" id="sn-29" type="checkbox"/><span class="sidenote"><a href="https://arxiv.org/abs/2603.16870">Demystifying

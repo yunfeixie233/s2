@@ -101,7 +101,8 @@ gives us a kernel
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>K</mi><annotation encoding="application/x-tex">K</annotation></semantics></math>,
 a matrix of pairwise similarities over the same episodes, and S² scores
 how well the two kernels agree.</p>
-<p>We compute S² on a fixed offline dataset
+<p><strong>S² operates on fixed offline episodes.</strong> We compute S²
+on a fixed offline dataset
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝒟</mi><mo>=</mo><mo form="prefix" stretchy="false">{</mo><msub><mi>e</mi><mi>i</mi></msub><msubsup><mo form="postfix" stretchy="false">}</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>N</mi></msubsup></mrow><annotation encoding="application/x-tex">\mathcal{D} = \{e_i\}_{i=1}^N</annotation></semantics></math>,
 such as DROID.<label aria-label="Note 3" class="sidenote-number" for="sn-3"></label><input class="margin-toggle" id="sn-3" type="checkbox"/><span class="sidenote"><a href="https://arxiv.org/abs/2403.12945">DROID: A
 Large-Scale In-the-Wild Robot Manipulation Dataset</a> (Khazatsky et al,
@@ -113,8 +114,10 @@ made up of a camera image and a language instruction, with the
 trajectory
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝛕</mi><mi>i</mi></msub><annotation encoding="application/x-tex">\boldsymbol{\tau}_i</annotation></semantics></math>
 that a human teleoperator then executed. Every model is scored against
-the same recorded motions, so no closed-loop rollouts are needed.</p>
-<p>The <strong>sensory kernel</strong> comes from the model. We feed
+the same recorded trajectories, so no closed-loop rollouts are
+needed.</p>
+<p><strong>The sensory kernel captures sensory feature
+similarity.</strong> We feed
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝐱</mi><mi>i</mi></msub><annotation encoding="application/x-tex">\mathbf{x}_i</annotation></semantics></math>
 to the model, extract a feature vector
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝐳</mi><mi>i</mi></msub><annotation encoding="application/x-tex">\mathbf{z}_i</annotation></semantics></math>,
@@ -124,35 +127,39 @@ For video datasets, we use only the first frame of each episode,
 matching standard VLA inputs. Because this works for any architecture
 and layer, we can compare vision features, text features, or features
 taken at different depths.</p>
-<p>The <strong>motor kernel</strong> comes from the robot. Each
-trajectory records the end-effector position, orientation, and gripper
-state, expressed in the robot base frame. The same task can be performed
-faster or slower, so we compare trajectories with dynamic time warping
-(DTW),<label aria-label="Note 4" class="sidenote-number" for="sn-4"></label><input class="margin-toggle" id="sn-4" type="checkbox"/><span class="sidenote"><a href="https://doi.org/10.1109/TASSP.1978.1163055">Dynamic Programming
+<p><strong>The motor kernel captures physical trajectory
+similarity.</strong> Each trajectory records the end-effector position,
+orientation, and gripper state, expressed in the robot base frame. The
+same task can be performed faster or slower, so we compare trajectories
+with dynamic time warping (DTW),<label aria-label="Note 4" class="sidenote-number" for="sn-4"></label><input class="margin-toggle" id="sn-4" type="checkbox"/><span class="sidenote"><a href="https://doi.org/10.1109/TASSP.1978.1163055">Dynamic Programming
 Algorithm Optimization for Spoken Word Recognition</a> (Sakoe and Chiba,
-1978)</span> which aligns their timing before
-measuring distance,
+1978)</span> which aligns their
+timing before measuring distance,
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>K</mi><mrow><mi>i</mi><mi>j</mi></mrow><mrow><mi mathvariant="normal">m</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">r</mi></mrow></msubsup><mo>=</mo><mrow><mi mathvariant="normal">D</mi><mi mathvariant="normal">T</mi><mi mathvariant="normal">W</mi></mrow><mo form="prefix" stretchy="false">(</mo><msub><mi>𝛕</mi><mi>i</mi></msub><mo>,</mo><msub><mi>𝛕</mi><mi>j</mi></msub><mo form="postfix" stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">K^{\mathrm{motor}}_{ij} = \mathrm{DTW}(\boldsymbol{\tau}_i, \boldsymbol{\tau}_j)</annotation></semantics></math>.
 The local DTW cost uses geodesic distance on SO(3) for rotations and
 native coordinates for positions and gripper state.</p>
-<p>To compare the two kernels, we look at neighborhoods. Take one
-episode as the query and find its
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>
-nearest neighbors under each kernel. The illustration below uses
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>=</mo><mn>3</mn></mrow><annotation encoding="application/x-tex">k = 3</annotation></semantics></math>;
-our experiments use
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>=</mo><mn>10</mn></mrow><annotation encoding="application/x-tex">k = 10</annotation></semantics></math>.
-If the model organizes episodes by the motion they require, the two
-neighbor sets should largely overlap.</p>
-<div aria-label="Interactive illustration of shared neighbors" class="explainer">
-<div class="explainer-heading"><span class="explainer-kicker">The same episodes, two views</span><span class="toy-label">Illustration</span></div>
-<div class="neighbor-panels">
-<div class="neighbor-panel"><p class="panel-title">What the model groups together</p><p class="panel-subtitle">Neighbors in sensory representation space</p><svg aria-label="Query neighbors in sensory space: A, B, C" role="img" viewbox="0 0 275 212"><line class="neighbor-link shared" x1="135" x2="65" y1="108" y2="68"></line><line class="neighbor-link" x1="135" x2="206" y1="108" y2="64"></line><line class="neighbor-link shared" x1="135" x2="107" y1="108" y2="165"></line><circle class="query-node" cx="135" cy="108" r="23"></circle><text class="neighbor-text query-text" x="135" y="108">query</text><circle class="neighbor-node shared near" cx="65" cy="68" r="15"></circle><text class="neighbor-text shared" x="65" y="68">A</text><circle class="neighbor-node near" cx="206" cy="64" r="15"></circle><text class="neighbor-text" x="206" y="64">B</text><circle class="neighbor-node shared near" cx="107" cy="165" r="15"></circle><text class="neighbor-text shared" x="107" y="165">C</text><circle class="neighbor-node" cx="229" cy="173" r="15"></circle><text class="neighbor-text" x="229" y="173">D</text><circle class="neighbor-node" cx="37" cy="153" r="15"></circle><text class="neighbor-text" x="37" y="153">E</text></svg></div>
-<div class="neighbor-panel"><p class="panel-title">What the robot does similarly</p><p class="panel-subtitle">Neighbors in motor representation space</p><svg aria-label="Query neighbors in motor space: A, C, D" role="img" viewbox="0 0 275 212"><line class="neighbor-link shared" x1="132" x2="74" y1="108" y2="62"></line><line class="neighbor-link shared" x1="132" x2="201" y1="108" y2="145"></line><line class="neighbor-link" x1="132" x2="75" y1="108" y2="170"></line><circle class="query-node" cx="132" cy="108" r="23"></circle><text class="neighbor-text query-text" x="132" y="108">query</text><circle class="neighbor-node shared near" cx="74" cy="62" r="15"></circle><text class="neighbor-text shared" x="74" y="62">A</text><circle class="neighbor-node" cx="240" cy="57" r="15"></circle><text class="neighbor-text" x="240" y="57">B</text><circle class="neighbor-node shared near" cx="201" cy="145" r="15"></circle><text class="neighbor-text shared" x="201" y="145">C</text><circle class="neighbor-node near" cx="75" cy="170" r="15"></circle><text class="neighbor-text" x="75" y="170">D</text><circle class="neighbor-node" cx="32" cy="116" r="15"></circle><text class="neighbor-text" x="32" y="116">E</text></svg></div>
-</div>
-<div class="explainer-controls"><button aria-controls="overlap-description" aria-label="Show shared neighbors" aria-pressed="false" class="overlap-button" type="button">Show shared neighbors</button><p aria-live="polite" class="overlap-description" id="overlap-description">Both panels contain the same episodes. Compare the three neighbors of the query in each space.</p></div>
-<p class="explainer-note">This illustrates neighborhood agreement. The full score also uses feature similarities; these points are not experimental data.</p>
-</div>
+<p><strong>S² scores the structural agreement.</strong> To compare the
+two kernels, we look at neighborhoods. For each episode, we retrieve its
+nearest neighbors under each kernel, ten in our experiments. If the
+model organizes episodes by the motion they require, the two neighbor
+sets should largely overlap. The figure below shows this comparison for
+a single query episode.</p>
+<figure data-figure="2"><button aria-label="Expand figure 2" class="figure-button" type="button"><img alt='A query episode, "place cans into cabinet", with its four nearest neighbors by trajectory similarity (motor neighbors, top row) and by vision-text representation similarity (sensory neighbors, bottom row). Two sensory neighbors also appear among the motor neighbors and are marked with green checks; the other two are marked with red crosses.' decoding="async" height="1084" loading="lazy" src="assets/s2-worked-example.png" width="2844"/></button><figcaption><span class="figure-number">Figure 2:</span> <span class="caption-text">Sensorimotor Alignment compares neighbors in sensory and motor
+representation space. For a query episode, we retrieve its motor
+neighbors by trajectory similarity and its sensory neighbors by
+vision-text representation similarity. Green checks denote sensory
+neighbors that agree with the motor-neighbor set, while red crosses show
+visually plausible but motor-inconsistent neighbors. Higher agreement
+yields a higher S² score, indicating that the model's sensory
+representation reflects the trajectory similarity needed for
+control.</span></figcaption></figure>
+
+<p>Of the four sensory neighbors shown, two also appear among the
+query's motor neighbors (green checks). The other two look plausible but
+call for different motions (red crosses). One of them even shares the
+query's instruction, "place cans into cabinet", so a model that groups
+episodes by what they look or sound like, rather than by the motion they
+require, would place it nearby and lose agreement.</p>
 <p>S² aggregates this agreement over every query episode. We use
 Centered Kernel Nearest-Neighbor Alignment (CKNNA) from PRH,<label aria-label="Note 5" class="sidenote-number" for="sn-5"></label><input class="margin-toggle" id="sn-5" type="checkbox"/><span class="sidenote"><a href="https://arxiv.org/abs/2405.07987">The Platonic
 Representation Hypothesis</a> (Huh et al, 2024)</span> which measures how strongly the two
@@ -182,7 +189,7 @@ features on a reference dataset (x-axis) and compare it with the model's
 downstream manipulation success rate (y-axis). Appendix A.4 of our paper
 lists the evaluated VLAs, VLMs, WAMs, and real-robot policies, along
 with their evaluation protocols and conditions.</p>
-<figure data-figure="2"><button aria-label="Expand figure 2" class="figure-button" type="button"><img alt="Four scatter plots of Sensorimotor Alignment against success rate, for VLAs, raw VLMs, WAMs, and real-robot policies. Each shows a positive trend, with correlations of 0.717, 0.681, 0.718, and 0.831." decoding="async" height="560" loading="lazy" src="assets/s2-across-families.png" width="2059"/></button><figcaption><span class="figure-number">Figure 2:</span> <span class="caption-text">S² correlates with task success across diverse model families and
+<figure data-figure="3"><button aria-label="Expand figure 3" class="figure-button" type="button"><img alt="Four scatter plots of Sensorimotor Alignment against success rate, for VLAs, raw VLMs, WAMs, and real-robot policies. Each shows a positive trend, with correlations of 0.717, 0.681, 0.718, and 0.831." decoding="async" height="560" loading="lazy" src="assets/s2-across-families.png" width="2059"/></button><figcaption><span class="figure-number">Figure 3:</span> <span class="caption-text">S² correlates with task success across diverse model families and
 both simulated and real-world task evaluations. From left to right, each
 panel plots offline S² (x-axis) against downstream task success rate
 (y-axis) for finetuned VLAs, raw VLMs, WAMs, and real-robot policies.
@@ -260,7 +267,7 @@ scores show virtually no correlation with VLA success rate at r = −0.154
 (figure below, right), whereas S² correlates strongly at r = +0.681
 (figure below, left). S² thus tracks VLA success rate where VQA
 benchmarks do not.</p>
-<figure data-figure="3"><button aria-label="Expand figure 3" class="figure-button" type="button"><img alt="Two scatter plots for eight raw VLMs. Left: Sensorimotor Alignment against SimplerEnv success rate, with correlation 0.681. Right: average VQA score against the same success rates, with correlation −0.154." decoding="async" height="1034" loading="lazy" src="assets/s2-vs-vqa.png" width="2662"/></button><figcaption><span class="figure-number">Figure 3:</span> <span class="caption-text">Raw VLM S² correlates with downstream VLA success rate. Across 8
+<figure data-figure="4"><button aria-label="Expand figure 4" class="figure-button" type="button"><img alt="Two scatter plots for eight raw VLMs. Left: Sensorimotor Alignment against SimplerEnv success rate, with correlation 0.681. Right: average VQA score against the same success rates, with correlation −0.154." decoding="async" height="1034" loading="lazy" src="assets/s2-vs-vqa.png" width="2662"/></button><figcaption><span class="figure-number">Figure 4:</span> <span class="caption-text">Raw VLM S² correlates with downstream VLA success rate. Across 8
 models,<label aria-label="Note 16" class="sidenote-number" for="sn-16"></label><input class="margin-toggle" id="sn-16" type="checkbox"/><span class="sidenote"><a href="https://arxiv.org/abs/2601.03309">VLM4VLA:
 Revisiting Vision-Language-Models in Vision-Language-Action Models</a>
 (Zhang et al, 2026)</span> raw VLM VQA scores (right) show
@@ -292,7 +299,7 @@ S² computed on ALOHA episodes correlates far more strongly at r = +0.999
 and is the only metric that correctly recovers the success-rate
 ordering. Pixel-level prediction quality thus shows little relation to
 the task success that S² captures.</p>
-<figure data-figure="4"><button aria-label="Expand figure 4" class="figure-button" type="button"><img alt="Four scatter plots of RoboTwin success rate for three WAMs against Sensorimotor Alignment, SSIM, PSNR, and FID. Only Sensorimotor Alignment orders the three models by success rate." decoding="async" height="1020" loading="lazy" src="assets/s2-vs-video-quality.png" width="4078"/></button><figcaption><span class="figure-number">Figure 4:</span> <span class="caption-text">S² correlates with WAM success rate where perceptual metrics do
+<figure data-figure="5"><button aria-label="Expand figure 5" class="figure-button" type="button"><img alt="Four scatter plots of RoboTwin success rate for three WAMs against Sensorimotor Alignment, SSIM, PSNR, and FID. Only Sensorimotor Alignment orders the three models by success rate." decoding="async" height="1020" loading="lazy" src="assets/s2-vs-video-quality.png" width="4078"/></button><figcaption><span class="figure-number">Figure 5:</span> <span class="caption-text">S² correlates with WAM success rate where perceptual metrics do
 not. For 3 WAM policies evaluated on RoboTwin, standard video-quality
 metrics (SSIM, PSNR, FID) show no significant correlations with task
 success. In contrast, only S² computed on ALOHA episodes correctly
@@ -321,7 +328,7 @@ correlations near r = +0.7 with downstream task success for the 12 VLAs
 on SimplerEnv (figure below), confirming that S² captures a property of
 the representation that transfers across datasets rather than a
 dataset-specific artifact.</p>
-<figure data-figure="5"><button aria-label="Expand figure 5" class="figure-button" type="button"><img alt="Two scatter plots for twelve VLAs, relating Sensorimotor Alignment computed on DROID (left) and on BridgeDataV2 (right) to SimplerEnv success rate. Both show a strong positive correlation." decoding="async" height="1069" loading="lazy" src="assets/s2-across-datasets.png" width="2462"/></button><figcaption><span class="figure-number">Figure 5:</span> <span class="caption-text">Cross-dataset generalization. For 12 VLAs, S² on DROID (left) and
+<figure data-figure="6"><button aria-label="Expand figure 6" class="figure-button" type="button"><img alt="Two scatter plots for twelve VLAs, relating Sensorimotor Alignment computed on DROID (left) and on BridgeDataV2 (right) to SimplerEnv success rate. Both show a strong positive correlation." decoding="async" height="1069" loading="lazy" src="assets/s2-across-datasets.png" width="2462"/></button><figcaption><span class="figure-number">Figure 6:</span> <span class="caption-text">Cross-dataset generalization. For 12 VLAs, S² on DROID (left) and
 BridgeDataV2 (right) correlates strongly with SimplerEnv-WidowX success
 rate, reflecting a property of the representation rather than dataset
 artifacts.</span></figcaption></figure>
@@ -333,7 +340,7 @@ reference datasets, the correlation remains above r = 0.5 from short
 horizons through <em>h</em> = 220 (figure below), confirming that S²
 reflects a property of the representation that holds across horizons
 rather than an artifact of a particular horizon choice.</p>
-<figure data-figure="6"><button aria-label="Expand figure 6" class="figure-button" type="button"><img alt="Line plot of the correlation between Sensorimotor Alignment and task success across trajectory horizons, for BridgeDataV2 and DROID. Both lines stay above 0.5 across nearly all horizons." decoding="async" height="1079" loading="lazy" src="assets/s2-across-horizons.png" width="1776"/></button><figcaption><span class="figure-number">Figure 6:</span> <span class="caption-text">S² correlation is stable across trajectory horizons. For 12 VLAs,
+<figure data-figure="7"><button aria-label="Expand figure 7" class="figure-button" type="button"><img alt="Line plot of the correlation between Sensorimotor Alignment and task success across trajectory horizons, for BridgeDataV2 and DROID. Both lines stay above 0.5 across nearly all horizons." decoding="async" height="1079" loading="lazy" src="assets/s2-across-horizons.png" width="1776"/></button><figcaption><span class="figure-number">Figure 7:</span> <span class="caption-text">S² correlation is stable across trajectory horizons. For 12 VLAs,
 the correlation between S² and task success stays above r = 0.5 across
 nearly all evaluated horizons (h) on BridgeDataV2 and DROID.</span></figcaption></figure>
 
@@ -400,7 +407,7 @@ modality. We take the VLM output tokens read by the action head and form
 from the instruction tokens, and <em>joint vision-text features</em>
 from all tokens. The full per-model S² values across all feature
 positions are reported in Appendix D.1 of our paper.</p>
-<figure data-figure="7"><button aria-label="Expand figure 7" class="figure-button" type="button"><img alt="A two-by-three grid of scatter plots relating Sensorimotor Alignment to SimplerEnv success rate. Top row, twelve fine-tuned VLAs: vision-only 0.694, text-only 0.237, vision plus text 0.699. Bottom row, eight raw VLMs: vision-only 0.425, text-only 0.501, vision plus text 0.681." decoding="async" height="2470" loading="lazy" src="assets/s2-what-carries.png" width="4378"/></button><figcaption><span class="figure-number">Figure 7:</span> <span class="caption-text">Fine-tuned VLAs rely mainly on visual rather than language
+<figure data-figure="8"><button aria-label="Expand figure 8" class="figure-button" type="button"><img alt="A two-by-three grid of scatter plots relating Sensorimotor Alignment to SimplerEnv success rate. Top row, twelve fine-tuned VLAs: vision-only 0.694, text-only 0.237, vision plus text 0.699. Bottom row, eight raw VLMs: vision-only 0.425, text-only 0.501, vision plus text 0.681." decoding="async" height="2470" loading="lazy" src="assets/s2-what-carries.png" width="4378"/></button><figcaption><span class="figure-number">Figure 8:</span> <span class="caption-text">Fine-tuned VLAs rely mainly on visual rather than language
 representations for control. We correlate S² computed from vision
 features, text features, and joint vision-text features with SimplerEnv
 success rate. <strong>Top:</strong> For fine-tuned VLAs, S² from vision
@@ -445,7 +452,7 @@ action head and measure SimplerEnv success rate. Freezing the encoder
 reduces S² by 41% and the downstream task success rate by 40%. The S²
 drop holds at all 10 motion horizons, ranging from 38% to 49% (Appendix
 D.2 of our paper).</p>
-<figure data-figure="8"><button aria-label="Expand figure 8" class="figure-button" type="button"><img alt="Bar charts comparing unfrozen and frozen vision-encoder fine-tuning. Sensorimotor Alignment drops from 0.0245 to 0.0144, and SimplerEnv success rate drops from 50.00 percent to 30.21 percent." decoding="async" height="700" loading="lazy" src="assets/s2-freeze-vs-unfreeze.png" width="1523"/></button><figcaption><span class="figure-number">Figure 8:</span> <span class="caption-text">Freezing the ViT vision encoder reduces both S² and the
+<figure data-figure="9"><button aria-label="Expand figure 9" class="figure-button" type="button"><img alt="Bar charts comparing unfrozen and frozen vision-encoder fine-tuning. Sensorimotor Alignment drops from 0.0245 to 0.0144, and SimplerEnv success rate drops from 50.00 percent to 30.21 percent." decoding="async" height="700" loading="lazy" src="assets/s2-freeze-vs-unfreeze.png" width="1523"/></button><figcaption><span class="figure-number">Figure 9:</span> <span class="caption-text">Freezing the ViT vision encoder reduces both S² and the
 downstream task success rate. For a Qwen2.5-VL-3B VLA fine-tuned on
 BridgeData v2, we compare end-to-end training with a frozen vision
 encoder. Freezing lowers both S² from joint vision-text features (top)
@@ -483,7 +490,7 @@ therefore infer that early-step features are already sufficiently
 aligned with robot trajectories to generate actions. Because S²
 correlates with WAM success rate, as shown above, this result explains
 why skipping iterative video denoising barely lowers task success.</p>
-<figure data-figure="9"><button aria-label="Expand figure 9" class="figure-button" type="button"><img alt="Line plot of Sensorimotor Alignment for three WAMs at five points of the denoising schedule, from 0 to 100 percent. All three lines stay nearly flat." decoding="async" height="1076" loading="lazy" src="assets/s2-denoising.png" width="1771"/></button><figcaption><span class="figure-number">Figure 9:</span> <span class="caption-text">S² is nearly flat across the denoising schedule, suggesting that
+<figure data-figure="10"><button aria-label="Expand figure 10" class="figure-button" type="button"><img alt="Line plot of Sensorimotor Alignment for three WAMs at five points of the denoising schedule, from 0 to 100 percent. All three lines stay nearly flat." decoding="async" height="1076" loading="lazy" src="assets/s2-denoising.png" width="1771"/></button><figcaption><span class="figure-number">Figure 10:</span> <span class="caption-text">S² is nearly flat across the denoising schedule, suggesting that
 early-step features are already sufficiently aligned with robot
 trajectories to generate actions.</span></figcaption></figure>
 
@@ -506,7 +513,7 @@ the mid-depth semantic window identified by Chain-of-Steps<label aria-label="Not
 Video Reasoning</a> (Wang et al, 2026)</span>, and infer that the layers that
 reason about video semantics are also the layers most aligned with robot
 actions. Appendix D.3 of our paper gives the full analysis.</p>
-<figure data-figure="10"><button aria-label="Expand figure 10" class="figure-button" type="button"><img alt="Line plot of Sensorimotor Alignment at backbone Blocks 0, 7, 14, 21, and 29 for three WAMs. Each line peaks at Block 14." decoding="async" height="1065" loading="lazy" src="assets/s2-layerwise.png" width="1797"/></button><figcaption><span class="figure-number">Figure 10:</span> <span class="caption-text">S² peaks at Block 14 in all 3 WAMs, indicating that mid-depth
+<figure data-figure="11"><button aria-label="Expand figure 11" class="figure-button" type="button"><img alt="Line plot of Sensorimotor Alignment at backbone Blocks 0, 7, 14, 21, and 29 for three WAMs. Each line peaks at Block 14." decoding="async" height="1065" loading="lazy" src="assets/s2-layerwise.png" width="1797"/></button><figcaption><span class="figure-number">Figure 11:</span> <span class="caption-text">S² peaks at Block 14 in all 3 WAMs, indicating that mid-depth
 layers carry the strongest sensorimotor alignment.</span></figcaption></figure>
 
 </section><section aria-labelledby="citation-heading" id="citation"><h2 id="citation-heading">Citation</h2>

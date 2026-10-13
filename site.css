@@ -106,33 +106,7 @@ figcaption { margin: 13px 0 0; font: 400 var(--caption-size)/1.4 var(--font-sans
 .technical-note[open] summary { margin-bottom: .4rem; }
 .technical-note > p:last-child { margin-bottom: 1rem; }
 
-/* Neighbor explainer */
-.explainer { margin: 1.8rem 0; border: 1px solid var(--line); border-radius: .2rem; padding: 1.4rem; font-family: var(--font-sans); }
-.explainer-heading { display: flex; align-items: center; justify-content: space-between; gap: 15px; margin-bottom: 1.2rem; }
-.explainer-kicker { font-size: var(--caption-size); font-weight: 500; color: var(--fg2); }
-.toy-label { font-size: 11px; color: var(--fg4); border: 1px solid var(--line); border-radius: 20px; padding: 3px 9px; }
-.neighbor-panels { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-.neighbor-panel + .neighbor-panel { border-left: 1px solid var(--line); padding-left: 20px; }
-.explainer .panel-title { font-size: 14px; font-weight: 500; margin: 0 0 3px; color: var(--fg); }
-.explainer .panel-subtitle { font-size: 12px; color: var(--fg4); margin: 0; }
-.neighbor-panel svg { width: 100%; height: auto; display: block; overflow: visible; }
-.neighbor-link { stroke: #a9a6a2; stroke-width: 1.8; transition: stroke .25s, opacity .25s; }
-.neighbor-node { fill: #fafaf9; stroke: #cfcdca; stroke-width: 1.3; }
-.neighbor-node.near { fill: #efeeec; stroke: #8f8c88; }
 .query-node { fill: #e9e2cf; stroke: #b3a681; }
-.neighbor-text { font: 10px var(--font-mono); fill: var(--fg2); text-anchor: middle; dominant-baseline: central; pointer-events: none; }
-.neighbor-text.query-text { fill: #554b30; font-size: 9px; }
-.show-shared .neighbor-link.shared { stroke: var(--fg); stroke-width: 3; }
-.show-shared .neighbor-link:not(.shared) { stroke: #b8b5b1; stroke-dasharray: 4 5; opacity: .5; }
-.show-shared .neighbor-node.shared { fill: var(--fg); stroke: var(--fg); }
-.show-shared .neighbor-text.shared { fill: white; }
-.explainer-controls { display: flex; align-items: flex-start; gap: 20px; padding-top: 14px; border-top: 1px solid var(--line); }
-.overlap-button { flex: 0 0 auto; min-width: 170px; border: 1px solid #c9c7c4; border-radius: .2rem; padding: 9px 12px; background: var(--bg); font-size: 12px; text-align: left; }
-.overlap-button::before { content: '+'; display: inline-block; width: 18px; }
-.overlap-button[aria-pressed='true'] { color: white; background: var(--fg); border-color: var(--fg); }
-.overlap-button[aria-pressed='true']::before { content: '✓'; }
-.explainer .overlap-description { margin: 0; font-size: 12px; line-height: 1.6; color: var(--fg3); min-height: 55px; }
-.explainer .explainer-note { margin: 12px 0 0; font-size: 11px; line-height: 1.5; color: var(--fg5); }
 
 /* End of post */
 .paginator { max-width: var(--column); margin: 3.5rem auto 0; text-align: center; font: 15px var(--font-sans); }
@@ -173,10 +147,6 @@ figcaption { margin: 13px 0 0; font: 400 var(--caption-size)/1.4 var(--font-sans
   .post-title { font-size: 26px; }
   .post-subtitle { font-size: 20px; }
   .publish-metadata { font-size: 14px; }
-  .explainer { padding: 1rem; }
-  .neighbor-panels { grid-template-columns: 1fr; gap: 14px; }
-  .neighbor-panel + .neighbor-panel { padding: 16px 0 0; border-left: 0; border-top: 1px solid var(--line); }
-  .explainer-controls { flex-direction: column; gap: 12px; }
   .dialog-toolbar, .dialog-image-wrap { padding: 10px; }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -189,6 +159,6 @@ figcaption { margin: 13px 0 0; font: 400 var(--caption-size)/1.4 var(--font-sans
   .post-content-shell { display: block; }
   .content { max-width: none; font-size: 11pt; line-height: 1.5; }
   .sidenote { display: block; float: none; width: auto; margin: .3rem 0 .6rem 1.5rem; font-size: 9pt; }
-  figure, .explainer, table { break-inside: avoid; }
+  figure, table { break-inside: avoid; }
   .content h2, .content h3 { break-after: avoid; }
 }

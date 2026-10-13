@@ -126,41 +126,6 @@ for node in list(soup.contents):
         toc_entries[-1][2].append((node["id"], node.get_text(" ", strip=True)))
     section.append(node.extract())
 
-def neighbor_svg(kind):
-    points = {
-        "sensory": {"Q": (135, 108), "A": (65, 68), "B": (206, 64), "C": (107, 165), "D": (229, 173), "E": (37, 153)},
-        "motor": {"Q": (132, 108), "A": (74, 62), "B": (240, 57), "C": (201, 145), "D": (75, 170), "E": (32, 116)},
-    }[kind]
-    neighbors = {"sensory": ["A", "B", "C"], "motor": ["A", "C", "D"]}[kind]
-    qx, qy = points["Q"]
-    parts = [f'<svg viewBox="0 0 275 212" role="img" aria-label="Query neighbors in {kind} space: {", ".join(neighbors)}">']
-    for name in neighbors:
-        x, y = points[name]
-        shared = " shared" if name in ("A", "C") else ""
-        parts.append(f'<line class="neighbor-link{shared}" x1="{qx}" y1="{qy}" x2="{x}" y2="{y}"/>')
-    for name, (x, y) in points.items():
-        if name == "Q":
-            parts.append(f'<circle class="query-node" cx="{x}" cy="{y}" r="23"/><text class="neighbor-text query-text" x="{x}" y="{y}">query</text>')
-        else:
-            shared = " shared" if name in ("A", "C") else ""
-            near = " near" if name in neighbors else ""
-            parts.append(f'<circle class="neighbor-node{shared}{near}" cx="{x}" cy="{y}" r="15"/><text class="neighbor-text{shared}" x="{x}" y="{y}">{name}</text>')
-    parts.append("</svg>")
-    return "".join(parts)
-
-explainer = f'''<div class="explainer" aria-label="Interactive illustration of shared neighbors">
-  <div class="explainer-heading"><span class="explainer-kicker">The same episodes, two views</span><span class="toy-label">Illustration</span></div>
-  <div class="neighbor-panels">
-    <div class="neighbor-panel"><p class="panel-title">What the model groups together</p><p class="panel-subtitle">Neighbors in sensory representation space</p>{neighbor_svg("sensory")}</div>
-    <div class="neighbor-panel"><p class="panel-title">What the robot does similarly</p><p class="panel-subtitle">Neighbors in motor representation space</p>{neighbor_svg("motor")}</div>
-  </div>
-  <div class="explainer-controls"><button class="overlap-button" type="button" aria-label="Show shared neighbors" aria-pressed="false" aria-controls="overlap-description">Show shared neighbors</button><p class="overlap-description" id="overlap-description" aria-live="polite">Both panels contain the same episodes. Compare the three neighbors of the query in each space.</p></div>
-  <p class="explainer-note">This illustrates neighborhood agreement. The full score also uses feature similarities; these points are not experimental data.</p>
-</div>'''
-slot = article.select_one(".explainer-slot")
-if slot:
-    slot.replace_with(BeautifulSoup(explainer, "html.parser"))
-
 def toc_item(anchor, label, children):
     item = f'<li><a href="#{anchor}">{html.escape(label)}</a>'
     if children:

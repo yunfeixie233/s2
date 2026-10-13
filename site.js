@@ -35,20 +35,6 @@
     notesOpenBeforePrint = undefined;
   });
 
-  const overlapButton = document.querySelector('.overlap-button');
-  const explainer = document.querySelector('.explainer');
-  const overlapDescription = document.querySelector('.overlap-description');
-  overlapButton?.addEventListener('click', () => {
-    const active = overlapButton.getAttribute('aria-pressed') !== 'true';
-    overlapButton.setAttribute('aria-pressed', String(active));
-    overlapButton.textContent = active ? 'Shared neighbors shown' : 'Show shared neighbors';
-    overlapButton.setAttribute('aria-label', overlapButton.textContent);
-    explainer.classList.toggle('show-shared', active);
-    overlapDescription.textContent = active
-      ? 'A and C are neighbors in both spaces. B is close only in the model’s representation; D is close only in motion.'
-      : 'Both panels contain the same episodes. Compare the three neighbors of the query in each space.';
-  });
-
   const dialog = document.querySelector('.figure-dialog');
   const dialogImage = dialog.querySelector('.dialog-image');
   const imageWrap = dialog.querySelector('.dialog-image-wrap');

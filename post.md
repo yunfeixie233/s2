@@ -54,7 +54,7 @@ A high S² means the model places episodes close together when they call for sim
 
 Action is a harder test case for PRH[^prh] than vision or language: it is a physical trajectory, not another passive observation. We test a concrete prediction: a model's S² should positively relate to its downstream robot task success. If it does, S² can serve as a low-cost offline proxy for identifying which models are likely to achieve higher task success before closed-loop evaluation.
 
-Below, we show this relation across three model families and real-robot policies, compare S² with VQA and video-quality metrics, and check that it is robust to evaluation choices.
+Below, we show this relation across three model families and real-robot policies, and compare S² with VQA and video-quality metrics.
 
 ### S² Relates to Task Success Across Model Families
 
@@ -89,23 +89,6 @@ Prior work asks whether offline evaluation scores predict downstream control per
 ![Four scatter plots of RoboTwin success rate for three WAMs against Sensorimotor Alignment, SSIM, PSNR, and FID. Only Sensorimotor Alignment orders the three models by success rate.](assets/s2-vs-video-quality.png)
 
 *S² correlates with WAM success rate where perceptual metrics do not. For 3 WAM policies evaluated on RoboTwin, standard video-quality metrics (SSIM, PSNR, FID) show no significant correlations with task success. In contrast, only S² computed on ALOHA episodes correctly recovers the success-rate ordering. Only 3 of the 6 WAMs are compared, because the others do not generate future video during control evaluation.*
-
-### S² Is Robust to Evaluation Choices
-
-A useful offline metric should satisfy two complementary properties: stability to nuisance choices in how it is computed and sensitivity to physically meaningful mismatches between the reference data and the downstream task. We vary 9 factors in evaluating S² and find that the correlation with task success stays positive under all 8 nuisance choices and collapses only when the reference data have the wrong arm configuration. We present 2 nuisance factors below. In our paper, Appendix C.1 tests the other six, Appendix C.3 details the arm-configuration collapse, and Appendix E reports per-model S² values.
-
-**The correlation transfers across reference datasets.** We validate that S² is not tied to a particular reference dataset. We compute S² on both DROID (Franka Panda) and BridgeDataV2[^bridgedata] (WidowX), two datasets with different arm kinematics. Both yield strong correlations near r = +0.7 with downstream task success for the 12 VLAs on SimplerEnv (figure below), confirming that S² captures a property of the representation that transfers across datasets rather than a dataset-specific artifact.
-
-![Two scatter plots for twelve VLAs, relating Sensorimotor Alignment computed on DROID (left) and on BridgeDataV2 (right) to SimplerEnv success rate. Both show a strong positive correlation.](assets/s2-across-datasets.png)
-
-*Cross-dataset generalization. For 12 VLAs, S² on DROID (left) and BridgeDataV2 (right) correlates strongly with SimplerEnv-WidowX success rate, reflecting a property of the representation rather than dataset artifacts.*
-
-**The correlation is stable across trajectory horizons.** We validate that S² is not sensitive to the trajectory horizon *h* used during evaluation. Across both reference datasets, the correlation remains above r = 0.5 from short horizons through *h* = 220 (figure below), confirming that S² reflects a property of the representation that holds across horizons rather than an artifact of a particular horizon choice.
-
-![Line plot of the correlation between Sensorimotor Alignment and task success across trajectory horizons, for BridgeDataV2 and DROID. Both lines stay above 0.5 across nearly all horizons.](assets/s2-across-horizons.png)
-
-*S² correlation is stable across trajectory horizons. For 12 VLAs, the correlation between S² and task success stays above r = 0.5 across nearly all evaluated horizons (h) on BridgeDataV2 and DROID.*
-
 
 ## Representation-Level Explanations with S²
 
@@ -189,7 +172,6 @@ Or use the BibTeX citation:
 [^tian]: [A Control-Centric Benchmark for Video Prediction](https://arxiv.org/abs/2304.13723) (Tian et al, 2023)
 [^fid]: [GANs Trained by a Two Time-Scale Update Rule Converge to a Local Nash Equilibrium](https://arxiv.org/abs/1706.08500) (Heusel et al, 2017)
 [^ssim]: [Image Quality Assessment: From Error Visibility to Structural Similarity](https://doi.org/10.1109/TIP.2003.819861) (Wang et al, 2004)
-[^bridgedata]: [BridgeData V2: A Dataset for Robot Learning at Scale](https://arxiv.org/abs/2308.12952) (Walke et al, 2023)
 [^psnr]: [Image Quality Metrics: PSNR vs. SSIM](https://doi.org/10.1109/ICPR.2010.579) (Horé and Ziou, 2010)
 [^liberoplus]: [LIBERO-Plus: A Progressive Robustness Benchmark for Visual-Language-Action Models](https://arxiv.org/abs/2510.13626) (Fei et al, 2026)
 [^liberocf]: [When Vision Overrides Language: Evaluating and Mitigating Counterfactual Failures in VLAs](https://arxiv.org/abs/2602.17659) (Fang et al, 2026)

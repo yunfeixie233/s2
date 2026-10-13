@@ -48,8 +48,9 @@ Relates to Task Success More Closely Than Alternative Metrics</a></li><li><a hre
 Choices</a></li></ul></li><li><a href="#representation-level-explanations-with-s²">Representation-Level
 Explanations with S²</a><ul><li><a href="#what-carries-the-correlation-vision-text-or-both">What Carries
 the Correlation: Vision, Text, or Both?</a></li><li><a href="#freezing-vision-encoders-limits-s²-gain">Freezing Vision
-Encoders Limits S² Gain</a></li><li><a href="#early-denoising-features-already-carry-strong-sensorimotor-alignment">Early-Denoising
-Features Already Carry Strong Sensorimotor Alignment</a></li><li><a href="#mid-depth-blocks-carry-the-strongest-sensorimotor-alignment">Mid-Depth
+Encoders Limits S² Gain</a></li><li><a href="#features-at-early-denoising-steps-already-carry-strong-sensorimotor-alignment">Features
+at Early Denoising Steps Already Carry Strong Sensorimotor
+Alignment</a></li><li><a href="#mid-depth-blocks-carry-the-strongest-sensorimotor-alignment">Mid-Depth
 Blocks Carry the Strongest Sensorimotor Alignment</a></li></ul></li><li><a href="#citation">Citation</a></li></ul></nav>
       <article class="content" id="article"><section aria-label="Introduction" id="introduction">
 
@@ -296,8 +297,8 @@ not. For 3 WAM policies evaluated on RoboTwin, standard video-quality
 metrics (SSIM, PSNR, FID) show no significant correlations with task
 success. In contrast, only S² computed on ALOHA episodes correctly
 recovers the success-rate ordering. Only 3 of the 6 WAMs are compared,
-as the others do not decode future video under the control-evaluation
-settings.</span></figcaption></figure>
+because the others do not generate future video during control
+evaluation.</span></figcaption></figure>
 
 <h3 id="s²-is-robust-to-evaluation-choices">S² Is Robust to Evaluation
 Choices</h3>
@@ -363,7 +364,7 @@ Revisiting Vision-Language-Models in Vision-Language-Action Models</a>
 prevents the S² gain from end-to-end fine-tuning, indicating that
 fine-tuning improves control by aligning the visual representation more
 closely with motor structure.</li>
-<li><strong><a href="#early-denoising-features-already-carry-strong-sensorimotor-alignment">Iterative
+<li><strong><a href="#features-at-early-denoising-steps-already-carry-strong-sensorimotor-alignment">Iterative
 denoising</a></strong>: prior work observes that WAMs can skip iterative
 video denoising at test time, decoding actions without generating future
 video, with little loss in task success<label aria-label="Note 28" class="sidenote-number" for="sn-28"></label><input class="margin-toggle" id="sn-28" type="checkbox"/><span class="sidenote"><a href="https://arxiv.org/abs/2603.16666">Fast-WAM: Do
@@ -455,15 +456,17 @@ Motion horizon h = 7.</span></figcaption></figure>
 <p>We infer that end-to-end fine-tuning improves control by aligning
 visual representations more closely with robot trajectories, which
 explains why freezing the vision encoder lowers task success.</p>
-<h3 id="early-denoising-features-already-carry-strong-sensorimotor-alignment">Early-Denoising
-Features Already Carry Strong Sensorimotor Alignment</h3>
-<p>WAMs typically decode actions from video latents obtained through
-iterative denoising. Fast-WAM<label aria-label="Note 36" class="sidenote-number" for="sn-36"></label><input class="margin-toggle" id="sn-36" type="checkbox"/><span class="sidenote"><a href="https://arxiv.org/abs/2603.16666">Fast-WAM: Do
+<h3 id="features-at-early-denoising-steps-already-carry-strong-sensorimotor-alignment">Features
+at Early Denoising Steps Already Carry Strong Sensorimotor
+Alignment</h3>
+<p>Most WAMs generate future video through iterative denoising and
+decode actions from the resulting latents. Fast-WAM<label aria-label="Note 36" class="sidenote-number" for="sn-36"></label><input class="margin-toggle" id="sn-36" type="checkbox"/><span class="sidenote"><a href="https://arxiv.org/abs/2603.16666">Fast-WAM: Do
 World Action Models Need Test-time Future Imagination?</a> (Yuan et al,
-2026)</span> shows that this
-process can be skipped at inference with little loss in task success. We
-use S² to test whether sensorimotor alignment is already present at
-early denoising steps.</p>
+2026)</span>
+shows that WAMs can skip iterative video denoising at test time,
+decoding actions without generating future video, with little loss in
+task success. We use S² to test whether features at early denoising
+steps are already aligned with robot trajectories.</p>
 <p>In the figure below, we track S² along the denoising schedule of 3
 WAMs<label aria-label="Note 37" class="sidenote-number" for="sn-37"></label><input class="margin-toggle" id="sn-37" type="checkbox"/><span class="sidenote"><a href="https://arxiv.org/abs/2512.13030">Motus: A
 Unified Latent Action World Model</a> (Bi et al, 2026)</span><label aria-label="Note 38" class="sidenote-number" for="sn-38"></label><input class="margin-toggle" id="sn-38" type="checkbox"/><span class="sidenote"><a href="https://arxiv.org/abs/2601.21998">Causal World
@@ -476,13 +479,13 @@ Dual-Arm Robot Benchmark with Generative Digital Twins</a> (Mu et al,
 features and compute S² at 5 points in its native schedule, from 0% to
 100%. S² is already high at the earliest point and remains nearly flat,
 varying by at most 6% from its initial value across all 3 models. We
-therefore infer that the sensorimotor alignment needed for control is
-already present before denoising finishes. Because S² correlates with
-WAM success rate, as shown above, this explains why skipping iterative
-video denoising barely lowers task success.</p>
+therefore infer that early-step features are already sufficiently
+aligned with robot trajectories to generate actions. Because S²
+correlates with WAM success rate, as shown above, this result explains
+why skipping iterative video denoising barely lowers task success.</p>
 <figure data-figure="9"><button aria-label="Expand figure 9" class="figure-button" type="button"><img alt="Line plot of Sensorimotor Alignment for three WAMs at five points of the denoising schedule, from 0 to 100 percent. All three lines stay nearly flat." decoding="async" height="1076" loading="lazy" src="assets/s2-denoising.png" width="1771"/></button><figcaption><span class="figure-number">Figure 9:</span> <span class="caption-text">S² is nearly flat across the denoising schedule, suggesting that
-the alignment with robot trajectories needed for action decoding is
-present early.</span></figcaption></figure>
+early-step features are already sufficiently aligned with robot
+trajectories to generate actions.</span></figcaption></figure>
 
 <h3 id="mid-depth-blocks-carry-the-strongest-sensorimotor-alignment">Mid-Depth
 Blocks Carry the Strongest Sensorimotor Alignment</h3>

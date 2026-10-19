@@ -14,7 +14,7 @@
   <link rel="canonical" href="https://yunfeixie233.github.io/s2/">
   <title>Sensorimotor Alignment: A Platonic Proxy for Embodied Policy Success</title>
   <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
-  <link rel="stylesheet" href="site.css?v=5f0785b2bb">
+  <link rel="stylesheet" href="site.css?v=9272f93233">
   <script src="site.js?v=4fc8041bd1" defer></script>
 </head>
 <body id="top">
@@ -98,8 +98,14 @@ backbones even before costly VLA fine-tuning.</p>
 </section><section aria-labelledby="measuring-sensorimotor-alignment-heading" id="measuring-sensorimotor-alignment"><h2 id="measuring-sensorimotor-alignment-heading">Measuring sensorimotor
 alignment</h2>
 <div class="alignment-animations">
-  <img src="assets/01-DROID-to-representations-compact.gif" alt="Animation showing how DROID robot episodes become sensory and motor representations." width="960" height="488" loading="lazy" decoding="async">
-  <img src="assets/02-measuring-sensorimotor-alignment-compact.gif" alt="Animation explaining how sensory and motor similarity structures are compared to measure sensorimotor alignment." width="960" height="488" loading="lazy" decoding="async">
+  <figure class="alignment-animation">
+    <img src="assets/01-DROID-to-representations-compact.gif" alt="Animation showing how DROID robot episodes become sensory and motor representations." width="960" height="488" loading="lazy" decoding="async">
+    <figcaption class="animation-transcript">We measure sensorimotor alignment on DROID, a large dataset of real robot demonstrations. For each episode, we encode a video frame and the text instruction with the vision and text encoders of a robot foundation model, which forms the sensory representation. We encode the motion trajectory using dynamic time warping, DTW, which forms the motor representation.</figcaption>
+  </figure>
+  <figure class="alignment-animation">
+    <img src="assets/02-measuring-sensorimotor-alignment-compact.gif" alt="Animation explaining how sensory and motor similarity structures are compared to measure sensorimotor alignment." width="960" height="488" loading="lazy" decoding="async">
+    <figcaption class="animation-transcript">For each episode, we find its ten closest neighbors in the sensory representation space and its ten closest neighbors in the motor representation space. Higher agreement between the two neighbor sets means higher sensorimotor alignment. We repeat this for every episode and combine the results into one score, S².</figcaption>
+  </figure>
 </div>
 <p>Camera features and robot trajectories live in different spaces, so
 we cannot compare them directly. Following PRH,<label aria-label="Note 2" class="sidenote-number" for="sn-2"></label><input class="margin-toggle" id="sn-2" type="checkbox"/><span class="sidenote"><a href="https://arxiv.org/abs/2405.07987">The Platonic

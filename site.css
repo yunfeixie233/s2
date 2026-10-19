@@ -88,6 +88,8 @@ button:focus-visible, a:focus-visible, summary:focus-visible { outline: 2px soli
 /* Inline animations */
 .alignment-animations { display: grid; gap: 1.25rem; margin: 0 0 1.45rem; }
 .alignment-animations img { display: block; width: 100%; height: auto; }
+.alignment-animations .alignment-animation { margin: 0; padding: 0; }
+.alignment-animations .animation-transcript { margin: .65rem 0 0; color: var(--fg3); font: 400 13px/1.55 var(--font-sans); text-align: left; text-wrap: pretty; }
 
 /* Figures */
 .content figure, .post-cover figure { margin: 1.8rem 0; padding-block: .75rem; }

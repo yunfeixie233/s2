@@ -85,6 +85,10 @@ button:focus-visible, a:focus-visible, summary:focus-visible { outline: 2px soli
 .sidenote { float: right; clear: right; width: var(--sidenote-width); margin: .3rem calc(-1 * var(--sidenote-width) - var(--sidenote-gap)) 20px var(--sidenote-gap); font-size: .9rem; line-height: 1.4; color: var(--fg2); position: relative; text-wrap: pretty; }
 .sidenote a { color: var(--fg2); }
 
+/* Inline animations */
+.alignment-animations { display: grid; gap: 1.25rem; margin: 0 0 1.45rem; }
+.alignment-animations img { display: block; width: 100%; height: auto; }
+
 /* Figures */
 .content figure, .post-cover figure { margin: 1.8rem 0; padding-block: .75rem; }
 .figure-button { display: block; width: 100%; padding: 0; border: 0; background: none; position: relative; cursor: zoom-in; }

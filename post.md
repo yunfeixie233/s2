@@ -27,6 +27,11 @@ In practice, S² can serve as a low-cost offline proxy for identifying which mod
 
 ## Measuring sensorimotor alignment
 
+<div class="alignment-animations">
+  <img src="assets/01-DROID-to-representations-compact.gif" alt="Animation showing how DROID robot episodes become sensory and motor representations." width="960" height="488" loading="lazy" decoding="async">
+  <img src="assets/02-measuring-sensorimotor-alignment-compact.gif" alt="Animation explaining how sensory and motor similarity structures are compared to measure sensorimotor alignment." width="960" height="488" loading="lazy" decoding="async">
+</div>
+
 Camera features and robot trajectories live in different spaces, so we cannot compare them directly. Following PRH,[^prh] we instead compare their *similarity structures*: does each representation judge the same pairs of episodes to be alike? Each side gives us a kernel $K$, a matrix of pairwise similarities over the same episodes, and S² scores how well the two kernels agree.
 
 **S² operates on fixed offline episodes.** We compute S² on a fixed offline dataset $\mathcal{D} = \{e_i\}_{i=1}^N$, such as DROID.[^droid] Each episode $e_i = (\mathbf{x}_i, \boldsymbol{\tau}_i)$ pairs a sensory input $\mathbf{x}_i$, made up of a camera image and a language instruction, with the trajectory $\boldsymbol{\tau}_i$ that a human teleoperator then executed. Every model is scored against the same recorded trajectories, so no closed-loop rollouts are needed.

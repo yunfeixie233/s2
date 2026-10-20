@@ -83,7 +83,11 @@ button:focus-visible, a:focus-visible, summary:focus-visible { outline: 2px soli
 .adjacent-citation::before { content: ","; top: -.5rem; margin-right: .15em; }
 .sidenote::before { content: counter(sidenote-counter); padding-right: .2rem; top: -.4rem; left: -.1rem; }
 .margin-toggle { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
-.sidenote { float: right; clear: right; width: var(--sidenote-width); margin: .3rem calc(-1 * var(--sidenote-width) - var(--sidenote-gap)) 20px var(--sidenote-gap); font-size: .9rem; line-height: 1.4; color: var(--fg2); position: relative; text-wrap: pretty; }
+/* Inline disclosure is the fallback; desktop JS positions notes in a separate margin. */
+.sidenote { display: none; width: 95%; margin: 1rem 2.5%; font-size: .9rem; line-height: 1.4; color: var(--fg2); text-wrap: pretty; }
+.sidenote-number { cursor: pointer; }
+.margin-toggle:checked + .sidenote { display: block; }
+.has-margin-notes .sidenote { display: block; position: absolute; float: none; left: var(--note-left); top: var(--note-top); width: var(--margin-note-width); margin: 0; }
 .sidenote a { color: var(--fg2); }
 
 /* Inline animations */
@@ -96,7 +100,7 @@ button:focus-visible, a:focus-visible, summary:focus-visible { outline: 2px soli
 .content figure, .post-cover figure { margin: 1.8rem 0; padding-block: .75rem; }
 .figure-button { display: block; width: 100%; padding: 0; border: 0; background: none; position: relative; cursor: zoom-in; }
 .figure-button img { display: block; width: 100%; height: auto; }
-.figure-button::after { content: '↗'; position: absolute; top: 8px; right: 8px; width: 26px; height: 26px; display: grid; place-items: center; border: 1px solid var(--line); border-radius: 3px; background: rgba(255, 255, 255, .92); font: 14px var(--font-sans); color: var(--fg4); opacity: 0; transition: opacity .15s; }
+.figure-button::after { content: '↗'; position: absolute; top: -26px; right: 0; width: 22px; height: 22px; display: grid; place-items: center; border: 1px solid var(--line); border-radius: 3px; background: rgba(255, 255, 255, .92); font: 14px var(--font-sans); color: var(--fg4); opacity: 0; transition: opacity .15s; }
 .figure-button:hover::after, .figure-button:focus-visible::after { opacity: 1; }
 figcaption { margin: 13px 0 0; font: 400 var(--caption-size)/1.4 var(--font-sans); color: var(--fg3); text-align: left; }
 .figure-number { font-weight: 500; }
@@ -138,7 +142,7 @@ figcaption { margin: 13px 0 0; font: 400 var(--caption-size)/1.4 var(--font-sans
 @media (min-width: 1600px) { .post { max-width: 1010px; } :root { --sidenote-width: 275px; } }
 @media (min-width: 1800px) { .post { max-width: 1030px; } :root { --sidenote-width: 300px; } }
 
-/* Narrow screens: no contents list; tap a note number to open the note inline */
+/* Narrow screens: tap a note number to open the reference inline. */
 @media (max-width: 1279px) {
   .left-toc { display: none; }
   .post-content-shell { display: block; }
@@ -195,7 +199,7 @@ figcaption { font-size: 14px; line-height: 1.5; }
 h2:hover .heading-link, h3:hover .heading-link, .heading-link:focus-visible { opacity: 1; }
 
 .figure-panels { display: none; }
-.wide-figure { clear: both; }
+.wide-figure { clear: none; }
 .full-figure-link { border: 0; border-bottom: 1px solid var(--line); background: none; padding: .4rem 0; font: 13px var(--font-sans); color: var(--fg3); }
 .panel-controls { display: flex; flex-wrap: wrap; gap: .4rem; margin-bottom: 1rem; }
 .panel-selector, .animation-controls button { border: 1px solid var(--line); border-radius: 4px; background: var(--bg); padding: .5rem .7rem; font: 13px/1.3 var(--font-sans); }
@@ -247,3 +251,7 @@ figure[id] { scroll-margin-top: calc(var(--header-height) + 4.5rem); }
 .figure-scroll { overflow-x: auto; overflow-y: hidden; overscroll-behavior-x: contain; scrollbar-width: thin; scrollbar-color: #bbb #f4f3f2; border: 1px solid var(--line); border-radius: 4px; }
 .figure-scroll img { display: block; width: calc(100% * var(--panel-columns)); max-width: none; height: auto; margin-right: calc(100% * var(--panel-tail)); }
 .content .panel-hint { margin: .45rem 0 0; font: 12px/1.4 var(--font-sans); color: var(--fg4); }
+
+@media print {
+  .has-margin-notes .sidenote { position: static; left: auto; top: auto; width: auto; margin: .3rem 0 .6rem 1.5rem; }
+}

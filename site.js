@@ -38,6 +38,56 @@
     mobileToc.open = false;
   }));
 
+  // Keep margin references out of article flow, including beside wide figures.
+  const article = document.querySelector('.content');
+  const marginNotes = [...article.querySelectorAll('.sidenote')];
+  const marginBreakpoint = matchMedia('(min-width: 1280px)');
+  let marginLayoutPending = false;
+  function layoutMarginNotes() {
+    if (!marginBreakpoint.matches) {
+      article.classList.remove('has-margin-notes');
+      return;
+    }
+    const body = article.getBoundingClientRect();
+    const figureRight = Math.max(body.right, ...[...article.querySelectorAll('.wide-figure')].map(figure => figure.getBoundingClientRect().right));
+    const railLeft = Math.max(body.right + 64, figureRight + 24);
+    const railWidth = Math.min(300, document.documentElement.clientWidth - railLeft - 24);
+    if (railWidth < 180) {
+      article.classList.remove('has-margin-notes');
+      return;
+    }
+    article.classList.add('has-margin-notes');
+    article.style.setProperty('--margin-note-width', `${railWidth}px`);
+    let nextTop = body.top;
+    marginNotes.forEach(note => {
+      const marker = note.previousElementSibling?.previousElementSibling;
+      if (!marker) return;
+      const parent = (note.offsetParent || article).getBoundingClientRect();
+      const top = Math.max(marker.getBoundingClientRect().top, nextTop);
+      note.style.setProperty('--note-left', `${railLeft - parent.left}px`);
+      note.style.setProperty('--note-top', `${top - parent.top}px`);
+      nextTop = top + note.getBoundingClientRect().height + 12;
+    });
+    updateToc();
+  }
+  function requestMarginLayout() {
+    if (marginLayoutPending) return;
+    marginLayoutPending = true;
+    requestAnimationFrame(() => {
+      marginLayoutPending = false;
+      layoutMarginNotes();
+    });
+  }
+  layoutMarginNotes();
+  addEventListener('resize', requestMarginLayout);
+  addEventListener('load', requestMarginLayout);
+  document.fonts?.ready.then(requestMarginLayout);
+  article.querySelectorAll('img, video').forEach(media => {
+    media.addEventListener('load', requestMarginLayout);
+    media.addEventListener('loadedmetadata', requestMarginLayout);
+  });
+  new ResizeObserver(requestMarginLayout).observe(article);
+
   document.querySelectorAll('.figure-panels').forEach(gallery => {
     const buttons = [...gallery.querySelectorAll('.panel-selector')];
     const scroll = gallery.querySelector('.figure-scroll');

@@ -11,7 +11,7 @@ Conventions build.py relies on:
 
 ![Figure 1: a robot reaching for a mug connects physical reality to sensory observations and motion execution. A scatter plot relates Sensorimotor Alignment to success rate across twelve VLAs.](assets/platonic-robotics.png)
 
-*Left: a robot reaching for a mug gives us two views of one physical interaction, a sensory observation and an executed motion. Sensorimotor Alignment, S², measures whether similar observations in a model's representation correspond to similar demonstrated motions. Right: each point is one VLA. Higher alignment accompanies higher task success in SimplerEnv, a robot simulation benchmark. The correlation across these twelve models is 0.717.*
+***Left:** We test the Platonic Representation Hypothesis (PRH) in robotics, using image–text features as the sensory representation and end-effector trajectories as the motor representation: a more capable embodied model should have sensory representations that align more closely with this motor representation. To validate this, we define **Sensorimotor Alignment** (S²). **Right:** We measure S² across 12 vision-language-action models (VLAs) and find that S² correlates positively with SimplerEnv task success rate (Pearson r = +0.717), providing empirical support for this PRH-inspired view of embodiment.*
 
 The Platonic Representation Hypothesis (PRH)[^prh] argues that as vision and language models scale, their representation spaces converge toward a shared statistical model of reality. The idea is that images and text are different projections of the same underlying world. As models recover that world more faithfully, they begin to agree on which inputs are similar. For example, if a vision model places two images close together in the representation space, a language model tends to place their captions close together too.
 
@@ -61,7 +61,7 @@ Greater overlap indicates that episodes with similar sensory representations als
 
 ![A query episode, "place cans into cabinet", with its four nearest neighbors by trajectory similarity (motor neighbors, top row) and by vision-text representation similarity (sensory neighbors, bottom row). Two sensory neighbors also appear among the motor neighbors and are marked with green checks; the other two are marked with red crosses.](assets/s2-worked-example.png)
 
-*Nearest-neighbor overlap illustrates Sensorimotor Alignment (S²). For the query episode (left), the sensory neighbor set (bottom right) contains episodes with similar vision-text features, and the motor neighbor set (top right) contains episodes with similar trajectories. Green checks mark shared neighbors; red crosses mark neighbors found only in the sensory set. Greater overlap indicates that episodes with similar sensory representations also have similar motor trajectories.*
+***Measuring Sensorimotor Alignment (S²) by nearest-neighbor overlap.** For the query episode (left), sensory neighbors (bottom right) have similar vision-text features, and motor neighbors (top right) have similar trajectories. Green checks mark shared neighbors; red crosses mark neighbors found only in the sensory set. A larger overlap means that episodes with similar sensory representations also follow similar motor trajectories.*
 
 Of the four sensory neighbors shown, two are shared with the motor neighbor set (green checks). The other two are found only in the sensory set (red crosses). One of them even shares the query's instruction, "place cans into cabinet", yet calls for a different motion.
 
@@ -80,7 +80,7 @@ The figure below compares three model families and a separate set of policies ev
 
 ![Four scatter plots of Sensorimotor Alignment against success rate, for VLAs, raw VLMs, WAMs, and real-robot policies. Each shows a positive trend, with correlations of 0.717, 0.681, 0.718, and 0.831.](assets/s2-across-families.png)
 
-*Sensorimotor Alignment (S²) correlates with task success across model families and in simulated and real-world evaluations. From left to right, each panel plots offline S² (x-axis) against downstream task success rate (y-axis) for fine-tuned VLAs, raw VLMs, WAMs, and real-robot policies. For raw VLMs, task success is measured after VLA fine-tuning. These correlations support S² as an offline proxy for task success across model families.*
+***Sensorimotor Alignment (S²) correlates with task success across model families and in simulated and real-world evaluations.** Each panel plots offline S² (x-axis) against downstream task success rate (y-axis) for fine-tuned vision-language-action models (VLAs), raw vision-language models (VLMs), world action models (WAMs), and real-robot policies (from left to right). For raw VLMs, task success is measured after VLA fine-tuning. These correlations (Pearson's r; unadjusted one-tailed p-values) support S² as an offline proxy across model families.*
 
 **Vision-language-action models (VLAs).** We test 12 VLAs against their SimplerEnv[^simplerenv] success rates. The Pearson correlation r = +0.717 is strong. Thus, models with higher sensorimotor alignment tend to achieve higher task success rates.
 
@@ -100,13 +100,13 @@ Prior work asks whether offline scores correlate with downstream task performanc
 
 ![Two scatter plots for eight raw VLMs. Left: Sensorimotor Alignment against SimplerEnv success rate, with correlation 0.681. Right: average VQA score against the same success rates, with correlation −0.154.](assets/s2-vs-vqa.png)
 
-*Sensorimotor Alignment (S²) correlates with VLA success rate where VQA scores do not. Across 8 raw VLMs,[^vlm4vla] S² (left) correlates strongly with SimplerEnv task success after fine-tuning into VLAs, whereas VQA scores (right) show virtually no correlation. The left panel repeats the raw-VLM result from the figure above for comparison.*
+***Sensorimotor Alignment (S²) correlates with VLA success rate where VQA scores do not.** Across 8 raw vision-language models (VLMs)[^vlm4vla], S² (left) correlates strongly with SimplerEnv task success after fine-tuning into vision-language-action models (VLAs), whereas visual question answering (VQA) scores (right) show virtually no correlation.*
 
 **S² correlates with WAM success rate more closely than video-quality metrics.** We compare S² with standard video-quality metrics (FID[^fid], SSIM[^ssim], and PSNR[^psnr]) on 3 of the WAMs, Motus[^motus], LingBot-VA[^lingbot], and Vidar[^vidar], evaluated on RoboTwin. We find that video-quality metrics correlate weakly with task success: SSIM reaches only r = +0.558 and PSNR only r = +0.468, while FID even runs backwards, at r = +0.680, where lower video quality goes with higher success (figure below). By contrast, S² on ALOHA correlates more strongly, at r = +0.999.
 
 ![Four scatter plots of RoboTwin success rate for three WAMs against Sensorimotor Alignment, SSIM, PSNR, and FID. Only Sensorimotor Alignment orders the three models by success rate.](assets/s2-vs-video-quality.png)
 
-*Sensorimotor Alignment (S²) correlates with WAM success rate more closely than video-quality metrics. For 3 WAMs evaluated on RoboTwin, video-quality metrics (SSIM, PSNR, FID) show no significant correlations with task success. In contrast, only S² correctly recovers the success-rate ordering. Only 3 of the 6 WAMs are compared because the others do not generate future video during closed-loop task evaluation.*
+***Sensorimotor Alignment (S²) correlates with WAM success rate more closely than video-quality metrics.** For 3 world action models (WAMs) evaluated on RoboTwin, video-quality metrics (SSIM, PSNR, FID) show no significant correlations with task success. In contrast, only S² correctly recovers the success-rate ordering. Only 3 of the 6 WAMs are compared because the others do not generate future video during closed-loop task evaluation.*
 
 <div id="robustness-and-reference-data"></div>
 
@@ -129,7 +129,7 @@ VLAs often struggle with instruction grounding[^liberoplus][^liberocf][^igar]. W
 
 ![A two-by-three grid of scatter plots relating Sensorimotor Alignment to SimplerEnv success rate. Top row, twelve fine-tuned VLAs: vision-only 0.694, text-only 0.237, vision plus text 0.699. Bottom row, eight raw VLMs: vision-only 0.425, text-only 0.501, vision plus text 0.681.](assets/s2-what-carries.png)
 
-*Fine-tuned VLAs rely mainly on visual rather than language representations to produce the right motion. We correlate Sensorimotor Alignment (S²) from vision, text, and joint vision-text features (left to right) with SimplerEnv task success rate. **Top:** For fine-tuned VLAs, vision and joint features yield similarly strong correlations, while text features yield a weak correlation. **Bottom:** For raw VLMs, joint-feature S² correlates with task success after VLA fine-tuning, while neither modality alone reaches significance.*
+***Fine-tuned VLAs rely mainly on visual rather than language representations to produce the right motion.** We correlate Sensorimotor Alignment (S²) from vision, text, and joint vision-text features (left to right) with SimplerEnv task success rate. **Top:** For fine-tuned vision-language-action models (VLAs), vision and joint features correlate similarly strongly, while text features correlate weakly. **Bottom:** For raw vision-language models (VLMs), joint-feature S² correlates with task success after VLA fine-tuning, while neither modality alone reaches significance.*
 
 **Fine-tuned VLAs rely mainly on visual rather than language representations to produce the right motion.** In the 12 fine-tuned VLAs, S² from vision features correlates with SimplerEnv success rate at r = +0.694, nearly matching the joint vision-text features at r = +0.699, whereas text features show no significant correlation at r = +0.237. The raw VLMs reverse this pattern: before fine-tuning, text features correlate at r = +0.501, more strongly than vision features at r = +0.425, and joint vision-text features correlate most strongly at r = +0.681.
 
@@ -143,7 +143,7 @@ In the figure below, we compare 2 VLAs that follow the same VLM4VLA[^vlm4vla] re
 
 ![Bar charts comparing unfrozen and frozen vision-encoder fine-tuning. Sensorimotor Alignment drops from 0.0245 to 0.0144, and SimplerEnv success rate drops from 50.00 percent to 30.21 percent.](assets/s2-freeze-vs-unfreeze.png)
 
-*Freezing the vision encoder reduces both Sensorimotor Alignment (S²) and task success rate. For Qwen2.5-VL-3B VLAs fine-tuned on BridgeDataV2, we compare end-to-end training with a frozen vision encoder. Freezing lowers both S² from joint vision-text features (top) and SimplerEnv task success rate (bottom), linking lower task success to weaker sensorimotor alignment. Trajectory horizon h = 7.*
+***Freezing the vision encoder reduces both Sensorimotor Alignment (S²) and task success rate.** For Qwen2.5-VL-3B vision-language-action models fine-tuned on BridgeDataV2, we compare end-to-end training with a frozen vision encoder. Freezing lowers S² from joint vision-text features (top) and SimplerEnv success rate (bottom), linking lower success to weaker alignment. Trajectory horizon h = 7.*
 
 ### Features at Early Denoising Steps Already Carry Strong Sensorimotor Alignment
 
@@ -153,7 +153,7 @@ We measure S² for 3 WAMs[^motus][^lingbot][^vidar] on RoboTwin[^robotwin], as s
 
 ![Line plot of Sensorimotor Alignment for three WAMs at five points of the denoising schedule, from 0 to 100 percent. All three lines stay nearly flat.](assets/s2-denoising.png)
 
-*Sensorimotor Alignment (S²) is already high at early denoising steps. For 3 WAMs, S² remains nearly flat across denoising, suggesting that early-step features are already aligned with robot trajectories.*
+***Sensorimotor Alignment (S²) is already high at early denoising steps.** For 3 world action models (WAMs), S² remains nearly flat across denoising, suggesting early-step features already align with robot trajectories.*
 
 ### Mid-Depth Blocks Carry the Strongest Sensorimotor Alignment
 
@@ -163,7 +163,7 @@ In the figure below, we compute S² at different depths of 3 WAMs[^motus][^lingb
 
 ![Line plot of Sensorimotor Alignment at backbone Blocks 0, 7, 14, 21, and 29 for three WAMs. Each line peaks at Block 14.](assets/s2-layerwise.png)
 
-*Schedule-averaged Sensorimotor Alignment (S²) peaks at Block 14 in all 3 WAMs, indicating that mid-depth blocks carry the strongest sensorimotor alignment.*
+***Sensorimotor Alignment (S²) peaks at mid-depth blocks.** For 3 world action models (WAMs), schedule-averaged S² peaks at Block 14, showing peak alignment at mid-depth.*
 
 <div id="using-s²"></div>
 

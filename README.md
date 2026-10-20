@@ -28,3 +28,9 @@ python3 -m http.server 8000
 ```
 
 Open `http://localhost:8000/`. Commit the regenerated `index.html` together with any source or asset changes, then push to `main` to update the public site.
+
+## Responsive layout
+
+The reading column stays at 660px. Dense research figures (3, 5, and 6) expand on desktop and have panel selectors with horizontal scrolling on smaller screens. The complete original image remains available through “View full figure.” Navigation labels are shorter than article headings, with collapsible subsections and a mobile contents menu.
+
+The two inline animations use MP4 copies of the original GIF sequences, with pause/restart controls and static posters when reduced motion is preferred. The original GIF files remain in `assets/`. `build.py` preserves the article and caption wording while adding these controls, caption line breaks, section links, and copyable citations.

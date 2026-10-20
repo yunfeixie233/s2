@@ -104,6 +104,78 @@ for number, img in enumerate(list(soup.select("p > img")), 1):
     figure.append(figcaption)
     paragraph.replace_with(figure)
 
+# Preserve the original figures; narrow screens can inspect one column at a time.
+PANEL_VIEWS = {
+    "3": [("VLAs", 0, .283), ("VLMs", .284, .525),
+          ("WAMs", .525, .760), ("Real robots", .760, 1)],
+    "5": [("S²", 0, .264), ("SSIM", .269, .511),
+          ("PSNR", .512, .757), ("FID", .758, 1)],
+    "6": [("Vision", 0, .345), ("Text", .345, .673),
+          ("Vision + text", .673, 1)],
+}
+for figure in soup.select("figure[data-figure]"):
+    number = figure["data-figure"]
+    figure["id"] = f"figure-{number}"
+    # Existing panel labels start new caption lines; every word stays intact.
+    caption = figure.select_one(".caption-text")
+    part = None
+    for child in list(caption.contents):
+        if getattr(child, "name", None) == "strong" and child.get_text(strip=True) in {"Left:", "Right:", "Top:", "Bottom:"}:
+            part = soup.new_tag("span", attrs={"class": "caption-part"})
+            child.insert_before(part)
+        if part is not None:
+            part.append(child.extract())
+    if number not in PANEL_VIEWS:
+        continue
+    figure["class"] = "wide-figure"
+    original = figure.select_one(".figure-button")
+    original["class"] = "figure-button figure-overview"
+    original_image = original.img
+    image_width, image_height = int(original_image["width"]), int(original_image["height"])
+    max_span = max(end-start for _, start, end in PANEL_VIEWS[number])
+    tail = max(0, 1 - (1 - PANEL_VIEWS[number][-1][1]) / max_span)
+    gallery = soup.new_tag("div", attrs={"class": "figure-panels", "style": f"--panel-columns:{1/max_span:.6f};--panel-tail:{tail:.6f}"})
+    controls = soup.new_tag("div", attrs={"class": "panel-controls", "role": "group", "aria-label": f"Figure {number} panels", "hidden": ""})
+    gallery.append(controls)
+    for index, (label, start, end) in enumerate(PANEL_VIEWS[number]):
+        selector = soup.new_tag("button", attrs={"class": "panel-selector", "type": "button", "data-panel-start": str(start), "aria-controls": f"figure-{number}-scroll", "aria-pressed": "true" if index == 0 else "false"})
+        selector.string = label
+        controls.append(selector)
+    if number == "6":
+        key = soup.new_tag("p", attrs={"class": "panel-key"})
+        key.string = "Top: fine-tuned VLAs · Bottom: raw VLMs"
+        gallery.append(key)
+    scroll = soup.new_tag("div", attrs={"class": "figure-scroll", "id": f"figure-{number}-scroll", "tabindex": "0", "role": "region", "aria-label": f"Figure {number}, scroll horizontally to inspect every panel"})
+    image = soup.new_tag("img", attrs={"src": original_image["src"], "alt": original_image["alt"], "width": str(image_width), "height": str(image_height), "loading": "lazy", "decoding": "async"})
+    scroll.append(image)
+    gallery.append(scroll)
+    hint = soup.new_tag("p", attrs={"class": "panel-hint"})
+    hint.string = "Scroll horizontally to inspect each panel."
+    gallery.append(hint)
+    original.insert_after(gallery)
+    full = soup.new_tag("button", attrs={"class": "full-figure-link", "type": "button", "aria-label": f"Expand complete figure {number}"})
+    full.string = "View full figure ↗"
+    gallery.append(full)
+
+# Video preserves the GIF sequence while allowing pause/restart and reduced motion.
+for index, image in enumerate(soup.select(".alignment-animation img"), 1):
+    stem = Path(image["src"]).name.replace("-compact.gif", "")
+    movie, poster = f"assets/{stem}.mp4", f"assets/{stem}-poster.png"
+    video = soup.new_tag("video", attrs={
+        "class": "alignment-video", "id": f"animation-{index}",
+        "controls": "", "loop": "", "muted": "", "playsinline": "", "preload": "metadata",
+        "poster": f"{poster}?v={asset_version(poster)}", "width": image["width"], "height": image["height"],
+        "aria-label": image["alt"],
+    })
+    video.append(soup.new_tag("source", attrs={"src": f"{movie}?v={asset_version(movie)}", "type": "video/mp4"}))
+    image.replace_with(video)
+    controls = soup.new_tag("div", attrs={"class": "animation-controls", "hidden": ""})
+    for cls, label in (("animation-toggle", "Play"), ("animation-restart", "Restart")):
+        button = soup.new_tag("button", attrs={"class": cls, "type": "button", "aria-controls": video["id"]})
+        button.string = label
+        controls.append(button)
+    video.insert_after(controls)
+
 figure_count = len(soup.find_all("figure"))
 opening_figure = soup.find("figure")
 og_image = ""
@@ -141,13 +213,47 @@ for node in list(soup.contents):
         toc_entries[-1][2].append((node["id"], node.get_text(" ", strip=True)))
     section.append(node.extract())
 
+# Short labels are navigation only; article headings are unchanged.
+NAV_LABELS = {
+    "Introduction": "Introduction",
+    "Measuring sensorimotor alignment": "Measuring S²",
+    "S² Correlates with Robot Task Success Rate": "S² and task success",
+    "S² Correlates with Task Success Across Model Families": "Model families",
+    "S² Correlates with Task Success More Closely Than Alternative Metrics": "Alternative metrics",
+    "S² Is Robust to Evaluation Choices": "Robustness",
+    "Representation-Level Explanations with S²": "Representation analysis",
+    "What Carries the Correlation: Vision, Text, or Both?": "Vision and language",
+    "Freezing Vision Encoders Limits S² Gain": "Frozen encoders",
+    "Features at Early Denoising Steps Already Carry Strong Sensorimotor Alignment": "Early denoising",
+    "Mid-Depth Blocks Carry the Strongest Sensorimotor Alignment": "Model depth",
+}
+
 def toc_item(anchor, label, children):
-    item = f'<li><a href="#{anchor}">{html.escape(label)}</a>'
-    if children:
-        item += "<ul>" + "".join(f'<li><a href="#{a}">{html.escape(l)}</a></li>' for a, l in children) + "</ul>"
-    return item + "</li>"
+    label = " ".join(label.split())
+    link = f'<a href="#{anchor}">{html.escape(NAV_LABELS.get(label, label))}</a>'
+    if not children:
+        return f"<li>{link}</li>"
+    items = "".join(toc_item(a, l, []) for a, l in children)
+    return f'<li><details class="toc-group"><summary>{link}</summary><ul>{items}</ul></details></li>'
 
 toc = "<ul>" + "".join(toc_item(*entry) for entry in toc_entries) + "</ul>"
+
+# Add link controls after navigation labels are captured.
+for heading in article.select("h2, h3"):
+    anchor = heading.parent["id"] if heading.name == "h2" else heading["id"]
+    permalink = soup.new_tag("a", attrs={"class": "heading-link", "href": f"#{anchor}", "aria-label": "Link to this section"})
+    permalink.string = "#"
+    heading.append(permalink)
+
+for index, pre in enumerate(article.select("#citation pre"), 1):
+    pre["id"] = f"citation-code-{index}"
+    pre["class"] = "citation-code"
+    wrap = soup.new_tag("div", attrs={"class": "citation-block"})
+    pre.wrap(wrap)
+    copy = soup.new_tag("button", attrs={"class": "copy-citation", "type": "button", "data-copy-target": pre["id"], "hidden": ""})
+    copy.string = "Copy citation" if index == 1 else "Copy BibTeX"
+    pre.insert_before(copy)
+
 authors = ['Yunfei Xie', 'Howard H. Qian', 'Shiyi Lan', 'Kaiyu Hang', 'Chen Wei']
 authors_html = ", ".join(authors[:-1]) + ", and " + authors[-1]
 
@@ -198,8 +304,9 @@ page = f'''<!doctype html>
       </div>
     </div>
     {f'<div class="post-cover">{opening_figure}</div>' if opening_figure else ''}
+    <details class="mobile-toc"><summary>Contents<span class="current-section">Introduction</span></summary><nav class="article-toc" aria-label="Mobile article contents">{toc}</nav></details>
     <div class="post-content-shell">
-      <nav class="left-toc" aria-label="Article contents">{toc}</nav>
+      <nav class="left-toc article-toc" aria-label="Article contents">{toc}</nav>
       {article}
     </div>
     <div class="paginator"><a href="#top">back to top</a></div>

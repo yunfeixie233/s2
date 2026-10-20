@@ -2,7 +2,7 @@
 
 [Read the website](https://yunfeixie233.github.io/s2/)
 
-“Does the Platonic Hypothesis Extend to Robotics?” presents our work on the relationship between sensory representations, demonstrated robot motion, and policy success.
+“Sensorimotor Alignment: A Platonic Proxy for Embodied Policy Success” presents our work on the relationship between sensory representations, demonstrated robot motion, and policy success.
 
 Research by Yunfei Xie, Howard H. Qian, Shiyi Lan, Kaiyu Hang, and Chen Wei.
 
@@ -18,6 +18,8 @@ Edit the article in `post.md`, the design in `site.css`, and the interactions in
 python3 -m pip install -r requirements.txt
 python3 build.py
 ```
+
+Set `PAPER_URL` in `build.py` to the verified public paper URL when available. Until then, the Paper button is marked unavailable and has no link.
 
 To preview the site locally:
 

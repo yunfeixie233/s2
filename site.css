@@ -173,4 +173,5 @@ figcaption { margin: 13px 0 0; font: 400 var(--caption-size)/1.4 var(--font-sans
 .publication-links { display: flex; justify-content: center; flex-wrap: wrap; gap: .6rem; margin: -1rem 0 2rem; }
 .link-button { display: inline-flex; align-items: center; gap: .45rem; padding: .45rem 1.05rem; border-radius: 999px; background: #363636; color: #fff; font: 500 14px/1.2 var(--font-sans); text-decoration: none; transition: background .15s; }
 .link-button:hover, .link-button:focus-visible { background: #1f1f1f; color: #fff; }
+.link-button-unavailable, .link-button-unavailable:hover { background: #737373; color: #fff; cursor: default; }
 .link-icon { width: 1.05em; height: 1.05em; flex: none; }

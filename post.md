@@ -15,22 +15,22 @@ Conventions build.py relies on:
 
 The Platonic Representation Hypothesis (PRH)[^prh] argues that as vision and language models scale, their representation spaces converge toward a shared statistical model of reality. The idea is that images and text are different projections of the same underlying world. As models recover that world more faithfully, they begin to agree on which inputs are similar. For example, if a vision model places two images close together, a language model tends to place their captions close together too.
 
-In this work, we bring PRH to robotics and ask: can physical actions be viewed as another projection of that world, such that more capable embodied models better align their vision and language representations with the structure of motion trajectories?
+We bring this idea to robotics by treating robot trajectories as another projection of the physical world. The available embodied models do not span a broad range of sizes and training scales, so we test a concrete prediction: more capable embodied models should align their sensory representations more closely with the structure of robot motion.
 
-Our evidence suggests the answer is yes. To test this, we measure how well an embodied model's representation of its sensory input, a visual observation paired with a language instruction, aligns with the trajectory the robot then executes. Put simply, if two situations look alike to the model, they should also call for similar motions. We call this measure sensorimotor alignment (S²).
+We measure this relationship with Sensorimotor Alignment (S²), a training-free offline metric. Using recorded robot episodes, S² compares neighborhoods of a model's sensory representations with neighborhoods of demonstrated end-effector trajectories. Higher alignment means that episodes with similar sensory representations also tend to involve similar motions.
 
-Our first finding is that S² is positively related to downstream robot task success. We test a range of Vision-Language-Action models (VLAs) and World Action Models (WAMs), both in simulation and on real robots. In every setting, models with higher S² achieve higher task success rates. This pattern suggests that PRH also holds in robotics: a more capable embodied model is one whose vision and language representations better reflect the structure of physical motion.
+Across the evaluated model families and real-robot policies, higher S² tends to accompany higher downstream task success. These correlations provide empirical support for this PRH-inspired view of embodiment.
 
-S² also explains, at the representation level, several behaviors that prior work has only observed empirically. For example, VLAs often ignore the language instruction and act mainly on what they see. We find that their task success tracks the S² of their vision features, not their text features.
+S² also explains, at the representation level, several behaviors that prior work has only observed empirically. For example, vision-language-action models (VLAs) often ignore the language instruction and act mainly on what they see. We find that their task success tracks the S² of their vision features, not their text features.
 
-In practice, S² can serve as a low-cost offline proxy for identifying which models are likely to achieve higher task success before closed-loop evaluation. For instance, it can identify promising VLM backbones even before costly VLA fine-tuning.
+In practice, S² can serve as a low-cost offline proxy for identifying which models are likely to achieve higher task success before closed-loop evaluation. For instance, it can identify promising vision-language model (VLM) backbones even before costly VLA fine-tuning.
 
 ## Measuring sensorimotor alignment
 
 <div class="alignment-animations">
   <figure class="alignment-animation">
     <img src="assets/01-DROID-to-representations-compact.gif" alt="Animation showing how DROID robot episodes become sensory and motor representations." width="960" height="488" loading="lazy" decoding="async">
-    <figcaption class="animation-transcript">We measure sensorimotor alignment on DROID, a large dataset of real robot demonstrations. For each episode, we encode a video frame and the text instruction with the vision and text encoders of a robot foundation model, which forms the sensory representation. We encode the motion trajectory using dynamic time warping, DTW, which forms the motor representation.</figcaption>
+    <figcaption class="animation-transcript">We measure sensorimotor alignment on DROID, a large dataset of real robot demonstrations. For each episode, we encode a video frame and the text instruction with the vision and text encoders of a robot foundation model, which forms the sensory representation. The recorded end-effector trajectory forms the motor representation. We use dynamic time warping (DTW) to measure distances between trajectories.</figcaption>
   </figure>
   <figure class="alignment-animation">
     <img src="assets/02-measuring-sensorimotor-alignment-compact.gif" alt="Animation explaining how sensory and motor similarity structures are compared to measure sensorimotor alignment." width="960" height="488" loading="lazy" decoding="async">
@@ -38,7 +38,7 @@ In practice, S² can serve as a low-cost offline proxy for identifying which mod
   </figure>
 </div>
 
-Following PRH,[^prh] we treat end-effector trajectories as another projection of the physical world. Each trajectory describes the physical motion in an episode and is its motor representation. We refer to the model's image and text representations as sensory representations. We define S² by constructing these sensory and motor representations and measuring their alignment, as follows.
+For each recorded episode, the model's image and text features form its sensory representation, and the end-effector trajectory forms its motor representation. We compute S² by constructing these representations and comparing their neighborhoods, as follows.
 
 **Reference dataset.** To measure cross-modal alignment, we use robot datasets such as DROID,[^droid] which pair sensory inputs with physical motions. From a dataset, we sample $N$ episodes and compute both representations from each episode. For episode $i$, we randomly sample one image frame and pair it with the task instruction. This image-text pair forms the sensory input $\mathbf{x}_i$.
 
@@ -67,13 +67,13 @@ In practice, our reported S² uses a centered, normalized variant of Centered Ke
 
 ## S² Correlates with Robot Task Success Rate
 
-Action is a harder test case for PRH[^prh] than vision or language: it is not another passive observation, but a physical trajectory through the world. If embodied capability depends on capturing the motion structure of each task, a model's downstream task success should be reflected by how well its sensory representations align with the geometry of the motor space. We test this premise by comparing each model's S² with its downstream task success. A positive correlation would make S² a low-cost offline proxy for identifying which models are likely to achieve higher task success before closed-loop evaluation.
+We test our PRH-inspired prediction that models whose sensory representations align more closely with robot trajectories achieve higher task success. For each model, we compare its offline S² with independently measured closed-loop task success. A positive correlation would support both this view of embodiment and the use of S² to identify promising models before closed-loop evaluation.
 
 Below, we establish this positive correlation across three model families and real-robot policies, and show that S² correlates with task success more closely than VQA and video-quality metrics.
 
 ### S² Correlates with Task Success Across Model Families
 
-We ask whether models with greater overlap between their sensory and motor neighbor sets achieve higher task success. In the figure below, we test this across three model families and on policies evaluated on real robots. For each model, we compute S² from its sensory features on a reference dataset (x-axis) and compare it with the model's downstream manipulation success rate (y-axis). Appendix A.5 of our paper lists the evaluated VLAs, VLMs, WAMs, and real-robot policies, along with their evaluation protocols and conditions.
+The figure below compares three model families and a separate set of policies evaluated on real robots. Each panel plots S² computed on a reference dataset (x-axis) against downstream manipulation success rate (y-axis). Appendix B of our paper lists the evaluated VLAs, VLMs, world action models (WAMs), and real-robot policies, along with their evaluation protocols and conditions.
 
 ![Four scatter plots of Sensorimotor Alignment against success rate, for VLAs, raw VLMs, WAMs, and real-robot policies. Each shows a positive trend, with correlations of 0.717, 0.681, 0.718, and 0.831.](assets/s2-across-families.png)
 
@@ -87,7 +87,7 @@ We ask whether models with greater overlap between their sensory and motor neigh
 
 **Real-robot policies.** We test whether the correlation between S² and task success in simulation extends to real robots. Because real-world success rates depend on many factors, such as the task set, robot, cameras, and protocol, we take all success rates from a single unified setting: the physical-robot results that MolmoB0T[^molmobot] reports for 5 policies on 40 tasks. We then compute S² for their public checkpoints on the same DROID reference dataset. Across these 5 policies, S² shows a strong correlation with real-robot task success, r = +0.831.
 
-We further validate that S² correlates with downstream task success for frozen vision backbones under low-data behavior cloning and visual-reward learning, as shown in Appendix B.1 of our paper.
+We further validate that S² correlates with downstream task success for frozen vision backbones under low-data behavior cloning and visual-reward learning, as shown in Appendix B.6 of our paper.
 
 ### S² Correlates with Task Success More Closely Than Alternative Metrics
 
@@ -104,6 +104,10 @@ Prior work asks whether offline scores correlate with downstream task performanc
 ![Four scatter plots of RoboTwin success rate for three WAMs against Sensorimotor Alignment, SSIM, PSNR, and FID. Only Sensorimotor Alignment orders the three models by success rate.](assets/s2-vs-video-quality.png)
 
 *Sensorimotor Alignment (S²) correlates with WAM success rate more closely than video-quality metrics. For 3 WAMs evaluated on RoboTwin, video-quality metrics (SSIM, PSNR, FID) show no significant correlations with task success. In contrast, only S² correctly recovers the success-rate ordering. Only 3 of the 6 WAMs are compared because the others do not generate future video during closed-loop task evaluation.*
+
+### Robustness and Reference Data
+
+The S²–success correlation stays positive across the reference datasets, trajectory horizons, and implementation choices tested in the paper. Reference data still needs to capture the motions relevant to the model: for the 3 bimanual WAMs in the video-quality comparison, replacing bimanual ALOHA trajectories with single-arm DROID trajectories reduces the correlation from r = +0.999 to r = +0.246. Section 3.3 and Appendix C of our paper report these checks.
 
 ## Representation-Level Explanations with S²
 
@@ -155,6 +159,12 @@ In the figure below, we compute S² at different depths of 3 WAMs[^motus][^lingb
 ![Line plot of Sensorimotor Alignment at backbone Blocks 0, 7, 14, 21, and 29 for three WAMs. Each line peaks at Block 14.](assets/s2-layerwise.png)
 
 *Sensorimotor Alignment (S²) peaks at Block 14 in all 3 WAMs, indicating that mid-depth blocks carry the strongest sensorimotor alignment.*
+
+## Using S²
+
+Our results support a PRH-inspired view of embodiment: more capable models tend to align their sensory representations more closely with robot motion. S² makes this relationship measurable offline and helps identify promising models and VLM backbones before costly fine-tuning or closed-loop evaluation. It also helps diagnose how model and training choices relate to embodied performance.
+
+These findings are correlations across the evaluated models and settings. Models with similar S² can still differ in task success, so closed-loop evaluation remains the final step in model selection. Whether training directly for higher S² improves robot task success remains an open question.
 
 ## Citation
 

@@ -53,7 +53,7 @@ $$m_{\mathrm{NN}} = \frac{1}{Nk}\sum_{i=1}^{N}\left|\mathcal{N}_{\mathrm{sensory
 <div class="alignment-animations" id="neighborhood-animation">
   <figure class="alignment-animation">
     <img src="assets/02-measuring-sensorimotor-alignment-compact.gif" alt="Animation explaining how sensory and motor similarity structures are compared to measure sensorimotor alignment." width="960" height="488" loading="lazy" decoding="async">
-    <figcaption class="animation-transcript">For each episode, we find its ten closest neighbors in the sensory representation space and its ten closest neighbors in the motor representation space. Higher agreement between the two neighbor sets means higher sensorimotor alignment. We repeat this for every episode and combine the results into one score, S².</figcaption>
+    <figcaption class="animation-transcript">For each episode, we find its ten closest neighbors in the sensory representation space and its ten closest neighbors in the motor representation space. Higher agreement between the two neighbor sets means higher sensorimotor alignment. We repeat this for every episode to illustrate the neighborhood agreement underlying S².</figcaption>
   </figure>
 </div>
 
@@ -65,14 +65,14 @@ Greater overlap indicates that episodes with similar sensory representations als
 
 Of the four sensory neighbors shown, two are shared with the motor neighbor set (green checks). The other two are found only in the sensory set (red crosses). One of them even shares the query's instruction, "place cans into cabinet", yet calls for a different motion.
 
-In practice, our reported S² uses a centered, normalized variant of Centered Kernel Nearest-Neighbor Alignment (CKNNA) from PRH,[^prh] with $k = 10$ neighbors.
+The overlap above illustrates the idea behind S². Our reported score uses a centered, normalized variant of Centered Kernel Nearest-Neighbor Alignment (CKNNA) from PRH,[^prh] with $k = 10$ neighbors; Appendix A.3 of our paper gives the full definition.
 
 
 ## S² Correlates with Robot Task Success Rate
 
 We test our PRH-inspired prediction that models whose sensory representations align more closely with robot trajectories achieve higher task success. For each model, we compare its offline S² with independently measured closed-loop task success. A positive correlation would support both this view of embodiment and the use of S² to identify promising models before closed-loop evaluation.
 
-Below, we establish this positive correlation across three model families and real-robot policies, and show that S² correlates with task success more closely than VQA and video-quality metrics.
+Below, we establish this positive correlation across three model families and real-robot policies, and show that S² correlates with task success more closely than visual question answering (VQA) scores and video-quality metrics.
 
 ### S² Correlates with Task Success Across Model Families
 
@@ -165,11 +165,13 @@ In the figure below, we compute S² at different depths of 3 WAMs[^motus][^lingb
 
 *Schedule-averaged Sensorimotor Alignment (S²) peaks at Block 14 in all 3 WAMs, indicating that mid-depth blocks carry the strongest sensorimotor alignment.*
 
-## Using S²
+<div id="using-s²"></div>
+
+## Conclusion
 
 Our results support a PRH-inspired view of embodiment: more capable models tend to align their sensory representations more closely with robot motion. S² makes this relationship measurable offline and helps identify promising models and VLM backbones before costly fine-tuning or closed-loop evaluation. It also helps diagnose how model and training choices relate to embodied performance.
 
-These findings are correlations across the evaluated models and settings. Models with similar S² can still differ in task success, so closed-loop evaluation remains the final step in model selection. Whether training directly for higher S² improves robot task success remains an open question.
+**Limitations.** These findings are correlations across a limited set of model families, benchmarks, and training recipes, with few models per comparison and one real-robot setting. Models with similar S² can still differ in task success, so closed-loop evaluation remains the final step in model selection. Whether training directly for higher S² improves robot task success remains an open question.
 
 ## Citation
 

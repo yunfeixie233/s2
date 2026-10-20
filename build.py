@@ -58,8 +58,13 @@ if footnotes:
     footnotes.decompose()
 for number, ref in enumerate(list(soup.select("a.footnote-ref")), 1):
     note_id = f"sn-{number}"
+    previous = ref.previous_sibling
+    while previous is not None and getattr(previous, "name", None) is None and not str(previous).strip():
+        previous = previous.previous_sibling
+    adjacent = getattr(previous, "name", None) == "span" and "sidenote" in previous.get("class", [])
+    marker_class = "sidenote-number adjacent-citation" if adjacent else "sidenote-number"
     markup = (
-        f'<label for="{note_id}" class="sidenote-number" aria-label="Note {number}"></label>'
+        f'<label for="{note_id}" class="{marker_class}" aria-label="Note {number}"></label>'
         f'<input type="checkbox" id="{note_id}" class="margin-toggle">'
         f'<span class="sidenote">{notes[ref["href"].lstrip("#")]}</span>'
     )

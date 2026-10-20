@@ -14,7 +14,7 @@
   <link rel="canonical" href="https://yunfeixie233.github.io/s2/">
   <title>Sensorimotor Alignment: A Platonic Proxy for Embodied Policy Success</title>
   <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
-  <link rel="stylesheet" href="site.css?v=67f11e4af0">
+  <link rel="stylesheet" href="site.css?v=5db7a1f097">
   <script src="site.js?v=4fc8041bd1" defer></script>
 </head>
 <body id="top">
@@ -56,7 +56,7 @@ the Correlation: Vision, Text, or Both?</a></li><li><a href="#freezing-vision-en
 Encoders Limits S² Gain</a></li><li><a href="#features-at-early-denoising-steps-already-carry-strong-sensorimotor-alignment">Features
 at Early Denoising Steps Already Carry Strong Sensorimotor
 Alignment</a></li><li><a href="#mid-depth-blocks-carry-the-strongest-sensorimotor-alignment">Mid-Depth
-Blocks Carry the Strongest Sensorimotor Alignment</a></li></ul></li><li><a href="#using-s²">Using S²</a></li><li><a href="#citation">Citation</a></li></ul></nav>
+Blocks Carry the Strongest Sensorimotor Alignment</a></li></ul></li><li><a href="#conclusion">Conclusion</a></li><li><a href="#citation">Citation</a></li></ul></nav>
       <article class="content" id="article"><section aria-label="Introduction" id="introduction">
 
 
@@ -183,7 +183,7 @@ Representation Hypothesis</a> (Huh et al, 2024)</span></p>
 <div class="alignment-animations" id="neighborhood-animation">
 <figure class="alignment-animation">
 <img alt="Animation explaining how sensory and motor similarity structures are compared to measure sensorimotor alignment." decoding="async" height="488" loading="lazy" src="assets/02-measuring-sensorimotor-alignment-compact.gif" width="960"/>
-<figcaption class="animation-transcript">For each episode, we find its ten closest neighbors in the sensory representation space and its ten closest neighbors in the motor representation space. Higher agreement between the two neighbor sets means higher sensorimotor alignment. We repeat this for every episode and combine the results into one score, S².</figcaption>
+<figcaption class="animation-transcript">For each episode, we find its ten closest neighbors in the sensory representation space and its ten closest neighbors in the motor representation space. Higher agreement between the two neighbor sets means higher sensorimotor alignment. We repeat this for every episode to illustrate the neighborhood agreement underlying S².</figcaption>
 </figure>
 </div>
 <p>Greater overlap indicates that episodes with similar sensory
@@ -202,11 +202,12 @@ trajectories.</span></figcaption></figure>
 neighbor set (green checks). The other two are found only in the sensory
 set (red crosses). One of them even shares the query's instruction,
 "place cans into cabinet", yet calls for a different motion.</p>
-<p>In practice, our reported S² uses a centered, normalized variant of
-Centered Kernel Nearest-Neighbor Alignment (CKNNA) from PRH,<label aria-label="Note 5" class="sidenote-number" for="sn-5"></label><input class="margin-toggle" id="sn-5" type="checkbox"/><span class="sidenote"><a href="https://arxiv.org/abs/2405.07987">The Platonic
+<p>The overlap above illustrates the idea behind S². Our reported score
+uses a centered, normalized variant of Centered Kernel Nearest-Neighbor
+Alignment (CKNNA) from PRH,<label aria-label="Note 5" class="sidenote-number" for="sn-5"></label><input class="margin-toggle" id="sn-5" type="checkbox"/><span class="sidenote"><a href="https://arxiv.org/abs/2405.07987">The Platonic
 Representation Hypothesis</a> (Huh et al, 2024)</span> with
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>=</mo><mn>10</mn></mrow><annotation encoding="application/x-tex">k = 10</annotation></semantics></math>
-neighbors.</p>
+neighbors; Appendix A.3 of our paper gives the full definition.</p>
 </section><section aria-labelledby="s²-correlates-with-robot-task-success-rate-heading" id="s²-correlates-with-robot-task-success-rate"><h2 id="s²-correlates-with-robot-task-success-rate-heading">S² Correlates with
 Robot Task Success Rate</h2>
 <p>We test our PRH-inspired prediction that models whose sensory
@@ -217,7 +218,8 @@ would support both this view of embodiment and the use of S² to identify
 promising models before closed-loop evaluation.</p>
 <p>Below, we establish this positive correlation across three model
 families and real-robot policies, and show that S² correlates with task
-success more closely than VQA and video-quality metrics.</p>
+success more closely than visual question answering (VQA) scores and
+video-quality metrics.</p>
 <h3 id="s²-correlates-with-task-success-across-model-families">S²
 Correlates with Task Success Across Model Families</h3>
 <p>The figure below compares three model families and a separate set of
@@ -358,9 +360,9 @@ dominance</a></strong>: prior work observes that VLAs often struggle
 with instruction grounding: they act on what the scene visually suggests
 rather than on what the language instruction asks<label aria-label="Note 21" class="sidenote-number" for="sn-21"></label><input class="margin-toggle" id="sn-21" type="checkbox"/><span class="sidenote"><a href="https://arxiv.org/abs/2510.13626">LIBERO-Plus:
 A Progressive Robustness Benchmark for Visual-Language-Action Models</a>
-(Fei et al, 2026)</span><label aria-label="Note 22" class="sidenote-number" for="sn-22"></label><input class="margin-toggle" id="sn-22" type="checkbox"/><span class="sidenote"><a href="https://arxiv.org/abs/2602.17659">When Vision
+(Fei et al, 2026)</span><label aria-label="Note 22" class="sidenote-number adjacent-citation" for="sn-22"></label><input class="margin-toggle" id="sn-22" type="checkbox"/><span class="sidenote"><a href="https://arxiv.org/abs/2602.17659">When Vision
 Overrides Language: Evaluating and Mitigating Counterfactual Failures in
-VLAs</a> (Fang et al, 2026)</span><label aria-label="Note 23" class="sidenote-number" for="sn-23"></label><input class="margin-toggle" id="sn-23" type="checkbox"/><span class="sidenote"><a href="https://arxiv.org/abs/2603.06001">Restoring
+VLAs</a> (Fang et al, 2026)</span><label aria-label="Note 23" class="sidenote-number adjacent-citation" for="sn-23"></label><input class="margin-toggle" id="sn-23" type="checkbox"/><span class="sidenote"><a href="https://arxiv.org/abs/2603.06001">Restoring
 Linguistic Grounding in VLA Models via Train-Free Attention
 Recalibration</a> (Zhang et al, 2026)</span>. We explain that after
 VLA fine-tuning, task success is associated with vision-feature S² but
@@ -396,9 +398,9 @@ most aligned with robot motion.</li>
 the Correlation: Vision, Text, or Both?</h3>
 <p>VLAs often struggle with instruction grounding<label aria-label="Note 27" class="sidenote-number" for="sn-27"></label><input class="margin-toggle" id="sn-27" type="checkbox"/><span class="sidenote"><a href="https://arxiv.org/abs/2510.13626">LIBERO-Plus:
 A Progressive Robustness Benchmark for Visual-Language-Action Models</a>
-(Fei et al, 2026)</span><label aria-label="Note 28" class="sidenote-number" for="sn-28"></label><input class="margin-toggle" id="sn-28" type="checkbox"/><span class="sidenote"><a href="https://arxiv.org/abs/2602.17659">When Vision
+(Fei et al, 2026)</span><label aria-label="Note 28" class="sidenote-number adjacent-citation" for="sn-28"></label><input class="margin-toggle" id="sn-28" type="checkbox"/><span class="sidenote"><a href="https://arxiv.org/abs/2602.17659">When Vision
 Overrides Language: Evaluating and Mitigating Counterfactual Failures in
-VLAs</a> (Fang et al, 2026)</span><label aria-label="Note 29" class="sidenote-number" for="sn-29"></label><input class="margin-toggle" id="sn-29" type="checkbox"/><span class="sidenote"><a href="https://arxiv.org/abs/2603.06001">Restoring
+VLAs</a> (Fang et al, 2026)</span><label aria-label="Note 29" class="sidenote-number adjacent-citation" for="sn-29"></label><input class="margin-toggle" id="sn-29" type="checkbox"/><span class="sidenote"><a href="https://arxiv.org/abs/2603.06001">Restoring
 Linguistic Grounding in VLA Models via Train-Free Attention
 Recalibration</a> (Zhang et al, 2026)</span>. We use S² to explain
 this at the representation level, asking which modality the correlation
@@ -467,8 +469,8 @@ directly, with little loss in task success. We examine the
 representation-level reason: whether features at the earliest denoising
 steps already align with robot trajectories.</p>
 <p>We measure S² for 3 WAMs<label aria-label="Note 33" class="sidenote-number" for="sn-33"></label><input class="margin-toggle" id="sn-33" type="checkbox"/><span class="sidenote"><a href="https://arxiv.org/abs/2512.13030">Motus: A
-Unified Latent Action World Model</a> (Bi et al, 2026)</span><label aria-label="Note 34" class="sidenote-number" for="sn-34"></label><input class="margin-toggle" id="sn-34" type="checkbox"/><span class="sidenote"><a href="https://arxiv.org/abs/2601.21998">Causal World
-Modeling for Robot Control</a> (Li et al, 2026)</span><label aria-label="Note 35" class="sidenote-number" for="sn-35"></label><input class="margin-toggle" id="sn-35" type="checkbox"/><span class="sidenote"><a href="https://arxiv.org/abs/2507.12898">Vidar:
+Unified Latent Action World Model</a> (Bi et al, 2026)</span><label aria-label="Note 34" class="sidenote-number adjacent-citation" for="sn-34"></label><input class="margin-toggle" id="sn-34" type="checkbox"/><span class="sidenote"><a href="https://arxiv.org/abs/2601.21998">Causal World
+Modeling for Robot Control</a> (Li et al, 2026)</span><label aria-label="Note 35" class="sidenote-number adjacent-citation" for="sn-35"></label><input class="margin-toggle" id="sn-35" type="checkbox"/><span class="sidenote"><a href="https://arxiv.org/abs/2507.12898">Vidar:
 Embodied Video Diffusion Model for Generalist Manipulation</a> (Feng et
 al, 2025)</span> on RoboTwin<label aria-label="Note 36" class="sidenote-number" for="sn-36"></label><input class="margin-toggle" id="sn-36" type="checkbox"/><span class="sidenote"><a href="https://arxiv.org/abs/2504.13059">RoboTwin:
 Dual-Arm Robot Benchmark with Generative Digital Twins</a> (Mu et al,
@@ -495,8 +497,8 @@ layers in Video Diffusion Transformers are especially important for
 semantic reasoning over objects and interactions. We ask whether the
 layers with the highest S² also lie in this mid-depth range.</p>
 <p>In the figure below, we compute S² at different depths of 3 WAMs<label aria-label="Note 38" class="sidenote-number" for="sn-38"></label><input class="margin-toggle" id="sn-38" type="checkbox"/><span class="sidenote"><a href="https://arxiv.org/abs/2512.13030">Motus: A
-Unified Latent Action World Model</a> (Bi et al, 2026)</span><label aria-label="Note 39" class="sidenote-number" for="sn-39"></label><input class="margin-toggle" id="sn-39" type="checkbox"/><span class="sidenote"><a href="https://arxiv.org/abs/2601.21998">Causal World
-Modeling for Robot Control</a> (Li et al, 2026)</span><label aria-label="Note 40" class="sidenote-number" for="sn-40"></label><input class="margin-toggle" id="sn-40" type="checkbox"/><span class="sidenote"><a href="https://arxiv.org/abs/2507.12898">Vidar:
+Unified Latent Action World Model</a> (Bi et al, 2026)</span><label aria-label="Note 39" class="sidenote-number adjacent-citation" for="sn-39"></label><input class="margin-toggle" id="sn-39" type="checkbox"/><span class="sidenote"><a href="https://arxiv.org/abs/2601.21998">Causal World
+Modeling for Robot Control</a> (Li et al, 2026)</span><label aria-label="Note 40" class="sidenote-number adjacent-citation" for="sn-40"></label><input class="margin-toggle" id="sn-40" type="checkbox"/><span class="sidenote"><a href="https://arxiv.org/abs/2507.12898">Vidar:
 Embodied Video Diffusion Model for Generalist Manipulation</a> (Feng et
 al, 2025)</span>
 on RoboTwin. All 3 share a 30-block video backbone, and we extract
@@ -511,18 +513,20 @@ paper.</p>
 in all 3 WAMs, indicating that mid-depth blocks carry the strongest
 sensorimotor alignment.</span></figcaption></figure>
 
-</section><section aria-labelledby="using-s²-heading" id="using-s²"><h2 id="using-s²-heading">Using S²</h2>
+<div id="using-s²"></div>
+</section><section aria-labelledby="conclusion-heading" id="conclusion"><h2 id="conclusion-heading">Conclusion</h2>
 <p>Our results support a PRH-inspired view of embodiment: more capable
 models tend to align their sensory representations more closely with
 robot motion. S² makes this relationship measurable offline and helps
 identify promising models and VLM backbones before costly fine-tuning or
 closed-loop evaluation. It also helps diagnose how model and training
 choices relate to embodied performance.</p>
-<p>These findings are correlations across the evaluated models and
-settings. Models with similar S² can still differ in task success, so
-closed-loop evaluation remains the final step in model selection.
-Whether training directly for higher S² improves robot task success
-remains an open question.</p>
+<p><strong>Limitations.</strong> These findings are correlations across
+a limited set of model families, benchmarks, and training recipes, with
+few models per comparison and one real-robot setting. Models with
+similar S² can still differ in task success, so closed-loop evaluation
+remains the final step in model selection. Whether training directly for
+higher S² improves robot task success remains an open question.</p>
 </section><section aria-labelledby="citation-heading" id="citation"><h2 id="citation-heading">Citation</h2>
 <p>Please cite this work as:</p>
 <pre><code>Xie, Yunfei, Howard H. Qian, Shiyi Lan, Kaiyu Hang, and Chen Wei. "Sensorimotor Alignment: A Platonic Proxy for Embodied Policy Success." 2026.</code></pre>

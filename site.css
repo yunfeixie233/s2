@@ -78,8 +78,9 @@ button:focus-visible, a:focus-visible, summary:focus-visible { outline: 2px soli
 
 /* Sidenotes */
 .sidenote-number { counter-increment: sidenote-counter; display: inline; }
-.sidenote-number::after, .sidenote::before { font-family: var(--font-serif); position: relative; vertical-align: baseline; color: var(--fg4); font-size: .8rem; }
+.sidenote-number::after, .sidenote::before, .adjacent-citation::before { font-family: var(--font-serif); position: relative; vertical-align: baseline; color: var(--fg4); font-size: .8rem; }
 .sidenote-number::after { content: counter(sidenote-counter); top: -.5rem; left: -.05rem; }
+.adjacent-citation::before { content: ","; top: -.5rem; margin-right: .15em; }
 .sidenote::before { content: counter(sidenote-counter); padding-right: .2rem; top: -.4rem; left: -.1rem; }
 .margin-toggle { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
 .sidenote { float: right; clear: right; width: var(--sidenote-width); margin: .3rem calc(-1 * var(--sidenote-width) - var(--sidenote-gap)) 20px var(--sidenote-gap); font-size: .9rem; line-height: 1.4; color: var(--fg2); position: relative; text-wrap: pretty; }

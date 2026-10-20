@@ -68,14 +68,12 @@ spaces converge toward a shared statistical model of reality. The idea
 is that images and text are different projections of the same underlying
 world. As models recover that world more faithfully, they begin to agree
 on which inputs are similar. For example, if a vision model places two
-images close together, a language model tends to place their captions
-close together too.</p>
-<p>We bring this idea to robotics by treating robot trajectories as
-another projection of the physical world. The available embodied models
-do not span a broad range of sizes and training scales, so we test a
-concrete prediction: more capable embodied models should align their
-sensory representations more closely with the structure of robot
-motion.</p>
+images close together in the representation space, a language model
+tends to place their captions close together too.</p>
+<p>In this work, we bring PRH to robotics and ask: can physical actions
+be viewed as another projection of that world, such that more capable
+embodied models better align their vision and language representations
+with the structure of motion trajectories?</p>
 <p>We measure this relationship with Sensorimotor Alignment (S²), a
 training-free offline metric. Using recorded robot episodes, S² compares
 neighborhoods of a model's sensory representations with neighborhoods of

@@ -17,42 +17,45 @@ The Platonic Representation Hypothesis (PRH)[^prh] argues that as vision and lan
 
 In this work, we bring PRH to robotics and ask: can physical actions be viewed as another projection of that world, such that more capable embodied models better align their vision and language representations with the structure of motion trajectories?
 
-We measure this relationship with Sensorimotor Alignment (S²), a training-free offline metric. Using recorded robot episodes, S² compares neighborhoods of a model's sensory representations with neighborhoods of demonstrated end-effector trajectories. Higher alignment means that episodes with similar sensory representations also tend to involve similar motions.
+**Our evidence suggests the answer is yes.** To test this, we use Sensorimotor Alignment (S²), which measures the overlap between neighborhoods of a model's sensory representations and neighborhoods of end-effector trajectories. Higher alignment means episodes nearby in sensory representation space are also nearby in motor representation space.
 
-Across the evaluated model families and real-robot policies, higher S² tends to accompany higher downstream task success. These correlations provide empirical support for this PRH-inspired view of embodiment.
+Our first finding is that S² is positively related to downstream robot task success. We test a range of Vision-Language-Action models (VLAs) and World Action Models (WAMs) in simulation, as well as policies on real robots. Across these settings, models with higher S² tend to achieve higher task success rates. This pattern provides empirical support for extending PRH to robotics.
 
-S² also explains, at the representation level, several behaviors that prior work has only observed empirically. For example, vision-language-action models (VLAs) often ignore the language instruction and act mainly on what they see. We find that their task success tracks the S² of their vision features, not their text features.
+S² also explains, at the representation level, several behaviors that prior work has only observed empirically. For example, VLAs often ignore the language instruction and act mainly on what they see. We find that their task success correlates with the S² of their vision features, not their text features.
 
 In practice, S² can serve as a low-cost offline proxy for identifying which models are likely to achieve higher task success before closed-loop evaluation. For instance, it can identify promising vision-language model (VLM) backbones even before costly VLA fine-tuning.
 
 ## Measuring sensorimotor alignment
 
-<div class="alignment-animations">
+For each recorded episode, the model's image and text features form its sensory representation, and the end-effector trajectory forms its motor representation. We compute S² by constructing these representations and comparing their neighborhoods, as follows.
+
+**Reference dataset.** To measure cross-modal alignment, we use the DROID[^droid] and BridgeDataV2 datasets, which pair sensory inputs with physical motions. From a dataset, we sample $N$ episodes and compute both representations from each episode. For episode $i$, we randomly sample one image frame and pair it with the task instruction. This image-text pair forms the sensory input $\mathbf{x}_i$.
+
+<div class="alignment-animations" id="dataset-animation">
   <figure class="alignment-animation">
     <img src="assets/01-DROID-to-representations-compact.gif" alt="Animation showing how DROID robot episodes become sensory and motor representations." width="960" height="488" loading="lazy" decoding="async">
     <figcaption class="animation-transcript">We measure sensorimotor alignment on DROID, a large dataset of real robot demonstrations. For each episode, we encode a video frame and the text instruction with the vision and text encoders of a robot foundation model, which forms the sensory representation. The recorded end-effector trajectory forms the motor representation. We use dynamic time warping (DTW) to measure distances between trajectories.</figcaption>
   </figure>
+</div>
+
+**Sensory representation.** For each episode $i$, we encode the image frame and text instruction with the vision and text encoders of a robot foundation model, obtaining a sensory embedding $\mathbf{z}_i = f(\mathbf{x}_i) \in \mathbb{R}^{d}$. Here, $f$ applies the vision encoder to the image and the text encoder to the instruction, and we average-pool the output token features into a single $d$-dimensional vector.
+
+**Motor representation.** For the sampled image frame in $\mathbf{x}_i$, we extract end-effector positions, orientations, and gripper states over the next $h$ steps, forming the motor representation $\boldsymbol{\tau}_i \in \mathbb{R}^{h \times 7}$. Each row contains the position coordinates $x,y,z$, roll, pitch, and yaw angles $\phi,\theta,\psi$, and the recorded gripper coordinate $g$. We encode positions as vectors in $\mathbb{R}^3$ and orientation angles as rotations in SO(3), so that distances reflect the geometry of translations and rotations.
+
+**Sensorimotor alignment.** We measure alignment with a mutual nearest-neighbor metric comparing the $k$-nearest-neighbor sets in sensory and motor spaces. Greater overlap indicates stronger alignment between an episode's sensory and motor representations. To identify these neighbors, we use cosine distance in sensory space and dynamic time warping (DTW)[^dtw] in motor space to compare trajectories executed at different speeds. Smaller distances mean closer neighbors:
+
+$$d_{\mathrm{sensory}}(i,j) = 1 - \cos(\mathbf{z}_i, \mathbf{z}_j), \qquad d_{\mathrm{motor}}(i,j) = \mathrm{DTW}(\boldsymbol{\tau}_i, \boldsymbol{\tau}_j)$$
+
+For each episode $i$, we use $d_{\mathrm{sensory}}$ to form the sensory $k$-nearest-neighbor set $\mathcal{N}_{\mathrm{sensory}}(i)$ and $d_{\mathrm{motor}}$ to form the motor $k$-nearest-neighbor set $\mathcal{N}_{\mathrm{motor}}(i)$. We then take the intersection of the two sets, divide its size by $k$, and average over all $N$ episodes:[^prh]
+
+$$m_{\mathrm{NN}} = \frac{1}{Nk}\sum_{i=1}^{N}\left|\mathcal{N}_{\mathrm{sensory}}(i)\cap\mathcal{N}_{\mathrm{motor}}(i)\right|$$
+
+<div class="alignment-animations" id="neighborhood-animation">
   <figure class="alignment-animation">
     <img src="assets/02-measuring-sensorimotor-alignment-compact.gif" alt="Animation explaining how sensory and motor similarity structures are compared to measure sensorimotor alignment." width="960" height="488" loading="lazy" decoding="async">
     <figcaption class="animation-transcript">For each episode, we find its ten closest neighbors in the sensory representation space and its ten closest neighbors in the motor representation space. Higher agreement between the two neighbor sets means higher sensorimotor alignment. We repeat this for every episode and combine the results into one score, S².</figcaption>
   </figure>
 </div>
-
-For each recorded episode, the model's image and text features form its sensory representation, and the end-effector trajectory forms its motor representation. We compute S² by constructing these representations and comparing their neighborhoods, as follows.
-
-**Reference dataset.** To measure cross-modal alignment, we use robot datasets such as DROID,[^droid] which pair sensory inputs with physical motions. From a dataset, we sample $N$ episodes and compute both representations from each episode. For episode $i$, we randomly sample one image frame and pair it with the task instruction. This image-text pair forms the sensory input $\mathbf{x}_i$.
-
-**Sensory representation.** For each episode $i$, we encode the image frame and text instruction with the vision and text encoders of a robot foundation model, obtaining a sensory embedding $\mathbf{z}_i = f(\mathbf{x}_i)$, where $f$ is the vision encoder, the text encoder, or both being evaluated.
-
-**Motor representation.** For the sampled image frame in $\mathbf{x}_i$, we extract the corresponding end-effector positions, orientations, and gripper states over the next $h$ steps. These states form the motor representation $\boldsymbol{\tau}_i$ of episode $i$. We encode position coordinates as vectors in $\mathbb{R}^3$ and orientation angles as rotations in SO(3), so that distances reflect the geometry of translations and rotations.
-
-**Sensorimotor alignment.** To measure this alignment, we compare the $k$-nearest-neighbor sets in sensory and motor spaces. Greater overlap between the two neighbor sets indicates stronger alignment between an episode's sensory and motor representations. To identify these neighbors, we use cosine distance in sensory space. To compare trajectories executed at different speeds, we use dynamic time warping (DTW)[^dtw] to measure distance in motor space:
-
-$$d_{\mathrm{sensory}}(i,j) = 1 - \cos(\mathbf{z}_i, \mathbf{z}_j), \qquad d_{\mathrm{motor}}(i,j) = \mathrm{DTW}(\boldsymbol{\tau}_i, \boldsymbol{\tau}_j)$$
-
-For each episode $i$, we use $d_{\mathrm{sensory}}$ to form the sensory neighbor set $\mathcal{N}_{\mathrm{sensory}}(i)$ and $d_{\mathrm{motor}}$ to form the motor neighbor set $\mathcal{N}_{\mathrm{motor}}(i)$. Then we measure the overlap between these sets by averaging the fraction of shared neighbors over all $N$ episodes:[^prh]
-
-$$m_{\mathrm{NN}} = \frac{1}{Nk}\sum_{i=1}^{N}\left|\mathcal{N}_{\mathrm{sensory}}(i)\cap\mathcal{N}_{\mathrm{motor}}(i)\right|$$
 
 Greater overlap indicates that episodes with similar sensory representations also have similar motor trajectories, as the figure below shows for a single query episode.
 

@@ -74,21 +74,23 @@ tends to place their captions close together too.</p>
 be viewed as another projection of that world, such that more capable
 embodied models better align their vision and language representations
 with the structure of motion trajectories?</p>
-<p>We measure this relationship with Sensorimotor Alignment (S²), a
-training-free offline metric. Using recorded robot episodes, S² compares
-neighborhoods of a model's sensory representations with neighborhoods of
-demonstrated end-effector trajectories. Higher alignment means that
-episodes with similar sensory representations also tend to involve
-similar motions.</p>
-<p>Across the evaluated model families and real-robot policies, higher
-S² tends to accompany higher downstream task success. These correlations
-provide empirical support for this PRH-inspired view of embodiment.</p>
+<p><strong>Our evidence suggests the answer is yes.</strong> To test
+this, we use Sensorimotor Alignment (S²), which measures the overlap
+between neighborhoods of a model's sensory representations and
+neighborhoods of end-effector trajectories. Higher alignment means
+episodes nearby in sensory representation space are also nearby in motor
+representation space.</p>
+<p>Our first finding is that S² is positively related to downstream
+robot task success. We test a range of Vision-Language-Action models
+(VLAs) and World Action Models (WAMs) in simulation, as well as policies
+on real robots. Across these settings, models with higher S² tend to
+achieve higher task success rates. This pattern provides empirical
+support for extending PRH to robotics.</p>
 <p>S² also explains, at the representation level, several behaviors that
-prior work has only observed empirically. For example,
-vision-language-action models (VLAs) often ignore the language
-instruction and act mainly on what they see. We find that their task
-success tracks the S² of their vision features, not their text
-features.</p>
+prior work has only observed empirically. For example, VLAs often ignore
+the language instruction and act mainly on what they see. We find that
+their task success correlates with the S² of their vision features, not
+their text features.</p>
 <p>In practice, S² can serve as a low-cost offline proxy for identifying
 which models are likely to achieve higher task success before
 closed-loop evaluation. For instance, it can identify promising
@@ -96,80 +98,94 @@ vision-language model (VLM) backbones even before costly VLA
 fine-tuning.</p>
 </section><section aria-labelledby="measuring-sensorimotor-alignment-heading" id="measuring-sensorimotor-alignment"><h2 id="measuring-sensorimotor-alignment-heading">Measuring sensorimotor
 alignment</h2>
-<div class="alignment-animations">
-<figure class="alignment-animation">
-<img alt="Animation showing how DROID robot episodes become sensory and motor representations." decoding="async" height="488" loading="lazy" src="assets/01-DROID-to-representations-compact.gif" width="960"/>
-<figcaption class="animation-transcript">We measure sensorimotor alignment on DROID, a large dataset of real robot demonstrations. For each episode, we encode a video frame and the text instruction with the vision and text encoders of a robot foundation model, which forms the sensory representation. The recorded end-effector trajectory forms the motor representation. We use dynamic time warping (DTW) to measure distances between trajectories.</figcaption>
-</figure>
-<figure class="alignment-animation">
-<img alt="Animation explaining how sensory and motor similarity structures are compared to measure sensorimotor alignment." decoding="async" height="488" loading="lazy" src="assets/02-measuring-sensorimotor-alignment-compact.gif" width="960"/>
-<figcaption class="animation-transcript">For each episode, we find its ten closest neighbors in the sensory representation space and its ten closest neighbors in the motor representation space. Higher agreement between the two neighbor sets means higher sensorimotor alignment. We repeat this for every episode and combine the results into one score, S².</figcaption>
-</figure>
-</div>
 <p>For each recorded episode, the model's image and text features form
 its sensory representation, and the end-effector trajectory forms its
 motor representation. We compute S² by constructing these
 representations and comparing their neighborhoods, as follows.</p>
 <p><strong>Reference dataset.</strong> To measure cross-modal alignment,
-we use robot datasets such as DROID,<label aria-label="Note 2" class="sidenote-number" for="sn-2"></label><input class="margin-toggle" id="sn-2" type="checkbox"/><span class="sidenote"><a href="https://arxiv.org/abs/2403.12945">DROID: A
+we use the DROID<label aria-label="Note 2" class="sidenote-number" for="sn-2"></label><input class="margin-toggle" id="sn-2" type="checkbox"/><span class="sidenote"><a href="https://arxiv.org/abs/2403.12945">DROID: A
 Large-Scale In-the-Wild Robot Manipulation Dataset</a> (Khazatsky et al,
-2024)</span> which pair sensory
-inputs with physical motions. From a dataset, we sample
+2024)</span> and BridgeDataV2 datasets, which
+pair sensory inputs with physical motions. From a dataset, we sample
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>N</mi><annotation encoding="application/x-tex">N</annotation></semantics></math>
 episodes and compute both representations from each episode. For episode
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>,
 we randomly sample one image frame and pair it with the task
 instruction. This image-text pair forms the sensory input
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝐱</mi><mi>i</mi></msub><annotation encoding="application/x-tex">\mathbf{x}_i</annotation></semantics></math>.</p>
+<div class="alignment-animations" id="dataset-animation">
+<figure class="alignment-animation">
+<img alt="Animation showing how DROID robot episodes become sensory and motor representations." decoding="async" height="488" loading="lazy" src="assets/01-DROID-to-representations-compact.gif" width="960"/>
+<figcaption class="animation-transcript">We measure sensorimotor alignment on DROID, a large dataset of real robot demonstrations. For each episode, we encode a video frame and the text instruction with the vision and text encoders of a robot foundation model, which forms the sensory representation. The recorded end-effector trajectory forms the motor representation. We use dynamic time warping (DTW) to measure distances between trajectories.</figcaption>
+</figure>
+</div>
 <p><strong>Sensory representation.</strong> For each episode
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>,
 we encode the image frame and text instruction with the vision and text
 encoders of a robot foundation model, obtaining a sensory embedding
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>𝐳</mi><mi>i</mi></msub><mo>=</mo><mi>f</mi><mo form="prefix" stretchy="false">(</mo><msub><mi>𝐱</mi><mi>i</mi></msub><mo form="postfix" stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">\mathbf{z}_i = f(\mathbf{x}_i)</annotation></semantics></math>,
-where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>𝐳</mi><mi>i</mi></msub><mo>=</mo><mi>f</mi><mo form="prefix" stretchy="false">(</mo><msub><mi>𝐱</mi><mi>i</mi></msub><mo form="postfix" stretchy="false">)</mo><mo>∈</mo><msup><mi>ℝ</mi><mi>d</mi></msup></mrow><annotation encoding="application/x-tex">\mathbf{z}_i = f(\mathbf{x}_i) \in \mathbb{R}^{d}</annotation></semantics></math>.
+Here,
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>f</mi><annotation encoding="application/x-tex">f</annotation></semantics></math>
-is the vision encoder, the text encoder, or both being evaluated.</p>
+applies the vision encoder to the image and the text encoder to the
+instruction, and we average-pool the output token features into a single
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>d</mi><annotation encoding="application/x-tex">d</annotation></semantics></math>-dimensional
+vector.</p>
 <p><strong>Motor representation.</strong> For the sampled image frame in
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝐱</mi><mi>i</mi></msub><annotation encoding="application/x-tex">\mathbf{x}_i</annotation></semantics></math>,
-we extract the corresponding end-effector positions, orientations, and
-gripper states over the next
+we extract end-effector positions, orientations, and gripper states over
+the next
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>h</mi><annotation encoding="application/x-tex">h</annotation></semantics></math>
-steps. These states form the motor representation
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝛕</mi><mi>i</mi></msub><annotation encoding="application/x-tex">\boldsymbol{\tau}_i</annotation></semantics></math>
-of episode
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>.
-We encode position coordinates as vectors in
+steps, forming the motor representation
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>𝛕</mi><mi>i</mi></msub><mo>∈</mo><msup><mi>ℝ</mi><mrow><mi>h</mi><mo>×</mo><mn>7</mn></mrow></msup></mrow><annotation encoding="application/x-tex">\boldsymbol{\tau}_i \in \mathbb{R}^{h \times 7}</annotation></semantics></math>.
+Each row contains the position coordinates
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>x</mi><mo>,</mo><mi>y</mi><mo>,</mo><mi>z</mi></mrow><annotation encoding="application/x-tex">x,y,z</annotation></semantics></math>,
+roll, pitch, and yaw angles
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ϕ</mi><mo>,</mo><mi>θ</mi><mo>,</mo><mi>ψ</mi></mrow><annotation encoding="application/x-tex">\phi,\theta,\psi</annotation></semantics></math>,
+and the recorded gripper coordinate
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>g</mi><annotation encoding="application/x-tex">g</annotation></semantics></math>.
+We encode positions as vectors in
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>ℝ</mi><mn>3</mn></msup><annotation encoding="application/x-tex">\mathbb{R}^3</annotation></semantics></math>
 and orientation angles as rotations in SO(3), so that distances reflect
 the geometry of translations and rotations.</p>
-<p><strong>Sensorimotor alignment.</strong> To measure this alignment,
-we compare the
+<p><strong>Sensorimotor alignment.</strong> We measure alignment with a
+mutual nearest-neighbor metric comparing the
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>-nearest-neighbor
-sets in sensory and motor spaces. Greater overlap between the two
-neighbor sets indicates stronger alignment between an episode's sensory
-and motor representations. To identify these neighbors, we use cosine
-distance in sensory space. To compare trajectories executed at different
-speeds, we use dynamic time warping (DTW)<label aria-label="Note 3" class="sidenote-number" for="sn-3"></label><input class="margin-toggle" id="sn-3" type="checkbox"/><span class="sidenote"><a href="https://doi.org/10.1109/TASSP.1978.1163055">Dynamic Programming
+sets in sensory and motor spaces. Greater overlap indicates stronger
+alignment between an episode's sensory and motor representations. To
+identify these neighbors, we use cosine distance in sensory space and
+dynamic time warping (DTW)<label aria-label="Note 3" class="sidenote-number" for="sn-3"></label><input class="margin-toggle" id="sn-3" type="checkbox"/><span class="sidenote"><a href="https://doi.org/10.1109/TASSP.1978.1163055">Dynamic Programming
 Algorithm Optimization for Spoken Word Recognition</a> (Sakoe and Chiba,
-1978)</span> to
-measure distance in motor space:</p>
+1978)</span> in motor space to
+compare trajectories executed at different speeds. Smaller distances
+mean closer neighbors:</p>
 <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>d</mi><mrow><mi mathvariant="normal">s</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">s</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">y</mi></mrow></msub><mo form="prefix" stretchy="false">(</mo><mi>i</mi><mo>,</mo><mi>j</mi><mo form="postfix" stretchy="false">)</mo><mo>=</mo><mn>1</mn><mo>−</mo><mi>cos</mi><mo>⁡</mo><mo form="prefix" stretchy="false">(</mo><msub><mi>𝐳</mi><mi>i</mi></msub><mo>,</mo><msub><mi>𝐳</mi><mi>j</mi></msub><mo form="postfix" stretchy="false">)</mo><mo>,</mo><mspace width="2.0em"></mspace><msub><mi>d</mi><mrow><mi mathvariant="normal">m</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">r</mi></mrow></msub><mo form="prefix" stretchy="false">(</mo><mi>i</mi><mo>,</mo><mi>j</mi><mo form="postfix" stretchy="false">)</mo><mo>=</mo><mrow><mi mathvariant="normal">D</mi><mi mathvariant="normal">T</mi><mi mathvariant="normal">W</mi></mrow><mo form="prefix" stretchy="false">(</mo><msub><mi>𝛕</mi><mi>i</mi></msub><mo>,</mo><msub><mi>𝛕</mi><mi>j</mi></msub><mo form="postfix" stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">d_{\mathrm{sensory}}(i,j) = 1 - \cos(\mathbf{z}_i, \mathbf{z}_j), \qquad d_{\mathrm{motor}}(i,j) = \mathrm{DTW}(\boldsymbol{\tau}_i, \boldsymbol{\tau}_j)</annotation></semantics></math></p>
 <p>For each episode
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>,
 we use
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>d</mi><mrow><mi mathvariant="normal">s</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">s</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">y</mi></mrow></msub><annotation encoding="application/x-tex">d_{\mathrm{sensory}}</annotation></semantics></math>
-to form the sensory neighbor set
+to form the sensory
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>-nearest-neighbor
+set
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>𝒩</mi><mrow><mi mathvariant="normal">s</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">s</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">y</mi></mrow></msub><mo form="prefix" stretchy="false">(</mo><mi>i</mi><mo form="postfix" stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">\mathcal{N}_{\mathrm{sensory}}(i)</annotation></semantics></math>
 and
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>d</mi><mrow><mi mathvariant="normal">m</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">r</mi></mrow></msub><annotation encoding="application/x-tex">d_{\mathrm{motor}}</annotation></semantics></math>
-to form the motor neighbor set
+to form the motor
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>-nearest-neighbor
+set
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>𝒩</mi><mrow><mi mathvariant="normal">m</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">r</mi></mrow></msub><mo form="prefix" stretchy="false">(</mo><mi>i</mi><mo form="postfix" stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">\mathcal{N}_{\mathrm{motor}}(i)</annotation></semantics></math>.
-Then we measure the overlap between these sets by averaging the fraction
-of shared neighbors over all
+We then take the intersection of the two sets, divide its size by
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>,
+and average over all
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>N</mi><annotation encoding="application/x-tex">N</annotation></semantics></math>
 episodes:<label aria-label="Note 4" class="sidenote-number" for="sn-4"></label><input class="margin-toggle" id="sn-4" type="checkbox"/><span class="sidenote"><a href="https://arxiv.org/abs/2405.07987">The Platonic
 Representation Hypothesis</a> (Huh et al, 2024)</span></p>
 <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>m</mi><mrow><mi mathvariant="normal">N</mi><mi mathvariant="normal">N</mi></mrow></msub><mo>=</mo><mfrac><mn>1</mn><mrow><mi>N</mi><mi>k</mi></mrow></mfrac><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>N</mi></munderover><mrow><mo form="prefix" stretchy="true">|</mo><msub><mi>𝒩</mi><mrow><mi mathvariant="normal">s</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">n</mi><mi mathvariant="normal">s</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">y</mi></mrow></msub><mo form="prefix" stretchy="false">(</mo><mi>i</mi><mo form="postfix" stretchy="false">)</mo><mo>∩</mo><msub><mi>𝒩</mi><mrow><mi mathvariant="normal">m</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">o</mi><mi mathvariant="normal">r</mi></mrow></msub><mo form="prefix" stretchy="false">(</mo><mi>i</mi><mo form="postfix" stretchy="false">)</mo><mo form="postfix" stretchy="true">|</mo></mrow></mrow><annotation encoding="application/x-tex">m_{\mathrm{NN}} = \frac{1}{Nk}\sum_{i=1}^{N}\left|\mathcal{N}_{\mathrm{sensory}}(i)\cap\mathcal{N}_{\mathrm{motor}}(i)\right|</annotation></semantics></math></p>
+<div class="alignment-animations" id="neighborhood-animation">
+<figure class="alignment-animation">
+<img alt="Animation explaining how sensory and motor similarity structures are compared to measure sensorimotor alignment." decoding="async" height="488" loading="lazy" src="assets/02-measuring-sensorimotor-alignment-compact.gif" width="960"/>
+<figcaption class="animation-transcript">For each episode, we find its ten closest neighbors in the sensory representation space and its ten closest neighbors in the motor representation space. Higher agreement between the two neighbor sets means higher sensorimotor alignment. We repeat this for every episode and combine the results into one score, S².</figcaption>
+</figure>
+</div>
 <p>Greater overlap indicates that episodes with similar sensory
 representations also have similar motor trajectories, as the figure
 below shows for a single query episode.</p>

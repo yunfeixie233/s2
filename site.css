@@ -181,7 +181,7 @@ figcaption { margin: 13px 0 0; font: 400 var(--caption-size)/1.4 var(--font-sans
 figcaption { font-size: 14px; line-height: 1.5; }
 .caption-part { display: block; margin-top: .45rem; }
 .caption-part:first-child { display: inline; margin-top: 0; }
-.post-cover figcaption { max-width: 900px; margin: 14px auto 0; }
+.post-cover figcaption { max-width: var(--column); margin: 14px auto 0; }
 .figure-button::after { opacity: .85; }
 .figure-button:hover::after, .figure-button:focus-visible::after { opacity: 1; }
 
@@ -214,7 +214,7 @@ h2:hover .heading-link, h3:hover .heading-link, .heading-link:focus-visible { op
 @media (min-width: 1280px) {
   .left-toc { transform: translateX(clamp(-206px, calc(598px - 50vw), 0px)); }
   .content .wide-figure { position: relative; left: 50%; transform: translateX(-50%); width: min(1000px, calc(100vw - 540px)); }
-  .wide-figure figcaption { max-width: 800px; margin-left: auto; margin-right: auto; }
+  .wide-figure figcaption { max-width: var(--column); margin-left: auto; margin-right: auto; }
 }
 @media (max-width: 1279px) {
   .mobile-toc { display: block; position: sticky; top: var(--header-height); z-index: 15; margin: 0 0 1.5rem; border-block: 1px solid var(--line); background: var(--bg); font: 13px/1.4 var(--font-sans); }

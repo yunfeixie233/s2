@@ -28,6 +28,7 @@ a { color: var(--fg4); text-decoration: none; transition: color .3s ease-in-out,
 button { color: inherit; font: inherit; cursor: pointer; }
 button, a, label { -webkit-tap-highlight-color: transparent; }
 button:focus-visible, a:focus-visible, summary:focus-visible { outline: 2px solid var(--fg4); outline-offset: 3px; }
+.sidenote-number:has(+ .margin-toggle:focus-visible), .figure-scroll:focus-visible { outline: 2px solid var(--fg4); outline-offset: 3px; }
 ::selection { background: rgba(0, 0, 0, .12); }
 .skip-link { position: fixed; z-index: 100; left: 16px; top: -70px; padding: 10px 16px; background: var(--fg); color: white; font: 14px var(--font-sans); }
 .skip-link:focus { top: 10px; }
@@ -62,6 +63,8 @@ button:focus-visible, a:focus-visible, summary:focus-visible { outline: 2px soli
 .content strong { font-weight: 600; }
 .content ul, .content ol { padding-left: 1.4rem; margin: 0 0 1.45rem; }
 .content math[display="block"] { display: block math; text-align: center; margin: 0 0 1.45rem; overflow-x: auto; overflow-y: hidden; }
+.content .distance-equations { display: flex; justify-content: center; flex-wrap: wrap; align-items: center; gap: .8rem 2em; }
+.content .distance-equations math { flex: 0 0 auto; max-width: 100%; margin: 0; }
 .content pre { background: var(--bg-code); border-radius: .2rem; padding: .9rem 1rem; margin: 1.2rem 0; overflow-x: auto; font: 13px/1.55 var(--font-mono); }
 .content code { font-family: var(--font-mono); font-size: .85em; }
 .content pre code { font-size: inherit; }
@@ -125,16 +128,16 @@ figcaption { margin: 13px 0 0; font: 400 var(--caption-size)/1.4 var(--font-sans
 .site-footer p { margin: 0; }
 
 /* Expanded figure */
-.figure-dialog { border: 0; border-radius: .3rem; padding: 0; background: var(--bg); color: var(--fg); width: min(1500px, 95vw); max-width: 95vw; max-height: 94vh; }
+.figure-dialog { --dialog-image-padding: 20px; border: 0; border-radius: .3rem; padding: 0; background: var(--bg); color: var(--fg); width: min(1500px, 95vw); max-width: 95vw; max-height: 94dvh; }
 .figure-dialog::backdrop { background: rgba(20, 20, 20, .72); }
 .dialog-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 15px; padding: 12px 18px; border-bottom: 1px solid var(--line); position: sticky; top: 0; background: var(--bg); z-index: 1; font-family: var(--font-sans); }
 .dialog-title { font-size: 13px; font-weight: 500; color: var(--fg2); }
 .dialog-actions { display: flex; gap: 10px; }
 .dialog-actions button { background: transparent; border: 1px solid var(--line); border-radius: .2rem; padding: 7px 11px; font: 12px var(--font-sans); }
-.dialog-image-wrap { overflow: auto; max-height: 69vh; padding: 20px; }
-.dialog-image { display: block; width: 100%; height: auto; margin: auto; }
-.dialog-image-wrap.actual-size .dialog-image { width: auto; max-width: none; margin: 0; }
-.dialog-caption { margin: 0; padding: 14px 20px 20px; font: var(--caption-size)/1.5 var(--font-sans); color: var(--fg3); }
+.dialog-image-wrap { overflow: auto; max-height: var(--dialog-image-height, 69vh); padding: var(--dialog-image-padding); }
+.dialog-image { display: block; width: auto; max-width: 100%; height: auto; max-height: calc(var(--dialog-image-height, 69vh) - 2 * var(--dialog-image-padding)); margin: auto; }
+.dialog-image-wrap.actual-size .dialog-image { max-width: none; max-height: none; margin: 0; }
+.dialog-caption { width: 100%; max-width: calc(var(--column) + 40px); max-height: 50dvh; overflow-y: auto; margin: 0 auto; padding: 14px 20px 20px; font: var(--caption-size)/1.5 var(--font-sans); color: var(--fg3); }
 
 /* Notes grow with the viewport, as the container widens */
 @media (min-width: 1200px) { .post { max-width: 970px; } :root { --sidenote-width: 240px; } }
@@ -159,6 +162,7 @@ figcaption { margin: 13px 0 0; font: 400 var(--caption-size)/1.4 var(--font-sans
   .post-subtitle { font-size: 20px; }
   .publish-metadata { font-size: 14px; }
   .dialog-toolbar, .dialog-image-wrap { padding: 10px; }
+  .figure-dialog { --dialog-image-padding: 10px; }
 }
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
@@ -221,12 +225,14 @@ h2:hover .heading-link, h3:hover .heading-link, .heading-link:focus-visible { op
   .wide-figure figcaption { max-width: var(--column); margin-left: auto; margin-right: auto; }
 }
 @media (max-width: 1279px) {
+  .content h3[id] { scroll-margin-top: 4.5rem; }
   .mobile-toc { display: block; position: sticky; top: var(--header-height); z-index: 15; margin: 0 0 1.5rem; border-block: 1px solid var(--line); background: var(--bg); font: 13px/1.4 var(--font-sans); }
   .mobile-toc > summary { display: flex; align-items: center; gap: .7rem; cursor: pointer; padding: .85rem .2rem; list-style: none; }
   .mobile-toc > summary::after { content: '+'; margin-left: auto; font-size: 18px; }
   .mobile-toc[open] > summary::after { content: '−'; }
   .mobile-toc > summary::-webkit-details-marker { display: none; }
   .mobile-toc .current-section { color: var(--fg4); font-size: 12px; }
+  .mobile-toc .current-section { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .mobile-toc nav { padding: .4rem 1.1rem .7rem; max-height: 60vh; overflow-y: auto; }
   .mobile-toc ul { list-style: none; margin: 0; padding: 0; }
   .mobile-toc li { margin-bottom: .8rem; }
@@ -237,6 +243,7 @@ h2:hover .heading-link, h3:hover .heading-link, .heading-link:focus-visible { op
   .wide-figure .figure-panels { display: block; max-width: 540px; margin: 0 auto; }
   .full-figure-link { margin-top: .7rem; }
   .heading-link { opacity: .6; }
+  .panel-selector, .animation-controls button { min-height: 40px; }
 }
 @media print {
   .mobile-toc, .heading-link, .animation-controls, .copy-citation, .figure-panels { display: none !important; }
@@ -251,6 +258,10 @@ figure[id] { scroll-margin-top: calc(var(--header-height) + 4.5rem); }
 .figure-scroll { overflow-x: auto; overflow-y: hidden; overscroll-behavior-x: contain; scrollbar-width: thin; scrollbar-color: #bbb #f4f3f2; border: 1px solid var(--line); border-radius: 4px; }
 .figure-scroll img { display: block; width: calc(100% * var(--panel-columns)); max-width: none; height: auto; margin-right: calc(100% * var(--panel-tail)); }
 .content .panel-hint { margin: .45rem 0 0; font: 12px/1.4 var(--font-sans); color: var(--fg4); }
+
+@media (max-width: 360px) {
+  #figure-3 .panel-controls { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
 
 @media print {
   .has-margin-notes .sidenote { position: static; left: auto; top: auto; width: auto; margin: .3rem 0 .6rem 1.5rem; }

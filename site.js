@@ -196,6 +196,16 @@
   const dialogImage = dialog.querySelector('.dialog-image');
   const imageWrap = dialog.querySelector('.dialog-image-wrap');
   const zoomButton = dialog.querySelector('.zoom-button');
+  function fitDialogImage() {
+    if (!dialog.open) return;
+    const toolbarHeight = dialog.querySelector('.dialog-toolbar').getBoundingClientRect().height;
+    const captionHeight = dialog.querySelector('.dialog-caption').getBoundingClientRect().height;
+    const available = Math.max(0, Math.floor(innerHeight * .94 - toolbarHeight - captionHeight - 2));
+    imageWrap.style.setProperty('--dialog-image-height', `${available}px`);
+  }
+  dialogImage.addEventListener('load', fitDialogImage);
+  addEventListener('resize', fitDialogImage);
+  document.fonts?.ready.then(fitDialogImage);
   let lastFigureButton = null;
   document.querySelectorAll('.figure-button, .full-figure-link').forEach(button => {
     button.addEventListener('click', () => {
@@ -213,6 +223,7 @@
       zoomButton.setAttribute('aria-pressed', 'false');
       document.body.classList.add('dialog-open');
       dialog.showModal();
+      fitDialogImage();
       imageWrap.scrollTo(0, 0);
     });
   });

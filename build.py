@@ -45,6 +45,39 @@ def plain(p):
 description = subtitle or next((plain(p) for p in soup.find_all("p") if p.find("img") is None and p.find("em") is None and len(p.get_text(strip=True)) > 80), title)
 description = description if len(description) <= 200 else description[:197].rsplit(" ", 1)[0] + "…"
 
+# Let the two distance definitions wrap as complete equations on small screens.
+# Keep Pandoc's mathematical symbols and their TeX annotations intact.
+for equation in soup.select('math[display="block"]'):
+    annotation = equation.find("annotation")
+    if not annotation or r"\qquad d_{\mathrm{motor}}" not in annotation.get_text():
+        continue
+    row = equation.find("mrow", recursive=True)
+    separator = row.find("mspace", recursive=False)
+    if separator is None:
+        continue
+    parts = [[], []]
+    side = 0
+    for child in list(row.contents):
+        if child is separator:
+            side = 1
+        else:
+            parts[side].append(child)
+    paragraph = equation.parent
+    paragraph["class"] = "distance-equations"
+    for nodes, tex in zip(parts, annotation.get_text().split(r"\qquad", 1)):
+        item = soup.new_tag("math", attrs={"display": "block", "xmlns": "http://www.w3.org/1998/Math/MathML"})
+        semantics = soup.new_tag("semantics")
+        item_row = soup.new_tag("mrow")
+        for node in nodes:
+            item_row.append(node.extract())
+        semantics.append(item_row)
+        source = soup.new_tag("annotation", attrs={"encoding": "application/x-tex"})
+        source.string = tex.strip()
+        semantics.append(source)
+        item.append(semantics)
+        equation.insert_before(item)
+    equation.decompose()
+
 # Footnotes become margin sidenotes. Below the wide breakpoint, the number
 # toggles the note inline through the checkbox, so no script is needed.
 notes = {}

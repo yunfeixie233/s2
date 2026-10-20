@@ -149,6 +149,8 @@ PANEL_VIEWS = {
 for figure in soup.select("figure[data-figure]"):
     number = figure["data-figure"]
     figure["id"] = f"figure-{number}"
+    if number in {"2", "4"}:
+        figure["class"] = "medium-figure"
     # Existing panel labels start new caption lines; every word stays intact.
     caption = figure.select_one(".caption-text")
     part = None

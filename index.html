@@ -14,8 +14,8 @@
   <link rel="canonical" href="https://yunfeixie233.github.io/s2/">
   <title>Sensorimotor Alignment: A Platonic Proxy for Embodied Policy Success</title>
   <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
-  <link rel="stylesheet" href="site.css?v=570e70a03d">
-  <script src="site.js?v=95a45edd04" defer></script>
+  <link rel="stylesheet" href="site.css?v=320e159146">
+  <script src="site.js?v=463c77f341" defer></script>
 </head>
 <body id="top">
   <a class="skip-link" href="#article">Skip to article</a>
@@ -183,7 +183,7 @@ Representation Hypothesis</a> (Huh et al, 2024)</span></p>
 <p>Greater overlap indicates that episodes with similar sensory
 representations also have similar motor trajectories, as the figure
 below shows for a single query episode.</p>
-<figure data-figure="2" id="figure-2"><button aria-label="Expand figure 2" class="figure-button" type="button"><img alt='A query episode, "place cans into cabinet", with its four nearest neighbors by trajectory similarity (motor neighbors, top row) and by vision-text representation similarity (sensory neighbors, bottom row). Two sensory neighbors also appear among the motor neighbors and are marked with green checks; the other two are marked with red crosses.' decoding="async" height="1084" loading="lazy" src="assets/s2-worked-example.png?v=59e20b247d" width="2844"/></button><figcaption><span class="figure-number">Figure 2:</span> <span class="caption-text"><strong>Measuring Sensorimotor Alignment (S²) by nearest-neighbor
+<figure class="medium-figure" data-figure="2" id="figure-2"><button aria-label="Expand figure 2" class="figure-button" type="button"><img alt='A query episode, "place cans into cabinet", with its four nearest neighbors by trajectory similarity (motor neighbors, top row) and by vision-text representation similarity (sensory neighbors, bottom row). Two sensory neighbors also appear among the motor neighbors and are marked with green checks; the other two are marked with red crosses.' decoding="async" height="1084" loading="lazy" src="assets/s2-worked-example.png?v=59e20b247d" width="2844"/></button><figcaption><span class="figure-number">Figure 2:</span> <span class="caption-text"><strong>Measuring Sensorimotor Alignment (S²) by nearest-neighbor
 overlap.</strong> For the query episode (left), sensory neighbors
 (bottom right) have similar vision-text features, and motor neighbors
 (top right) have similar trajectories. Green checks mark shared
@@ -300,7 +300,7 @@ the VLM comparison above. We find that VQA scores show virtually no
 correlation with VLA success rate, at r = −0.154 (figure below, right).
 S², by contrast, correlates strongly, at r = +0.681 (figure below,
 left).</p>
-<figure data-figure="4" id="figure-4"><button aria-label="Expand figure 4" class="figure-button" type="button"><img alt="Two scatter plots for eight raw VLMs. Left: Sensorimotor Alignment against SimplerEnv success rate, with correlation 0.681. Right: average VQA score against the same success rates, with correlation −0.154." decoding="async" height="1034" loading="lazy" src="assets/s2-vs-vqa.png?v=4515080559" width="2662"/></button><figcaption><span class="figure-number">Figure 4:</span> <span class="caption-text"><strong>Sensorimotor Alignment (S²) correlates with VLA success
+<figure class="medium-figure" data-figure="4" id="figure-4"><button aria-label="Expand figure 4" class="figure-button" type="button"><img alt="Two scatter plots for eight raw VLMs. Left: Sensorimotor Alignment against SimplerEnv success rate, with correlation 0.681. Right: average VQA score against the same success rates, with correlation −0.154." decoding="async" height="1034" loading="lazy" src="assets/s2-vs-vqa.png?v=4515080559" width="2662"/></button><figcaption><span class="figure-number">Figure 4:</span> <span class="caption-text"><strong>Sensorimotor Alignment (S²) correlates with VLA success
 rate where VQA scores do not.</strong> Across 8 raw vision-language
 models (VLMs)<label aria-label="Note 14" class="sidenote-number" for="sn-14"></label><input class="margin-toggle" id="sn-14" type="checkbox"/><span class="sidenote"><a href="https://arxiv.org/abs/2601.03309">VLM4VLA:
 Revisiting Vision-Language-Models in Vision-Language-Action Models</a>

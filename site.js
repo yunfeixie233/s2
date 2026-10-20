@@ -41,7 +41,7 @@
   // Keep margin references out of article flow, including beside wide figures.
   const article = document.querySelector('.content');
   const marginNotes = [...article.querySelectorAll('.sidenote')];
-  const marginBreakpoint = matchMedia('(min-width: 1280px)');
+  const marginBreakpoint = matchMedia('(min-width: 1660px)');
   let marginLayoutPending = false;
   function layoutMarginNotes() {
     if (!marginBreakpoint.matches) {
@@ -49,7 +49,7 @@
       return;
     }
     const body = article.getBoundingClientRect();
-    const figureRight = Math.max(body.right, ...[...article.querySelectorAll('.wide-figure')].map(figure => figure.getBoundingClientRect().right));
+    const figureRight = Math.max(body.right, ...[...article.querySelectorAll('.wide-figure, .medium-figure')].map(figure => figure.getBoundingClientRect().right));
     const railLeft = Math.max(body.right + 64, figureRight + 24);
     const railWidth = Math.min(300, document.documentElement.clientWidth - railLeft - 24);
     if (railWidth < 180) {
@@ -207,11 +207,15 @@
   addEventListener('resize', fitDialogImage);
   document.fonts?.ready.then(fitDialogImage);
   let lastFigureButton = null;
+  let figureRequest = 0;
   document.querySelectorAll('.figure-button, .full-figure-link').forEach(button => {
-    button.addEventListener('click', () => {
+    button.addEventListener('click', async () => {
+      const request = ++figureRequest;
       const figure = button.closest('figure');
       const source = figure.querySelector('.figure-overview img') || button.querySelector('img');
       lastFigureButton = button;
+      const aspect = Number(source.getAttribute('width')) / Number(source.getAttribute('height')) || 1;
+      dialog.style.setProperty('--figure-aspect', aspect);
       dialogImage.src = source.src;
       dialogImage.alt = source.alt;
       dialog.querySelector('.dialog-title').textContent = 'Figure ' + figure.dataset.figure;
@@ -221,6 +225,8 @@
       imageWrap.classList.remove('actual-size');
       zoomButton.textContent = 'Actual size';
       zoomButton.setAttribute('aria-pressed', 'false');
+      await dialogImage.decode().catch(() => {});
+      if (request !== figureRequest) return;
       document.body.classList.add('dialog-open');
       dialog.showModal();
       fitDialogImage();
@@ -237,5 +243,6 @@
     const actual = imageWrap.classList.toggle('actual-size');
     zoomButton.textContent = actual ? 'Fit to window' : 'Actual size';
     zoomButton.setAttribute('aria-pressed', String(actual));
+    fitDialogImage();
   });
 })();

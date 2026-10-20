@@ -49,8 +49,8 @@ across these twelve models is 0.717.</span></figcaption></figure></div>
 alignment</a></li><li><a href="#s²-correlates-with-robot-task-success-rate">S² Correlates with
 Robot Task Success Rate</a><ul><li><a href="#s²-correlates-with-task-success-across-model-families">S²
 Correlates with Task Success Across Model Families</a></li><li><a href="#s²-correlates-with-task-success-more-closely-than-alternative-metrics">S²
-Correlates with Task Success More Closely Than Alternative Metrics</a></li><li><a href="#robustness-and-reference-data">Robustness and Reference
-Data</a></li></ul></li><li><a href="#representation-level-explanations-with-s²">Representation-Level
+Correlates with Task Success More Closely Than Alternative Metrics</a></li><li><a href="#s²-is-robust-to-evaluation-choices">S² Is Robust to Evaluation
+Choices</a></li></ul></li><li><a href="#representation-level-explanations-with-s²">Representation-Level
 Explanations with S²</a><ul><li><a href="#what-carries-the-correlation-vision-text-or-both">What Carries
 the Correlation: Vision, Text, or Both?</a></li><li><a href="#freezing-vision-encoders-limits-s²-gain">Freezing Vision
 Encoders Limits S² Gain</a></li><li><a href="#features-at-early-denoising-steps-already-carry-strong-sensorimotor-alignment">Features
@@ -86,11 +86,11 @@ robot task success. We test a range of Vision-Language-Action models
 on real robots. Across these settings, models with higher S² tend to
 achieve higher task success rates. This pattern provides empirical
 support for extending PRH to robotics.</p>
-<p>S² also explains, at the representation level, several behaviors that
-prior work has only observed empirically. For example, VLAs often ignore
-the language instruction and act mainly on what they see. We find that
-their task success correlates with the S² of their vision features, not
-their text features.</p>
+<p>S² also explains, at the representation level, several phenomena that
+prior work has observed only through closed-loop results. For example,
+VLAs often ignore the language instruction and act mainly on what they
+see. We find that their task success correlates with the S² of their
+vision features, not their text features.</p>
 <p>In practice, S² can serve as a low-cost offline proxy for identifying
 which models are likely to achieve higher task success before
 closed-loop evaluation. For instance, it can identify promising
@@ -116,7 +116,7 @@ instruction. This image-text pair forms the sensory input
 <div class="alignment-animations" id="dataset-animation">
 <figure class="alignment-animation">
 <img alt="Animation showing how DROID robot episodes become sensory and motor representations." decoding="async" height="488" loading="lazy" src="assets/01-DROID-to-representations-compact.gif" width="960"/>
-<figcaption class="animation-transcript">We measure sensorimotor alignment on DROID, a large dataset of real robot demonstrations. For each episode, we encode a video frame and the text instruction with the vision and text encoders of a robot foundation model, which forms the sensory representation. The recorded end-effector trajectory forms the motor representation. We use dynamic time warping (DTW) to measure distances between trajectories.</figcaption>
+<figcaption class="animation-transcript">We measure sensorimotor alignment on DROID, a large dataset of real robot demonstrations. For each episode, we encode an image frame and the text instruction with the vision and text encoders of a robot foundation model, which forms the sensory representation. The recorded end-effector trajectory forms the motor representation. We use dynamic time warping (DTW) to measure distances between trajectories.</figcaption>
 </figure>
 </div>
 <p><strong>Sensory representation.</strong> For each episode
@@ -238,9 +238,8 @@ success across model families.</span></figcaption></figure>
 VLAs against their SimplerEnv<label aria-label="Note 6" class="sidenote-number" for="sn-6"></label><input class="margin-toggle" id="sn-6" type="checkbox"/><span class="sidenote"><a href="https://arxiv.org/abs/2405.05941">Evaluating
 Real-World Robot Manipulation Policies in Simulation</a> (Li et al,
 2024)</span> success rates. The
-Pearson correlation r = +0.717 is strong. This correlation supports our
-premise that models with higher sensorimotor alignment tend to achieve
-higher task success rates.</p>
+Pearson correlation r = +0.717 is strong. Thus, models with higher
+sensorimotor alignment tend to achieve higher task success rates.</p>
 <p><strong>Vision-language models (VLMs).</strong> We ask whether S²
 computed on a raw VLM, before any robot fine-tuning, correlates with the
 task success of the VLA that is later fine-tuned from that backbone. We
@@ -254,12 +253,12 @@ that VLM4VLA fine-tunes from them. We find a strong correlation with
 downstream VLA success rate: r = +0.681. This result demonstrates the
 practical utility of S²: it can identify promising VLM backbones even
 before costly VLA fine-tuning.</p>
-<p><strong>World action models (WAMs).</strong> Finally, we ask whether
-this correlation extends to WAMs, which build on video generators rather
-than VLMs. We compute S² for 6 WAMs on the bimanual ALOHA dataset<label aria-label="Note 9" class="sidenote-number" for="sn-9"></label><input class="margin-toggle" id="sn-9" type="checkbox"/><span class="sidenote"><a href="https://arxiv.org/abs/2304.13705">Learning
+<p><strong>World action models (WAMs).</strong> Finally, we test WAMs,
+which build on video generators rather than VLMs. We compute S² for 6
+WAMs on the bimanual ALOHA dataset<label aria-label="Note 9" class="sidenote-number" for="sn-9"></label><input class="margin-toggle" id="sn-9" type="checkbox"/><span class="sidenote"><a href="https://arxiv.org/abs/2304.13705">Learning
 Fine-Grained Bimanual Manipulation with Low-Cost Hardware</a> (Zhao et
-al, 2023)</span> and compare it with their success
-rates on RoboTwin 2.0<label aria-label="Note 10" class="sidenote-number" for="sn-10"></label><input class="margin-toggle" id="sn-10" type="checkbox"/><span class="sidenote"><a href="https://arxiv.org/abs/2504.13059">RoboTwin:
+al, 2023)</span> and compare it with
+their success rates on RoboTwin 2.0<label aria-label="Note 10" class="sidenote-number" for="sn-10"></label><input class="margin-toggle" id="sn-10" type="checkbox"/><span class="sidenote"><a href="https://arxiv.org/abs/2504.13059">RoboTwin:
 Dual-Arm Robot Benchmark with Generative Digital Twins</a> (Mu et al,
 2025)</span>. For WAMs, the sensory
 representation is the video-generator latent used for action decoding,
@@ -267,15 +266,16 @@ and all 6 models share the same ALOHA trajectories and S² settings.
 Across these 6 models, S² shows a strong correlation with task success,
 r = +0.718.</p>
 <p><strong>Real-robot policies.</strong> We test whether the correlation
-between S² and task success in simulation extends to real robots.
-Because real-world success rates depend on many factors, such as the
-task set, robot, cameras, and protocol, we take all success rates from a
-single unified setting: the physical-robot results that MolmoB0T<label aria-label="Note 11" class="sidenote-number" for="sn-11"></label><input class="margin-toggle" id="sn-11" type="checkbox"/><span class="sidenote"><a href="https://arxiv.org/abs/2603.16861">MolmoB0T:
+observed in simulation extends to real robots. Because real-world
+success rates depend on many factors, such as the task set, robot,
+cameras, and protocol, we take all success rates from a single unified
+setting: the physical-robot results that MolmoB0T<label aria-label="Note 11" class="sidenote-number" for="sn-11"></label><input class="margin-toggle" id="sn-11" type="checkbox"/><span class="sidenote"><a href="https://arxiv.org/abs/2603.16861">MolmoB0T:
 Large-Scale Simulation Enables Zero-Shot Manipulation</a> (Deshpande et
-al, 2026)</span> reports for 5 policies on 40 tasks.
-We then compute S² for their public checkpoints on the same DROID
-reference dataset. Across these 5 policies, S² shows a strong
-correlation with real-robot task success, r = +0.831.</p>
+al, 2026)</span>
+reports for 5 policies on 40 tasks. We then compute S² for their public
+checkpoints on the same DROID reference dataset. Across these 5
+policies, S² shows a strong correlation with real-robot task success, r
+= +0.831.</p>
 <p>We further validate that S² correlates with downstream task success
 for frozen vision backbones under low-data behavior cloning and
 visual-reward learning, as shown in Appendix B.6 of our paper.</p>
@@ -288,23 +288,21 @@ Revisiting Vision-Language-Models in Vision-Language-Action Models</a>
 VQA benchmark scores and the performance of the resulting VLA policies,
 finding weak or even negative correlations. For video models, Tian et
 al.<label aria-label="Note 13" class="sidenote-number" for="sn-13"></label><input class="margin-toggle" id="sn-13" type="checkbox"/><span class="sidenote"><a href="https://arxiv.org/abs/2304.13723">A
-Control-Centric Benchmark for Video Prediction</a> (Tian et al, 2023)</span> compare the quality of predicted
-video with downstream task performance and find that the agreement is
-inconsistent across tasks. A common limitation is that these metrics
-measure language understanding or pixel-level video quality, neither of
-which is grounded in the physical actions the robot must execute. S²
-addresses this gap by comparing the nearest-neighbor sets of sensory
-embeddings and motor trajectories. As we show below, S² correlates more
-strongly with task success rate than any VQA or video-quality metric we
-evaluate.</p>
+Control-Centric Benchmark for Video Prediction</a> (Tian et al, 2023)</span> find that the quality of predicted
+video agrees inconsistently with downstream performance across tasks. A
+common limitation is that these metrics measure language understanding
+or pixel-level video quality, neither of which is grounded in the
+physical motion the robot must execute. S² addresses this gap by
+comparing the nearest-neighbor sets of sensory embeddings and motor
+trajectories. As we show below, S² correlates more strongly with task
+success rate than any VQA or video-quality metric we evaluate.</p>
 <p><strong>S² correlates with VLA success rate where VQA scores do
-not.</strong> We compare S² with aggregate VQA scores as offline proxies
-of VLA success rate, using the same 8 raw VLM backbones and evaluation
-setting as in the VLM comparison above. We find that VQA scores show
-virtually no correlation with VLA success rate, at r = −0.154 (figure
-below, right). S², by contrast, correlates strongly, at r = +0.681
-(figure below, left). S² thus correlates with VLA success rate where VQA
-benchmarks do not.</p>
+not.</strong> We compare S² with aggregate VQA scores as offline
+proxies, using the same 8 raw VLM backbones and evaluation setting as in
+the VLM comparison above. We find that VQA scores show virtually no
+correlation with VLA success rate, at r = −0.154 (figure below, right).
+S², by contrast, correlates strongly, at r = +0.681 (figure below,
+left).</p>
 <figure data-figure="4"><button aria-label="Expand figure 4" class="figure-button" type="button"><img alt="Two scatter plots for eight raw VLMs. Left: Sensorimotor Alignment against SimplerEnv success rate, with correlation 0.681. Right: average VQA score against the same success rates, with correlation −0.154." decoding="async" height="1034" loading="lazy" src="assets/s2-vs-vqa.png" width="2662"/></button><figcaption><span class="figure-number">Figure 4:</span> <span class="caption-text">Sensorimotor Alignment (S²) correlates with VLA success rate
 where VQA scores do not. Across 8 raw VLMs,<label aria-label="Note 14" class="sidenote-number" for="sn-14"></label><input class="margin-toggle" id="sn-14" type="checkbox"/><span class="sidenote"><a href="https://arxiv.org/abs/2601.03309">VLM4VLA:
 Revisiting Vision-Language-Models in Vision-Language-Action Models</a>
@@ -331,9 +329,8 @@ al, 2025)</span>, evaluated on RoboTwin. We find
 that video-quality metrics correlate weakly with task success: SSIM
 reaches only r = +0.558 and PSNR only r = +0.468, while FID even runs
 backwards, at r = +0.680, where lower video quality goes with higher
-success (figure below). S² computed on ALOHA episodes, by contrast,
-correlates far more strongly, at r = +0.999. S² thus correlates with WAM
-success rate more closely than video-quality metrics.</p>
+success (figure below). By contrast, S² on ALOHA correlates more
+strongly, at r = +0.999.</p>
 <figure data-figure="5"><button aria-label="Expand figure 5" class="figure-button" type="button"><img alt="Four scatter plots of RoboTwin success rate for three WAMs against Sensorimotor Alignment, SSIM, PSNR, and FID. Only Sensorimotor Alignment orders the three models by success rate." decoding="async" height="1020" loading="lazy" src="assets/s2-vs-video-quality.png" width="4078"/></button><figcaption><span class="figure-number">Figure 5:</span> <span class="caption-text">Sensorimotor Alignment (S²) correlates with WAM success rate more
 closely than video-quality metrics. For 3 WAMs evaluated on RoboTwin,
 video-quality metrics (SSIM, PSNR, FID) show no significant correlations
@@ -342,22 +339,19 @@ success-rate ordering. Only 3 of the 6 WAMs are compared because the
 others do not generate future video during closed-loop task
 evaluation.</span></figcaption></figure>
 
-<h3 id="robustness-and-reference-data">Robustness and Reference
-Data</h3>
-<p>The S²–success correlation stays positive across the reference
-datasets, trajectory horizons, and implementation choices tested in the
-paper. Reference data still needs to capture the motions relevant to the
-model: for the 3 bimanual WAMs in the video-quality comparison,
-replacing bimanual ALOHA trajectories with single-arm DROID trajectories
-reduces the correlation from r = +0.999 to r = +0.246. Section 3.3 and
-Appendix C of our paper report these checks.</p>
+<div id="robustness-and-reference-data"></div>
+<h3 id="s²-is-robust-to-evaluation-choices">S² Is Robust to Evaluation
+Choices</h3>
+<p>The positive correlation between S² and task success is robust to the
+evaluation choices tested in the paper, including the reference dataset,
+trajectory horizon, and metric implementation. See Section 3.3 and
+Appendix C for the full results and details.</p>
 </section><section aria-labelledby="representation-level-explanations-with-s²-heading" id="representation-level-explanations-with-s²"><h2 id="representation-level-explanations-with-s²-heading">Representation-Level
 Explanations with S²</h2>
-<p>Prior work documents several phenomena in VLAs and WAMs only through
-closed-loop results, without explaining them at the representation
-level. Because S² correlates with task success, as shown above, we use
-it to provide a representation-level explanation for each of these
-phenomena, as summarized below:</p>
+<p>Several phenomena reported for VLAs and WAMs rest only on closed-loop
+results and still lack a representation-level explanation. Because S²
+correlates with task success, as shown above, we use it to explain each
+of these phenomena, as summarized below:</p>
 <ul>
 <li><strong><a href="#what-carries-the-correlation-vision-text-or-both">Modality
 dominance</a></strong>: prior work observes that VLAs often struggle
@@ -370,17 +364,16 @@ VLAs</a> (Fang et al, 2026)</span><label aria-label="Note 23" class="sidenote-nu
 Linguistic Grounding in VLA Models via Train-Free Attention
 Recalibration</a> (Zhang et al, 2026)</span>. We explain that after
 VLA fine-tuning, task success is associated with vision-feature S² but
-not text-feature S², indicating that fine-tuned VLAs rely mainly on
-visual rather than language representations to produce the right
-motion.</li>
+not text-feature S², indicating that fine-tuned VLAs draw on what they
+see, not on the instruction, to produce the right motion.</li>
 <li><strong><a href="#freezing-vision-encoders-limits-s²-gain">Frozen
 encoders</a></strong>: prior work observes that freezing the vision
 encoder during VLA fine-tuning degrades downstream task performance<label aria-label="Note 24" class="sidenote-number" for="sn-24"></label><input class="margin-toggle" id="sn-24" type="checkbox"/><span class="sidenote"><a href="https://arxiv.org/abs/2601.03309">VLM4VLA:
 Revisiting Vision-Language-Models in Vision-Language-Action Models</a>
 (Zhang et al, 2026)</span>. We explain that freezing also
 prevents the S² gain from end-to-end fine-tuning, indicating that VLAs
-improve performance by aligning the sensory representation more closely
-with the motor representation.</li>
+gain performance by bringing their sensory representation closer to the
+motor representation.</li>
 <li><strong><a href="#features-at-early-denoising-steps-already-carry-strong-sensorimotor-alignment">Iterative
 denoising</a></strong>: prior work observes that WAMs can skip iterative
 video denoising at test time, decoding actions without generating future
@@ -388,16 +381,16 @@ video, with little loss in task success<label aria-label="Note 25" class="sideno
 World Action Models Need Test-time Future Imagination?</a> (Yuan et al,
 2026)</span>.
 We explain that the S² of WAM features is already high at the earliest
-denoising step and changes little afterwards, indicating that early-step
-features are already sufficiently aligned with robot trajectories to
-generate actions.</li>
+denoising step and changes little afterwards, indicating that the first
+denoising steps already yield features aligned closely enough with robot
+trajectories to act on.</li>
 <li><strong><a href="#mid-depth-blocks-carry-the-strongest-sensorimotor-alignment">Mid-depth
 blocks</a></strong>: prior work observes that mid-depth blocks of video
-diffusion transformers are especially important for semantic reasoning<label aria-label="Note 26" class="sidenote-number" for="sn-26"></label><input class="margin-toggle" id="sn-26" type="checkbox"/><span class="sidenote"><a href="https://arxiv.org/abs/2603.16870">Demystifying
-Video Reasoning</a> (Wang et al, 2026)</span>. We explain that the same mid-depth
-blocks carry the strongest S², indicating that the layers that reason
-about video semantics are also the layers most aligned with robot
-actions.</li>
+diffusion transformers matter most for semantic reasoning<label aria-label="Note 26" class="sidenote-number" for="sn-26"></label><input class="margin-toggle" id="sn-26" type="checkbox"/><span class="sidenote"><a href="https://arxiv.org/abs/2603.16870">Demystifying
+Video Reasoning</a> (Wang et al, 2026)</span>.
+We explain that these blocks also carry the strongest S², indicating
+that the layers that reason about video semantics are also the layers
+most aligned with robot motion.</li>
 </ul>
 <h3 id="what-carries-the-correlation-vision-text-or-both">What Carries
 the Correlation: Vision, Text, or Both?</h3>
@@ -408,8 +401,8 @@ Overrides Language: Evaluating and Mitigating Counterfactual Failures in
 VLAs</a> (Fang et al, 2026)</span><label aria-label="Note 29" class="sidenote-number" for="sn-29"></label><input class="margin-toggle" id="sn-29" type="checkbox"/><span class="sidenote"><a href="https://arxiv.org/abs/2603.06001">Restoring
 Linguistic Grounding in VLA Models via Train-Free Attention
 Recalibration</a> (Zhang et al, 2026)</span>. We use S² to explain
-this at the representation level, asking which modality carries the
-correlation with task success: vision, text, or both. In the figure
+this at the representation level, asking which modality the correlation
+with task success depends on: vision, text, or both. In the figure
 below, we compute S² separately for each modality. We take the VLM
 output tokens read by the action head and form <em>vision features</em>
 from the image tokens, <em>text features</em> from the instruction
@@ -433,23 +426,23 @@ correlation at r = +0.237. The raw VLMs reverse this pattern: before
 fine-tuning, text features correlate at r = +0.501, more strongly than
 vision features at r = +0.425, and joint vision-text features correlate
 most strongly at r = +0.681.</p>
-<p>We infer that fine-tuned VLAs rely mainly on visual rather than
-language representations to produce the right motion, which explains
-their weak instruction grounding at the representation level. Appendix
-D.1 of our paper reports per-model S² at all feature positions.</p>
+<p>We infer that, after fine-tuning, VLAs produce their motion mainly
+from visual rather than language representations, which explains their
+weak instruction grounding at the representation level. Appendix D.1 of
+our paper reports per-model S² at all feature positions.</p>
 <h3 id="freezing-vision-encoders-limits-s²-gain">Freezing Vision
 Encoders Limits S² Gain</h3>
 <p>VLM4VLA<label aria-label="Note 30" class="sidenote-number" for="sn-30"></label><input class="margin-toggle" id="sn-30" type="checkbox"/><span class="sidenote"><a href="https://arxiv.org/abs/2601.03309">VLM4VLA:
 Revisiting Vision-Language-Models in Vision-Language-Action Models</a>
-(Zhang et al, 2026)</span> reports that freezing the vision
-encoder during VLA fine-tuning substantially degrades downstream task
-performance. We use S² to explain this drop at the representation level,
+(Zhang et al, 2026)</span> reports that VLAs perform
+substantially worse when their vision encoder stays frozen during
+fine-tuning. We use S² to explain this drop at the representation level,
 testing whether freezing also prevents the sensorimotor-alignment gain
-that end-to-end fine-tuning produces.</p>
+from end-to-end fine-tuning.</p>
 <p>In the figure below, we compare 2 VLAs that follow the same VLM4VLA<label aria-label="Note 31" class="sidenote-number" for="sn-31"></label><input class="margin-toggle" id="sn-31" type="checkbox"/><span class="sidenote"><a href="https://arxiv.org/abs/2601.03309">VLM4VLA:
 Revisiting Vision-Language-Models in Vision-Language-Action Models</a>
 (Zhang et al, 2026)</span> recipe and differ only in whether
-the vision encoder is frozen during fine-tuning. For each, we compute S²
+the vision encoder is trained or kept frozen. For each, we compute S²
 and measure SimplerEnv success rate. Freezing the encoder reduces S² by
 41% and the downstream task success rate by 40%, with more detail in
 Appendix D.2 of our paper. These results suggest that end-to-end
@@ -469,11 +462,10 @@ Alignment</h3>
 decode actions from the resulting latents. Fast-WAM<label aria-label="Note 32" class="sidenote-number" for="sn-32"></label><input class="margin-toggle" id="sn-32" type="checkbox"/><span class="sidenote"><a href="https://arxiv.org/abs/2603.16666">Fast-WAM: Do
 World Action Models Need Test-time Future Imagination?</a> (Yuan et al,
 2026)</span>
-shows that WAMs can skip iterative video denoising at test time,
-decoding actions without generating future video, with little loss in
-task success. We use S² to explain this at the representation level,
-examining whether features at the earliest denoising steps are already
-aligned with robot trajectories.</p>
+shows that WAMs can skip this video generation and decode actions
+directly, with little loss in task success. We examine the
+representation-level reason: whether features at the earliest denoising
+steps already align with robot trajectories.</p>
 <p>We measure S² for 3 WAMs<label aria-label="Note 33" class="sidenote-number" for="sn-33"></label><input class="margin-toggle" id="sn-33" type="checkbox"/><span class="sidenote"><a href="https://arxiv.org/abs/2512.13030">Motus: A
 Unified Latent Action World Model</a> (Bi et al, 2026)</span><label aria-label="Note 34" class="sidenote-number" for="sn-34"></label><input class="margin-toggle" id="sn-34" type="checkbox"/><span class="sidenote"><a href="https://arxiv.org/abs/2601.21998">Causal World
 Modeling for Robot Control</a> (Li et al, 2026)</span><label aria-label="Note 35" class="sidenote-number" for="sn-35"></label><input class="margin-toggle" id="sn-35" type="checkbox"/><span class="sidenote"><a href="https://arxiv.org/abs/2507.12898">Vidar:
@@ -481,14 +473,15 @@ Embodied Video Diffusion Model for Generalist Manipulation</a> (Feng et
 al, 2025)</span> on RoboTwin<label aria-label="Note 36" class="sidenote-number" for="sn-36"></label><input class="margin-toggle" id="sn-36" type="checkbox"/><span class="sidenote"><a href="https://arxiv.org/abs/2504.13059">RoboTwin:
 Dual-Arm Robot Benchmark with Generative Digital Twins</a> (Mu et al,
 2025)</span>,
-as shown in the figure below. For each model, we extract latent features
-and compute S² at 5 steps across its native denoising schedule, from 0%
-to 100%. S² is already high at the earliest step and remains nearly
-flat, varying by about 6% at most from its initial value across the 3
-models. We infer that early-step features are already sufficiently
-aligned with robot trajectories to generate actions. Because S²
-correlates with WAM success rate, as shown above, this result explains
-why skipping iterative video denoising barely lowers task success.</p>
+as shown in the figure below. We compute S² from each model's latent
+features at 5 positions in its native denoising schedule, from 0% to
+100%, not at matched noise levels. S² is already high at the earliest
+step and remains nearly flat, varying by about 6% at most from its
+initial value across the 3 models. We infer that early-step features are
+already sufficiently aligned with robot trajectories to generate
+actions. Because S² correlates with WAM success rate, as shown above,
+this result explains why skipping iterative video denoising barely
+lowers task success.</p>
 <figure data-figure="8"><button aria-label="Expand figure 8" class="figure-button" type="button"><img alt="Line plot of Sensorimotor Alignment for three WAMs at five points of the denoising schedule, from 0 to 100 percent. All three lines stay nearly flat." decoding="async" height="1076" loading="lazy" src="assets/s2-denoising.png" width="1771"/></button><figcaption><span class="figure-number">Figure 8:</span> <span class="caption-text">Sensorimotor Alignment (S²) is already high at early denoising
 steps. For 3 WAMs, S² remains nearly flat across denoising, suggesting
 that early-step features are already aligned with robot
@@ -499,9 +492,8 @@ Blocks Carry the Strongest Sensorimotor Alignment</h3>
 <p>Prior analysis of Chain-of-Steps<label aria-label="Note 37" class="sidenote-number" for="sn-37"></label><input class="margin-toggle" id="sn-37" type="checkbox"/><span class="sidenote"><a href="https://arxiv.org/abs/2603.16870">Demystifying
 Video Reasoning</a> (Wang et al, 2026)</span> shows that mid-depth
 layers in Video Diffusion Transformers are especially important for
-semantic reasoning over objects and interactions. We use S² to explain
-this at the representation level, checking whether the layers with the
-highest S² also lie in this mid-depth range.</p>
+semantic reasoning over objects and interactions. We ask whether the
+layers with the highest S² also lie in this mid-depth range.</p>
 <p>In the figure below, we compute S² at different depths of 3 WAMs<label aria-label="Note 38" class="sidenote-number" for="sn-38"></label><input class="margin-toggle" id="sn-38" type="checkbox"/><span class="sidenote"><a href="https://arxiv.org/abs/2512.13030">Motus: A
 Unified Latent Action World Model</a> (Bi et al, 2026)</span><label aria-label="Note 39" class="sidenote-number" for="sn-39"></label><input class="margin-toggle" id="sn-39" type="checkbox"/><span class="sidenote"><a href="https://arxiv.org/abs/2601.21998">Causal World
 Modeling for Robot Control</a> (Li et al, 2026)</span><label aria-label="Note 40" class="sidenote-number" for="sn-40"></label><input class="margin-toggle" id="sn-40" type="checkbox"/><span class="sidenote"><a href="https://arxiv.org/abs/2507.12898">Vidar:
@@ -509,15 +501,15 @@ Embodied Video Diffusion Model for Generalist Manipulation</a> (Feng et
 al, 2025)</span>
 on RoboTwin. All 3 share a 30-block video backbone, and we extract
 features from Blocks 0, 7, 14, 21, and 29. Block 14 yields the highest
-S² across all 3 models. We find this peak in the mid-depth range that
+S² in every model. This peak falls in the mid-depth range that
 Chain-of-Steps<label aria-label="Note 41" class="sidenote-number" for="sn-41"></label><input class="margin-toggle" id="sn-41" type="checkbox"/><span class="sidenote"><a href="https://arxiv.org/abs/2603.16870">Demystifying
 Video Reasoning</a> (Wang et al, 2026)</span> identifies as semantically
-important, and infer that the layers that reason about video semantics
-are also those most aligned with robot actions. Appendix D.3 of our
-paper gives the full analysis.</p>
-<figure data-figure="9"><button aria-label="Expand figure 9" class="figure-button" type="button"><img alt="Line plot of Sensorimotor Alignment at backbone Blocks 0, 7, 14, 21, and 29 for three WAMs. Each line peaks at Block 14." decoding="async" height="1065" loading="lazy" src="assets/s2-layerwise.png" width="1797"/></button><figcaption><span class="figure-number">Figure 9:</span> <span class="caption-text">Sensorimotor Alignment (S²) peaks at Block 14 in all 3 WAMs,
-indicating that mid-depth blocks carry the strongest sensorimotor
-alignment.</span></figcaption></figure>
+important, suggesting that the layers handling video semantic reasoning
+align most closely with robot motion. Details are in Appendix D.3 of our
+paper.</p>
+<figure data-figure="9"><button aria-label="Expand figure 9" class="figure-button" type="button"><img alt="Line plot of Sensorimotor Alignment at backbone Blocks 0, 7, 14, 21, and 29 for three WAMs. Each line peaks at Block 14." decoding="async" height="1065" loading="lazy" src="assets/s2-layerwise.png" width="1797"/></button><figcaption><span class="figure-number">Figure 9:</span> <span class="caption-text">Schedule-averaged Sensorimotor Alignment (S²) peaks at Block 14
+in all 3 WAMs, indicating that mid-depth blocks carry the strongest
+sensorimotor alignment.</span></figcaption></figure>
 
 </section><section aria-labelledby="using-s²-heading" id="using-s²"><h2 id="using-s²-heading">Using S²</h2>
 <p>Our results support a PRH-inspired view of embodiment: more capable

@@ -11,7 +11,7 @@ Conventions build.py relies on:
 
 <figure class="walkthrough-figure">
   <div class="walkthrough-player">
-    <video id="walkthrough-video" class="walkthrough-video" controls playsinline preload="none" width="1920" height="1080" poster="assets/s2-walkthrough-poster.jpg" aria-label="Sensorimotor Alignment video overview" aria-describedby="walkthrough-caption">
+    <video id="walkthrough-video" class="walkthrough-video" controls playsinline preload="none" width="1920" height="1080" poster="assets/s2-walkthrough-poster.jpg" aria-label="Sensorimotor Alignment video overview">
       <source src="assets/s2-walkthrough.mp4" type="video/mp4">
       <a href="assets/s2-walkthrough.mp4">Watch the video overview</a>.
     </video>
@@ -20,7 +20,6 @@ Conventions build.py relies on:
       <span>Play video <span class="walkthrough-duration">· 3:29</span></span>
     </button>
   </div>
-  <figcaption id="walkthrough-caption">A narrated walkthrough of the motivation, metric, and findings. <a href="assets/s2-walkthrough.mp4" target="_blank" rel="noopener">Open video in a new tab</a>.</figcaption>
 </figure>
 
 The Platonic Representation Hypothesis (PRH)[^prh] argues that as vision and language models scale, their representation spaces converge toward a shared statistical model of reality. The idea is that images and text are different projections of the same underlying world. As models recover that world more faithfully, they begin to agree on which inputs are similar. For example, if a vision model places two images close together in the representation space, a language model tends to place their captions close together too.

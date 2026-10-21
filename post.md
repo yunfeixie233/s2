@@ -112,7 +112,7 @@ Prior work asks whether offline scores correlate with downstream task performanc
 
 ### S² Is Robust to Evaluation Choices
 
-We check that the correlation does not depend on a particular choice of settings, in two ways. First, when we vary how S² is computed, including the reference dataset, the trajectory horizon, and the metric implementation, the positive correlation with task success holds. Second, as a negative control, we compute S² on reference data from a mismatched embodiment, where a sound metric should lose its correlation with task success, and the correlation drops as expected. Section 3.3 and Appendix C of our paper give the full results.
+We check that the correlation does not depend on a particular choice of settings, in two ways. First, when we vary how S² is computed, including the reference dataset, the trajectory horizon, and the metric implementation, the positive correlation with task success holds. Second, as a negative control, we compute S² on reference data from a mismatched embodiment, where a sound metric should lose this correlation, and the correlation drops as expected. Section 3.3 and Appendix C of our paper give the full results.
 
 ## Representation-Level Explanations with S²
 

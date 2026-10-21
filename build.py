@@ -298,7 +298,7 @@ paper_icon = '<img class="link-icon" src="assets/arxiv-logomark.svg" width="12" 
 paper_link = (
     f'<a class="link-button" href="{html.escape(PAPER_URL, quote=True)}" target="_blank" rel="noopener">{paper_icon}<span>Paper</span></a>'
     if PAPER_URL else
-    f'<span class="link-button link-button-unavailable" role="link" aria-disabled="true" aria-label="Paper link not yet available" title="Paper link not yet available">{paper_icon}<span>Paper</span></span>'
+    f'<span class="link-button link-button-unavailable" role="link" aria-disabled="true" aria-label="Paper (coming soon)" title="Paper (coming soon)">{paper_icon}<span>Paper (coming soon)</span></span>'
 )
 page = f'''<!doctype html>
 <html lang="en">

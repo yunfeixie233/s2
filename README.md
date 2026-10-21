@@ -2,6 +2,8 @@
 
 [Read the website](https://yunfeixie233.github.io/s2/)
 
+[Video](https://yunfeixie233.github.io/s2/assets/s2-walkthrough.mp4?v=6c1d33433e) · [Code](https://github.com/yunfeixie233/sensorimotor-alignment) · Paper (coming soon)
+
 “Sensorimotor Alignment: A Platonic Proxy for Embodied Policy Success” presents our work on the relationship between sensory representations, demonstrated robot motion, and policy success.
 
 Research by Yunfei Xie, Howard H. Qian, Shiyi Lan, Kaiyu Hang, and Chen Wei.
@@ -19,7 +21,7 @@ python3 -m pip install -r requirements.txt
 python3 build.py
 ```
 
-Set `PAPER_URL` in `build.py` to the verified public paper URL when available. Until then, the Paper button is marked unavailable and has no link.
+Set `PAPER_URL` in `build.py` to the verified public paper URL when available. Until then, the Paper button reads “Paper (coming soon)” and has no link. The public code is released from [`yunfeixie233/sensorimotor-alignment`](https://github.com/yunfeixie233/sensorimotor-alignment); its README links back to this website and the same video.
 
 To preview the site locally:
 

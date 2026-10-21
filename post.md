@@ -94,7 +94,7 @@ We further validate that S² correlates with downstream task success for frozen 
 
 ### S² Correlates with Task Success More Closely Than Alternative Metrics
 
-Prior work asks whether offline scores correlate with downstream task performance. VLM4VLA[^vlm4vla] examines the correlation between VQA benchmark scores and the performance of the resulting VLA policies, finding weak or even negative correlations. For video models, Tian et al.[^tian] find that the quality of predicted video agrees inconsistently with downstream performance across tasks. A common limitation is that these metrics measure language understanding or pixel-level video quality, neither of which is grounded in the physical motion the robot must execute. S² addresses this gap by comparing the nearest-neighbor sets of sensory embeddings and motor trajectories. As we show below, S² correlates more strongly with task success rate than any VQA or video-quality metric we evaluate.
+Prior work asks whether offline scores correlate with downstream task performance. VLM4VLA[^vlm4vla] examines the correlation between VQA benchmark scores and the performance of the resulting VLA policies, finding weak or even negative correlations. For video models, Tian et al.[^tian] find that the quality of predicted video agrees inconsistently with downstream performance across tasks. A common limitation is that these metrics measure language understanding or pixel-level video quality, neither of which depends on the motion the robot must execute. S² instead compares the nearest-neighbor sets of sensory embeddings and motor trajectories. As we show below, S² correlates more strongly with task success rate than any VQA or video-quality metric we evaluate.
 
 **S² correlates with VLA success rate where VQA scores do not.** We compare S² with aggregate VQA scores as offline proxies, using the same 8 raw VLM backbones and evaluation setting as in the VLM comparison above. We find that VQA scores show virtually no correlation with VLA success rate, at r = −0.154 (figure below, right). S², by contrast, correlates strongly, at r = +0.681 (figure below, left).
 
@@ -118,7 +118,7 @@ The positive correlation between S² and task success is robust to the evaluatio
 
 Several phenomena reported for VLAs and WAMs rest only on closed-loop results and still lack a representation-level explanation. Because S² correlates with task success, as shown above, we use it to explain each of these phenomena, as summarized below:
 
-- **[Modality dominance](#what-carries-the-correlation-vision-text-or-both)**: prior work observes that VLAs often struggle with instruction grounding: they act on what the scene visually suggests rather than on what the language instruction asks[^liberoplus][^liberocf][^igar]. We explain that after VLA fine-tuning, task success is associated with vision-feature S² but not text-feature S², indicating that fine-tuned VLAs draw on what they see, not on the instruction, to produce the right motion.
+- **[Modality dominance](#what-carries-the-correlation-vision-text-or-both)**: prior work observes that VLAs often struggle with instruction grounding: they act on what the scene visually suggests rather than on what the language instruction asks[^liberoplus][^liberocf][^igar]. We explain that after VLA fine-tuning, task success is associated with vision-feature S² but not text-feature S², indicating that fine-tuned VLAs draw on what they see, not on the instruction, to produce their motion.
 - **[Frozen encoders](#freezing-vision-encoders-limits-s²-gain)**: prior work observes that freezing the vision encoder during VLA fine-tuning degrades downstream task performance[^vlm4vla]. We explain that freezing also prevents the S² gain from end-to-end fine-tuning, indicating that VLAs gain performance by bringing their sensory representation closer to the motor representation.
 - **[Iterative denoising](#features-at-early-denoising-steps-already-carry-strong-sensorimotor-alignment)**: prior work observes that WAMs can skip iterative video denoising at test time, decoding actions without generating future video, with little loss in task success[^fastwam]. We explain that the S² of WAM features is already high at the earliest denoising step and changes little afterwards, indicating that the first denoising steps already yield features aligned closely enough with robot trajectories to act on.
 - **[Mid-depth blocks](#mid-depth-blocks-carry-the-strongest-sensorimotor-alignment)**: prior work observes that mid-depth blocks of video diffusion transformers matter most for semantic reasoning[^demystifying]. We explain that these blocks also carry the strongest S², indicating that the layers that reason about video semantics are also the layers most aligned with robot motion.
@@ -129,9 +129,9 @@ VLAs often struggle with instruction grounding[^liberoplus][^liberocf][^igar]. W
 
 ![A two-by-three grid of scatter plots relating Sensorimotor Alignment to SimplerEnv success rate. Top row, twelve fine-tuned VLAs: vision-only 0.694, text-only 0.237, vision plus text 0.699. Bottom row, eight raw VLMs: vision-only 0.425, text-only 0.501, vision plus text 0.681.](assets/s2-what-carries.png)
 
-***Fine-tuned VLAs rely mainly on visual rather than language representations to produce the right motion.** We correlate Sensorimotor Alignment (S²) from vision, text, and joint vision-text features (left to right) with SimplerEnv task success rate. **Top:** For fine-tuned vision-language-action models (VLAs), vision and joint features correlate similarly strongly, while text features correlate weakly. **Bottom:** For raw vision-language models (VLMs), joint-feature S² correlates with task success after VLA fine-tuning, while neither modality alone reaches significance.*
+***Fine-tuned VLAs rely mainly on visual rather than language representations.** We correlate Sensorimotor Alignment (S²) from vision, text, and joint vision-text features (left to right) with SimplerEnv task success rate. **Top:** For fine-tuned vision-language-action models (VLAs), vision and joint features correlate similarly strongly, while text features correlate weakly. **Bottom:** For raw vision-language models (VLMs), joint-feature S² correlates with task success after VLA fine-tuning, while neither modality alone reaches significance.*
 
-**Fine-tuned VLAs rely mainly on visual rather than language representations to produce the right motion.** In the 12 fine-tuned VLAs, S² from vision features correlates with SimplerEnv success rate at r = +0.694, nearly matching the joint vision-text features at r = +0.699, whereas text features show no significant correlation at r = +0.237. The raw VLMs reverse this pattern: before fine-tuning, text features correlate at r = +0.501, more strongly than vision features at r = +0.425, and joint vision-text features correlate most strongly at r = +0.681.
+**Fine-tuned VLAs rely mainly on visual rather than language representations.** In the 12 fine-tuned VLAs, S² from vision features correlates with SimplerEnv success rate at r = +0.694, nearly matching the joint vision-text features at r = +0.699, whereas text features show no significant correlation at r = +0.237. The raw VLMs reverse this pattern: before fine-tuning, text features correlate at r = +0.501, more strongly than vision features at r = +0.425, and joint vision-text features correlate most strongly at r = +0.681.
 
 We infer that, after fine-tuning, VLAs produce their motion mainly from visual rather than language representations, which explains their weak instruction grounding at the representation level. Appendix D.1 of our paper reports per-model S² at all feature positions.
 
@@ -173,6 +173,10 @@ Our results support a PRH-inspired view of embodiment: more capable models tend 
 
 **Limitations.** These findings are correlations across a limited set of model families, benchmarks, and training recipes, with few models per comparison and one real-robot setting. Models with similar S² can still differ in task success, so closed-loop evaluation remains the final step in model selection. Whether training directly for higher S² improves robot task success remains an open question.
 
+## Code and reproduction
+
+The [code repository](https://github.com/yunfeixie233/sensorimotor-alignment) includes released results and [reproduction guides](https://github.com/yunfeixie233/sensorimotor-alignment#reproduction-guides), with the available coverage documented for each experiment.
+
 ## Citation
 
 Please cite this work as:
@@ -184,10 +188,11 @@ Xie, Yunfei, Howard H. Qian, Shiyi Lan, Kaiyu Hang, and Chen Wei. "Sensorimotor 
 Or use the BibTeX citation:
 
 ```
-@misc{xie2026sensorimotor,
-  title  = {Sensorimotor Alignment: A Platonic Proxy for Embodied Policy Success},
+@misc{xie2026sensorimotoralignment,
+  title = {Sensorimotor Alignment: A Platonic Proxy for Embodied Policy Success},
   author = {Xie, Yunfei and Qian, Howard H. and Lan, Shiyi and Hang, Kaiyu and Wei, Chen},
-  year   = {2026}
+  year = {2026},
+  url = {https://yunfeixie233.github.io/s2/}
 }
 ```
 

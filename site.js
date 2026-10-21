@@ -1,5 +1,16 @@
 (() => {
   'use strict';
+  // Keep native playback controls; the large initial button makes the embed obvious.
+  const walkthrough = document.querySelector('.walkthrough-video');
+  const walkthroughPlay = document.querySelector('.walkthrough-play');
+  if (walkthrough && walkthroughPlay) {
+    walkthroughPlay.hidden = false;
+    walkthroughPlay.addEventListener('click', () => {
+      walkthrough.play().then(() => walkthrough.focus()).catch(() => {});
+    });
+    walkthrough.addEventListener('play', () => { walkthroughPlay.hidden = true; });
+    walkthrough.addEventListener('ended', () => { walkthroughPlay.hidden = false; });
+  }
   const tocLinks = [...document.querySelectorAll('.article-toc a')];
   const targets = [...new Set(tocLinks.map(link => document.getElementById(decodeURIComponent(link.hash.slice(1)))).filter(Boolean))];
   const mobileToc = document.querySelector('.mobile-toc');
@@ -49,7 +60,7 @@
       return;
     }
     const body = article.getBoundingClientRect();
-    const figureRight = Math.max(body.right, ...[...article.querySelectorAll('.wide-figure, .medium-figure')].map(figure => figure.getBoundingClientRect().right));
+    const figureRight = Math.max(body.right, ...[...article.querySelectorAll('.wide-figure, .medium-figure, .teaser-figure')].map(figure => figure.getBoundingClientRect().right));
     const railLeft = Math.max(body.right + 64, figureRight + 24);
     const railWidth = Math.min(300, document.documentElement.clientWidth - railLeft - 24);
     if (railWidth < 180) {

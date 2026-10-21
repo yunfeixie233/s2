@@ -14,7 +14,6 @@ from bs4 import BeautifulSoup, Comment
 
 ROOT = Path(__file__).resolve().parent
 SITE_URL = "https://yunfeixie233.github.io/s2/"
-VIDEO_URL = "assets/s2-walkthrough.mp4"
 CODE_URL = "https://github.com/yunfeixie233/sensorimotor-alignment"
 PAPER_URL = ""  # Set to the verified public paper URL when available.
 
@@ -211,14 +210,20 @@ for index, image in enumerate(soup.select(".alignment-animation img"), 1):
         controls.append(button)
     video.insert_after(controls)
 
+# Version the overview's local media and direct fallback links like other assets.
+for element in soup.select('.walkthrough-figure [src], .walkthrough-figure [poster], .walkthrough-figure a[href]'):
+    for attribute in ('src', 'poster', 'href'):
+        path = element.get(attribute, '')
+        if path.startswith('assets/'):
+            element[attribute] = f'{path}?v={asset_version(path)}'
+
 figure_count = len(soup.find_all("figure"))
-opening_figure = soup.find("figure")
+walkthrough_figure = soup.select_one(".walkthrough-figure").extract()
+opening_figure = soup.select_one('figure[data-figure="1"]')
 og_image = ""
 if opening_figure:
-    opening_figure = opening_figure.extract()
     opening_figure["id"] = "figure-1"
-    opening_figure.img["loading"] = "eager"
-    opening_figure.img["fetchpriority"] = "high"
+    opening_figure["class"] = "teaser-figure"
     og_image = f'\n  <meta property="og:image" content="{SITE_URL}{opening_figure.img["src"]}">'
 
 for table in list(soup.find_all("table")):
@@ -234,7 +239,7 @@ for table in list(soup.find_all("table")):
 article = soup.new_tag("article", attrs={"class": "content", "id": "article"})
 section = soup.new_tag("section", attrs={"id": "introduction", "aria-label": "Introduction"})
 article.append(section)
-toc_entries = [("introduction", "Introduction", [])]
+toc_entries = [("video-overview", "Video overview", []), ("introduction", "Introduction", [])]
 for node in list(soup.contents):
     name = getattr(node, "name", None)
     if name == "h2":
@@ -289,8 +294,15 @@ for index, pre in enumerate(article.select("#citation pre"), 1):
     copy.string = "Copy citation" if index == 1 else "Copy BibTeX"
     pre.insert_before(copy)
 
-authors = ['Yunfei Xie', 'Howard H. Qian', 'Shiyi Lan', 'Kaiyu Hang', 'Chen Wei']
-authors_html = ", ".join(authors[:-1]) + ", and " + authors[-1]
+authors = [
+    ('Yunfei Xie', 'https://yunfeixie233.github.io/'),
+    ('Howard H. Qian', 'https://howardqian201.github.io/'),
+    ('Shiyi Lan', 'https://voidrank.github.io/'),
+    ('Kaiyu Hang', 'https://hangkaiyu.github.io/'),
+    ('Chen Wei', 'https://weichen582.github.io/'),
+]
+author_links = [f'<a href="{html.escape(url, quote=True)}">{html.escape(name)}</a>' for name, url in authors]
+authors_html = ", ".join(author_links[:-1]) + ", and " + author_links[-1]
 
 page_title = title if title.startswith("Sensorimotor Alignment") else f"{title} — Sensorimotor Alignment"
 subtitle_html = f'      <p class="post-subtitle">{html.escape(subtitle)}</p>\n' if subtitle else ""
@@ -333,12 +345,12 @@ page = f'''<!doctype html>
         <span>Rice University · NVIDIA</span>
       </div>
       <div class="publication-links">
-        <a class="link-button" href="{VIDEO_URL}?v={asset_version(VIDEO_URL)}" target="_blank" rel="noopener"><svg class="link-icon" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="7.25" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M6.4 5.1v5.8L11 8z" fill="currentColor"/></svg><span>Video</span></a>
+        <a class="link-button" href="#video-overview"><svg class="link-icon" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="7.25" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M6.4 5.1v5.8L11 8z" fill="currentColor"/></svg><span>Watch video · 3:29</span></a>
         <a class="link-button" href="{CODE_URL}" target="_blank" rel="noopener"><svg class="link-icon" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg><span>Code</span></a>
         {paper_link}
       </div>
     </div>
-    {f'<div class="post-cover">{opening_figure}</div>' if opening_figure else ''}
+    <section class="post-video" id="video-overview" aria-label="Video overview">{walkthrough_figure}</section>
     <details class="mobile-toc"><summary>Contents<span class="current-section">Introduction</span></summary><nav class="article-toc" aria-label="Mobile article contents">{toc}</nav></details>
     <div class="post-content-shell">
       <nav class="left-toc article-toc" aria-label="Article contents">{toc}</nav>

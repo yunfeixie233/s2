@@ -47,6 +47,8 @@ button:focus-visible, a:focus-visible, summary:focus-visible { outline: 2px soli
 .post-subtitle { font: italic 400 24px/1.4 var(--font-serif); color: var(--fg4); max-width: 710px; margin: .5rem auto 0; text-wrap: balance; }
 .publish-metadata { display: flex; flex-direction: column; align-items: center; gap: .35rem; margin: 1rem 0 2rem; font: 15px/1.4 var(--font-sans); color: var(--fg3); }
 .publish-metadata .author { color: var(--fg); letter-spacing: .24px; text-wrap: balance; }
+.publish-metadata .author a { color: inherit; white-space: nowrap; text-decoration: underline; text-decoration-color: #b5b3b0; text-underline-offset: 3px; }
+.publish-metadata .author a:hover { text-decoration-color: currentColor; }
 .post-cover { margin: 0 0 2.5rem; }
 .post-cover figure { margin: 0; padding: 0; }
 
@@ -216,15 +218,30 @@ h2:hover .heading-link, h3:hover .heading-link, .heading-link:focus-visible { op
 .animation-controls[hidden], .panel-controls[hidden] { display: none; }
 .alignment-animations .animation-transcript { font-size: 14px; line-height: 1.5; }
 
+/* The walkthrough leads; Figure 1 summarizes the written introduction. */
+.post-video { max-width: 800px; margin: 0 auto 2.5rem; scroll-margin-top: calc(var(--header-height) + 1rem); }
+.walkthrough-figure { margin: 0; padding: 0; }
+.walkthrough-figure figcaption { max-width: var(--column); margin: 14px auto 0; }
+.walkthrough-player { position: relative; }
+.walkthrough-video { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; border: 1px solid var(--line); border-radius: 4px; background: #fff; }
+.walkthrough-play { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: flex; align-items: center; gap: .65rem; min-height: 52px; padding: .85rem 1.2rem; border: 1px solid #fff; border-radius: 999px; background: #282828; color: #fff; box-shadow: 0 2px 14px #0003; font: 600 15px/1.3 var(--font-sans); white-space: nowrap; }
+.walkthrough-play[hidden] { display: none; }
+.walkthrough-play:hover { background: #111; }
+.walkthrough-duration { font-weight: 400; }
+.walkthrough-play:focus-visible { outline-color: var(--fg); outline-offset: 4px; }
+.walkthrough-video:focus-visible { outline: 2px solid var(--fg); outline-offset: 4px; }
+@media print { .walkthrough-play { display: none; } }
+
 .citation-block { position: relative; }
 .citation-block .citation-code { white-space: pre-wrap; overflow-wrap: anywhere; padding-top: 3rem; }
 .copy-citation { position: absolute; right: .6rem; top: .5rem; border: 1px solid #d7d5d2; border-radius: 4px; background: white; padding: .35rem .55rem; font: 12px var(--font-sans); }
 
 /* Laptop windows keep complete comparisons; reserve both sidebars for roomier displays. */
 @media (min-width: 900px) {
-  .content .wide-figure, .content .medium-figure { position: relative; left: 50%; transform: translateX(-50%); width: min(1100px, calc(100vw - 64px)); }
+  .content .wide-figure, .content .medium-figure, .content .teaser-figure { position: relative; left: 50%; transform: translateX(-50%); width: min(1100px, calc(100vw - 64px)); }
+  .content .teaser-figure { width: min(1030px, calc(100vw - 64px)); }
   .content .medium-figure { width: min(860px, calc(100vw - 64px)); }
-  .wide-figure figcaption, .medium-figure figcaption { max-width: var(--column); margin-left: auto; margin-right: auto; }
+  .wide-figure figcaption, .medium-figure figcaption, .teaser-figure figcaption { max-width: var(--column); margin-left: auto; margin-right: auto; }
 }
 @media (min-width: 1660px) {
   .left-toc { transform: translateX(-210px); }
@@ -255,7 +272,7 @@ h2:hover .heading-link, h3:hover .heading-link, .heading-link:focus-visible { op
 @media print {
   .mobile-toc, .heading-link, .animation-controls, .copy-citation, .figure-panels { display: none !important; }
   .wide-figure .figure-overview { display: block !important; }
-  .content .wide-figure, .content .medium-figure { position: static; transform: none; width: auto; }
+  .content .wide-figure, .content .medium-figure, .content .teaser-figure { position: static; transform: none; width: auto; }
   .citation-block .citation-code { padding-top: .9rem; }
 }
 

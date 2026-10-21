@@ -1,7 +1,7 @@
 <!--
 Conventions build.py relies on:
 - An optional italic paragraph right after the H1 becomes the subtitle (dek).
-- An image paragraph followed by an italic paragraph becomes a numbered figure with that caption; Figure 1 is pulled out as the opening figure.
+- An image paragraph followed by an italic paragraph becomes a numbered figure with that caption; Figure 1 follows the introduction. The walkthrough figure is pulled out as the opening video.
 - Footnotes ([^key]) become margin sidenotes. Write each definition as: [Title](link) (Author et al, Year).
 - A table followed by an italic paragraph gets that paragraph as its caption.
 - H2 and H3 headings appear in the contents list on the left.
@@ -9,9 +9,19 @@ Conventions build.py relies on:
 
 # Sensorimotor Alignment: A Platonic Proxy for Embodied Policy Success
 
-![Figure 1: a robot reaching for a mug connects physical reality to sensory observations and motion execution. A scatter plot relates Sensorimotor Alignment to success rate across twelve VLAs.](assets/platonic-robotics.png)
-
-***Left:** We test the Platonic Representation Hypothesis (PRH) in robotics, using image–text features as the sensory representation and end-effector trajectories as the motor representation: a more capable embodied model should have sensory representations that align more closely with this motor representation. To validate this, we define **Sensorimotor Alignment** (S²). **Right:** We measure S² across 12 vision-language-action models (VLAs) and find that S² correlates positively with SimplerEnv task success rate (Pearson r = +0.717), providing empirical support for this PRH-inspired view of embodiment.*
+<figure class="walkthrough-figure">
+  <div class="walkthrough-player">
+    <video id="walkthrough-video" class="walkthrough-video" controls playsinline preload="none" width="1920" height="1080" poster="assets/s2-walkthrough-poster.jpg" aria-label="Sensorimotor Alignment video overview" aria-describedby="walkthrough-caption">
+      <source src="assets/s2-walkthrough.mp4" type="video/mp4">
+      <a href="assets/s2-walkthrough.mp4">Watch the video overview</a>.
+    </video>
+    <button class="walkthrough-play" type="button" aria-controls="walkthrough-video" aria-label="Play video overview, 3 minutes 29 seconds" hidden>
+      <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4v16l13-8z" fill="currentColor"/></svg>
+      <span>Play video <span class="walkthrough-duration">· 3:29</span></span>
+    </button>
+  </div>
+  <figcaption id="walkthrough-caption">A narrated walkthrough of the motivation, metric, and findings. <a href="assets/s2-walkthrough.mp4" target="_blank" rel="noopener">Open video in a new tab</a>.</figcaption>
+</figure>
 
 The Platonic Representation Hypothesis (PRH)[^prh] argues that as vision and language models scale, their representation spaces converge toward a shared statistical model of reality. The idea is that images and text are different projections of the same underlying world. As models recover that world more faithfully, they begin to agree on which inputs are similar. For example, if a vision model places two images close together in the representation space, a language model tends to place their captions close together too.
 
@@ -24,6 +34,11 @@ Our first finding is that S² is positively related to downstream robot task suc
 S² also explains, at the representation level, several phenomena that prior work has observed only through closed-loop results. For example, VLAs often ignore the language instruction and act mainly on what they see. We find that their task success correlates with the S² of their vision features, not their text features.
 
 In practice, S² can serve as a low-cost offline proxy for identifying which models are likely to achieve higher task success before closed-loop evaluation. For instance, it can identify promising vision-language model (VLM) backbones even before costly VLA fine-tuning.
+
+
+![Figure 1: a robot reaching for a mug connects physical reality to sensory observations and motion execution. A scatter plot relates Sensorimotor Alignment to success rate across twelve VLAs.](assets/platonic-robotics.png)
+
+***Left:** We test the Platonic Representation Hypothesis (PRH) in robotics, using image–text features as the sensory representation and end-effector trajectories as the motor representation: a more capable embodied model should have sensory representations that align more closely with this motor representation. To validate this, we define **Sensorimotor Alignment** (S²). **Right:** We measure S² across 12 vision-language-action models (VLAs) and find that S² correlates positively with SimplerEnv task success rate (Pearson r = +0.717), providing empirical support for this PRH-inspired view of embodiment.*
 
 ## Measuring sensorimotor alignment
 

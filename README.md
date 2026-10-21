@@ -6,7 +6,7 @@
 
 “Sensorimotor Alignment: A Platonic Proxy for Embodied Policy Success” presents our work on the relationship between sensory representations, demonstrated robot motion, and policy success.
 
-Research by Yunfei Xie, Howard H. Qian, Shiyi Lan, Kaiyu Hang, and Chen Wei.
+Research by [Yunfei Xie](https://yunfeixie233.github.io/), [Howard H. Qian](https://howardqian201.github.io/), [Shiyi Lan](https://voidrank.github.io/), [Kaiyu Hang](https://hangkaiyu.github.io/), and [Chen Wei](https://weichen582.github.io/).
 
 ## Website
 
@@ -32,6 +32,8 @@ python3 -m http.server 8000
 Open `http://localhost:8000/`. Commit the regenerated `index.html` together with any source or asset changes, then push to `main` to update the public site.
 
 ## Responsive layout
+
+The 3:29 video is the first visual, directly below the title and resource links. It has a large play button and native playback controls. The original teaser (Figure 1) follows the written introduction, before the methods. The header's **Watch video · 3:29** link and both contents menus jump to the player. Playback starts only on request; the poster loads without downloading the full video. The poster is a frame from the existing walkthrough at 8 seconds. The direct MP4 link remains below the player.
 
 The reading column stays at 660px. Dense research figures (3, 5, and 6) expand on desktop and have panel selectors with horizontal scrolling on smaller screens. The complete original image remains available through “View full figure.” Navigation labels are shorter than article headings, with collapsible subsections and a mobile contents menu.
 

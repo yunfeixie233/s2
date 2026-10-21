@@ -15,7 +15,7 @@ Conventions build.py relies on:
 
 The Platonic Representation Hypothesis (PRH)[^prh] argues that as vision and language models scale, their representation spaces converge toward a shared statistical model of reality. The idea is that images and text are different projections of the same underlying world. As models recover that world more faithfully, they begin to agree on which inputs are similar. For example, if a vision model places two images close together in the representation space, a language model tends to place their captions close together too.
 
-In this work, we bring PRH to robotics and ask: can physical actions be viewed as another projection of that world, such that more capable embodied models better align their vision and language representations with the structure of motion trajectories?
+In this work, we bring PRH to robotics and ask: can physical motion be viewed as another projection of that world, such that more capable embodied models better align their vision and language representations with the structure of motion trajectories?
 
 **Our evidence suggests the answer is yes.** To test this, we use Sensorimotor Alignment (S²), which measures the overlap between neighborhoods of a model's sensory representations and neighborhoods of end-effector trajectories. Higher alignment means episodes nearby in sensory representation space are also nearby in motor representation space.
 
@@ -84,7 +84,7 @@ The figure below compares three model families and a separate set of policies ev
 
 **Vision-language-action models (VLAs).** We test 12 VLAs against their SimplerEnv[^simplerenv] success rates. The Pearson correlation r = +0.717 is strong. Thus, models with higher sensorimotor alignment tend to achieve higher task success rates.
 
-**Vision-language models (VLMs).** We ask whether S² computed on a raw VLM, before any robot fine-tuning, correlates with the task success of the VLA that is later fine-tuned from that backbone. We compute S² for 8 raw VLM backbones from VLM4VLA[^vlm4vla] and compare it with the SimplerEnv[^simplerenv] success rate of the VLAs that VLM4VLA fine-tunes from them. We find a strong correlation with downstream VLA success rate: r = +0.681. This result demonstrates the practical utility of S²: it can identify promising VLM backbones even before costly VLA fine-tuning.
+**Vision-language models (VLMs).** We ask whether S² computed on a raw VLM, before any robot fine-tuning, correlates with the task success of the VLA that is later fine-tuned from that backbone. We compute S² for 8 raw VLM backbones from VLM4VLA[^vlm4vla] and compare it with the SimplerEnv[^simplerenv] success rate of the VLAs that VLM4VLA fine-tunes from them. We find a strong correlation with downstream VLA success rate: r = +0.681. S² can therefore identify promising VLM backbones even before costly VLA fine-tuning.
 
 **World action models (WAMs).** Finally, we test WAMs, which build on video generators rather than VLMs. We compute S² for 6 WAMs on the bimanual ALOHA dataset[^aloha] and compare it with their success rates on RoboTwin 2.0[^robotwin]. For WAMs, the sensory representation is the video-generator latent used for action decoding, and all 6 models share the same ALOHA trajectories and S² settings. Across these 6 models, S² shows a strong correlation with task success, r = +0.718.
 
@@ -112,7 +112,7 @@ Prior work asks whether offline scores correlate with downstream task performanc
 
 ### S² Is Robust to Evaluation Choices
 
-The positive correlation between S² and task success is robust to the evaluation choices tested in the paper, including the reference dataset, trajectory horizon, and metric implementation. See Section 3.3 and Appendix C for the full results and details.
+We check that the correlation does not depend on a particular choice of settings, in two ways. First, when we vary how S² is computed, including the reference dataset, the trajectory horizon, and the metric implementation, the positive correlation with task success holds. Second, as a negative control, we compute S² on reference data from a mismatched embodiment, where a sound metric should lose its correlation with task success, and the correlation drops as expected. Section 3.3 and Appendix C of our paper give the full results.
 
 ## Representation-Level Explanations with S²
 

@@ -64,7 +64,7 @@ world. As models recover that world more faithfully, they begin to agree
 on which inputs are similar. For example, if a vision model places two
 images close together in the representation space, a language model
 tends to place their captions close together too.</p>
-<p>In this work, we bring PRH to robotics and ask: can physical actions
+<p>In this work, we bring PRH to robotics and ask: can physical motion
 be viewed as another projection of that world, such that more capable
 embodied models better align their vision and language representations
 with the structure of motion trajectories?</p>
@@ -247,9 +247,8 @@ compare it with the SimplerEnv<label aria-label="Note 8" class="sidenote-number"
 Real-World Robot Manipulation Policies in Simulation</a> (Li et al,
 2024)</span> success rate of the VLAs
 that VLM4VLA fine-tunes from them. We find a strong correlation with
-downstream VLA success rate: r = +0.681. This result demonstrates the
-practical utility of S²: it can identify promising VLM backbones even
-before costly VLA fine-tuning.</p>
+downstream VLA success rate: r = +0.681. S² can therefore identify
+promising VLM backbones even before costly VLA fine-tuning.</p>
 <p><strong>World action models (WAMs).</strong> Finally, we test WAMs,
 which build on video generators rather than VLMs. We compute S² for 6
 WAMs on the bimanual ALOHA dataset<label aria-label="Note 9" class="sidenote-number" for="sn-9"></label><input class="margin-toggle" id="sn-9" type="checkbox"/><span class="sidenote"><a href="https://arxiv.org/abs/2304.13705">Learning
@@ -339,10 +338,14 @@ video during closed-loop task evaluation.</span></figcaption></figure>
 <div id="robustness-and-reference-data"></div>
 <h3 id="s²-is-robust-to-evaluation-choices">S² Is Robust to Evaluation
 Choices<a aria-label="Link to this section" class="heading-link" href="#s²-is-robust-to-evaluation-choices">#</a></h3>
-<p>The positive correlation between S² and task success is robust to the
-evaluation choices tested in the paper, including the reference dataset,
-trajectory horizon, and metric implementation. See Section 3.3 and
-Appendix C for the full results and details.</p>
+<p>We check that the correlation does not depend on a particular choice
+of settings, in two ways. First, when we vary how S² is computed,
+including the reference dataset, the trajectory horizon, and the metric
+implementation, the positive correlation with task success holds.
+Second, as a negative control, we compute S² on reference data from a
+mismatched embodiment, where a sound metric should lose its correlation
+with task success, and the correlation drops as expected. Section 3.3
+and Appendix C of our paper give the full results.</p>
 </section><section aria-labelledby="representation-level-explanations-with-s²-heading" id="representation-level-explanations-with-s²"><h2 id="representation-level-explanations-with-s²-heading">Representation-Level
 Explanations with S²<a aria-label="Link to this section" class="heading-link" href="#representation-level-explanations-with-s²">#</a></h2>
 <p>Several phenomena reported for VLAs and WAMs rest only on closed-loop

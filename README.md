@@ -33,7 +33,7 @@ Open `http://localhost:8000/`. Commit the regenerated `index.html` together with
 
 ## Responsive layout
 
-The 3:29 video is the first visual, directly below the title and resource links. It has a large play button and native playback controls. The original teaser (Figure 1) follows the written introduction, before the methods. The header's **Watch video · 3:29** link and both contents menus jump to the player. Playback starts only on request; the poster loads without downloading the full video. The poster is a frame from the existing walkthrough at 8 seconds.
+The 3:29 video is the first visual, directly below the title and resource links. It has a large play button and native playback controls. The original teaser (Figure 1) follows the second introductory paragraph, immediately before “Our evidence suggests the answer is yes.” The header's **Watch video · 3:29** link and both contents menus jump to the player. Playback starts only on request; the poster loads without downloading the full video. The poster is a frame from the existing walkthrough at 8 seconds.
 
 The reading column stays at 660px. Dense research figures (3, 5, and 6) expand on desktop and have panel selectors with horizontal scrolling on smaller screens. The complete original image remains available through “View full figure.” Navigation labels are shorter than article headings, with collapsible subsections and a mobile contents menu.
 

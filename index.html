@@ -68,6 +68,18 @@ tends to place their captions close together too.</p>
 be viewed as another projection of that world, such that more capable
 embodied models better align their vision and language representations
 with the structure of motion trajectories?</p>
+<figure class="teaser-figure" data-figure="1" id="figure-1"><button aria-label="Expand figure 1" class="figure-button" type="button"><img alt="Figure 1: a robot reaching for a mug connects physical reality to sensory observations and motion execution. A scatter plot relates Sensorimotor Alignment to success rate across twelve VLAs." decoding="async" height="929" loading="lazy" src="assets/platonic-robotics.png?v=5ae7879da6" width="2600"/></button><figcaption><span class="figure-number">Figure 1:</span> <span class="caption-text"><span class="caption-part"><strong>Left:</strong> We test the Platonic Representation
+Hypothesis (PRH) in robotics, using image–text features as the sensory
+representation and end-effector trajectories as the motor
+representation: a more capable embodied model should have sensory
+representations that align more closely with this motor representation.
+To validate this, we define <strong>Sensorimotor Alignment</strong>
+(S²). </span><span class="caption-part"><strong>Right:</strong> We measure S² across 12
+vision-language-action models (VLAs) and find that S² correlates
+positively with SimplerEnv task success rate (Pearson r = +0.717),
+providing empirical support for this PRH-inspired view of
+embodiment.</span></span></figcaption></figure>
+
 <p><strong>Our evidence suggests the answer is yes.</strong> To test
 this, we use Sensorimotor Alignment (S²), which measures the overlap
 between neighborhoods of a model's sensory representations and
@@ -90,18 +102,6 @@ which models are likely to achieve higher task success before
 closed-loop evaluation. For instance, it can identify promising
 vision-language model (VLM) backbones even before costly VLA
 fine-tuning.</p>
-<figure class="teaser-figure" data-figure="1" id="figure-1"><button aria-label="Expand figure 1" class="figure-button" type="button"><img alt="Figure 1: a robot reaching for a mug connects physical reality to sensory observations and motion execution. A scatter plot relates Sensorimotor Alignment to success rate across twelve VLAs." decoding="async" height="929" loading="lazy" src="assets/platonic-robotics.png?v=5ae7879da6" width="2600"/></button><figcaption><span class="figure-number">Figure 1:</span> <span class="caption-text"><span class="caption-part"><strong>Left:</strong> We test the Platonic Representation
-Hypothesis (PRH) in robotics, using image–text features as the sensory
-representation and end-effector trajectories as the motor
-representation: a more capable embodied model should have sensory
-representations that align more closely with this motor representation.
-To validate this, we define <strong>Sensorimotor Alignment</strong>
-(S²). </span><span class="caption-part"><strong>Right:</strong> We measure S² across 12
-vision-language-action models (VLAs) and find that S² correlates
-positively with SimplerEnv task success rate (Pearson r = +0.717),
-providing empirical support for this PRH-inspired view of
-embodiment.</span></span></figcaption></figure>
-
 </section><section aria-labelledby="measuring-sensorimotor-alignment-heading" id="measuring-sensorimotor-alignment"><h2 id="measuring-sensorimotor-alignment-heading">Measuring sensorimotor
 alignment<a aria-label="Link to this section" class="heading-link" href="#measuring-sensorimotor-alignment">#</a></h2>
 <p>For each recorded episode, the model's image and text features form

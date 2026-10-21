@@ -1,7 +1,7 @@
 <!--
 Conventions build.py relies on:
 - An optional italic paragraph right after the H1 becomes the subtitle (dek).
-- An image paragraph followed by an italic paragraph becomes a numbered figure with that caption; Figure 1 follows the introduction. The walkthrough figure is pulled out as the opening video.
+- An image paragraph followed by an italic paragraph becomes a numbered figure with that caption; Figure 1 follows the second introductory paragraph. The walkthrough figure is pulled out as the opening video.
 - Footnotes ([^key]) become margin sidenotes. Write each definition as: [Title](link) (Author et al, Year).
 - A table followed by an italic paragraph gets that paragraph as its caption.
 - H2 and H3 headings appear in the contents list on the left.
@@ -26,6 +26,10 @@ The Platonic Representation Hypothesis (PRH)[^prh] argues that as vision and lan
 
 In this work, we bring PRH to robotics and ask: can physical motion be viewed as another projection of that world, such that more capable embodied models better align their vision and language representations with the structure of motion trajectories?
 
+![Figure 1: a robot reaching for a mug connects physical reality to sensory observations and motion execution. A scatter plot relates Sensorimotor Alignment to success rate across twelve VLAs.](assets/platonic-robotics.png)
+
+***Left:** We test the Platonic Representation Hypothesis (PRH) in robotics, using image–text features as the sensory representation and end-effector trajectories as the motor representation: a more capable embodied model should have sensory representations that align more closely with this motor representation. To validate this, we define **Sensorimotor Alignment** (S²). **Right:** We measure S² across 12 vision-language-action models (VLAs) and find that S² correlates positively with SimplerEnv task success rate (Pearson r = +0.717), providing empirical support for this PRH-inspired view of embodiment.*
+
 **Our evidence suggests the answer is yes.** To test this, we use Sensorimotor Alignment (S²), which measures the overlap between neighborhoods of a model's sensory representations and neighborhoods of end-effector trajectories. Higher alignment means episodes nearby in sensory representation space are also nearby in motor representation space.
 
 Our first finding is that S² is positively related to downstream robot task success. We test a range of Vision-Language-Action models (VLAs) and World Action Models (WAMs) in simulation, as well as policies on real robots. Across these settings, models with higher S² tend to achieve higher task success rates. This pattern provides empirical support for extending PRH to robotics.
@@ -33,11 +37,6 @@ Our first finding is that S² is positively related to downstream robot task suc
 S² also explains, at the representation level, several phenomena that prior work has observed only through closed-loop results. For example, VLAs often ignore the language instruction and act mainly on what they see. We find that their task success correlates with the S² of their vision features, not their text features.
 
 In practice, S² can serve as a low-cost offline proxy for identifying which models are likely to achieve higher task success before closed-loop evaluation. For instance, it can identify promising vision-language model (VLM) backbones even before costly VLA fine-tuning.
-
-
-![Figure 1: a robot reaching for a mug connects physical reality to sensory observations and motion execution. A scatter plot relates Sensorimotor Alignment to success rate across twelve VLAs.](assets/platonic-robotics.png)
-
-***Left:** We test the Platonic Representation Hypothesis (PRH) in robotics, using image–text features as the sensory representation and end-effector trajectories as the motor representation: a more capable embodied model should have sensory representations that align more closely with this motor representation. To validate this, we define **Sensorimotor Alignment** (S²). **Right:** We measure S² across 12 vision-language-action models (VLAs) and find that S² correlates positively with SimplerEnv task success rate (Pearson r = +0.717), providing empirical support for this PRH-inspired view of embodiment.*
 
 ## Measuring sensorimotor alignment
 

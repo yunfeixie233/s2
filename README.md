@@ -2,7 +2,7 @@
 
 [Read the website](https://yunfeixie233.github.io/s2/)
 
-[Video](https://yunfeixie233.github.io/s2/assets/s2-walkthrough.mp4?v=6c1d33433e) · [Code](https://github.com/yunfeixie233/sensorimotor-alignment) · Paper (coming soon)
+[Video](https://yunfeixie233.github.io/s2/assets/s2-walkthrough.mp4?v=4a96588110) · [Code](https://github.com/yunfeixie233/sensorimotor-alignment) · Paper (coming soon)
 
 “Sensorimotor Alignment: A Platonic Proxy for Embodied Policy Success” presents our work on the relationship between sensory representations, demonstrated robot motion, and policy success.
 

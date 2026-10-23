@@ -15,7 +15,7 @@ from bs4 import BeautifulSoup, Comment
 ROOT = Path(__file__).resolve().parent
 SITE_URL = "https://yunfeixie233.github.io/s2/"
 CODE_URL = "https://github.com/yunfeixie233/sensorimotor-alignment"
-PAPER_URL = ""  # Set to the verified public paper URL when available.
+PAPER_URL = "https://arxiv.org/abs/2610.31670"
 
 
 def asset_version(name):

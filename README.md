@@ -21,7 +21,7 @@ python3 -m pip install -r requirements.txt
 python3 build.py
 ```
 
-Set `PAPER_URL` in `build.py` to the verified public paper URL when available. Until then, the Paper button reads “Paper (coming soon)” and has no link. The public code is released from [`yunfeixie233/sensorimotor-alignment`](https://github.com/yunfeixie233/sensorimotor-alignment); its README links back to this website and the same video.
+The Paper button links to `PAPER_URL` in `build.py`, the arXiv abstract at [arXiv:2610.31670](https://arxiv.org/abs/2610.31670). If `PAPER_URL` is empty, the button reads “Paper (coming soon)” and has no link. The public code is released from [`yunfeixie233/sensorimotor-alignment`](https://github.com/yunfeixie233/sensorimotor-alignment); its README links back to this website and the same video.
 
 To preview the site locally:
 

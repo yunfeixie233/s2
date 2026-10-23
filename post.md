@@ -195,7 +195,7 @@ The [code repository](https://github.com/yunfeixie233/sensorimotor-alignment) in
 Please cite this work as:
 
 ```
-Xie, Yunfei, Howard H. Qian, Shiyi Lan, Kaiyu Hang, and Chen Wei. "Sensorimotor Alignment: A Platonic Proxy for Embodied Policy Success." 2026.
+Xie, Yunfei, Howard H. Qian, Shiyi Lan, Kaiyu Hang, and Chen Wei. "Sensorimotor Alignment: A Platonic Proxy for Embodied Policy Success." arXiv preprint arXiv:2610.31670, 2026.
 ```
 
 Or use the BibTeX citation:
@@ -205,7 +205,10 @@ Or use the BibTeX citation:
   title = {Sensorimotor Alignment: A Platonic Proxy for Embodied Policy Success},
   author = {Xie, Yunfei and Qian, Howard H. and Lan, Shiyi and Hang, Kaiyu and Wei, Chen},
   year = {2026},
-  url = {https://yunfeixie233.github.io/s2/}
+  eprint = {2610.31670},
+  archivePrefix = {arXiv},
+  primaryClass = {cs.CV},
+  url = {https://arxiv.org/abs/2610.31670}
 }
 ```
 
